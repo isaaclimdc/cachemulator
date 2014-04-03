@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Cachemulator: A 15-418 Final Project</title>
+  <title>Cachemulator: Project Proposal</title>
   <meta charset="UTF-8">
   <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
@@ -12,10 +12,63 @@
   <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
 
-<body><xmp theme="united" style="display:none;">
-  Yuyang Guo (*yuyangg*) and Isaac Lim (*idl*)
+<body><xmp theme="simplex">
+**Yuyang Guo** (yuyangg) and **Isaac Lim** (idl)
 
-  ## Project Proposal
+***
+## Summary
+
+We are going to implement a coherent multi-processor cache emulator, to
+compare and contrast a snooping (MSI) cache coherence protocol with a
+directory-based one.
+
+***
+## Background
+
+In 15-213, we were required to write a cache simulator in *CacheLab*. This
+simulator was very basic, and did not account for multi-core parallelism.
+Cachemulator is a multi-processor version of this, with the goal of exhibiting
+**simulated** empirical evidence of the performance of various coherence
+protocols.
+
+Cache coherence refers to the consistency of data in the same address, across
+each processor's local cache. When a single address is shared by processors
+and processors *A* and *B* are reading from it, if processor *C* wants to
+write a new value into that address, the local copies in *A* and *B*'s caches
+need to be updated. There are two main protocols that ensure this
+invariant: *snooping* and *directory-based*.
+
+The **snooping** protocol requires any processor that wants to interact with an
+address to first broadcast *to all other processors*, the fact that it needs
+to gain exclusive access to that address. The **directory-based** protocol
+allows only the processors involved in the transaction to talk *directly* to
+each other. Each protocol has its pros and cons; this is what we seek to
+investigate with Cachemulator.
+
+***
+## The Challenge
+
+Blah
+
+***
+## Resources
+
+Blah
+
+***
+## Goals / Deliverables
+
+Blah
+
+***
+## Platform Choice
+
+Blah
+
+***
+## Proposed Schedule
+
+Blah
 
 </xmp></body>
 
