@@ -48,22 +48,61 @@ investigate with Cachemulator.
 ***
 ## The Challenge
 
-Blah
+As we learned in class, there are many parts to a solution that maintains
+cache coherence, and this is true for both protocols that we intend to
+implement. One of the main challenges, is since we are aiming to simulate
+the real-life behavior of a *real* cache in a multi-processor system, we have
+to make this behavior as accurate as possible. This means everything from the
+granularity of requesting access to the bus from the arbitrator, to
+keeping every processor's cache in step with the MSI protocol, must work
+*perfectly*. In addition, the testing harness we will write must be able to
+exploit any inconsistencies with the simulator.
+
+Since we are writing executable C++ code, clearly our simulator will also be
+succeptible to the nuances of performance on the *actual cache*. We need to
+make sure that the way we simulate behavior will not be affected by these
+factors.
 
 ***
 ## Resources
 
-Blah
+We will use our code from 15-213's *CacheLab* as reference for an implementation
+of a cache simulator. However we won't just be building off of this, since
+our implementation would need to be drastically different in order to implement
+cache coherence.
+
+Theoretically, our Cachemulator does not have any requirements for computation
+resources, because the performance of the simulator itself, though important,
+is not the biggest concern. We will be keeping an internal timer counter that
+is *architecture-independent* to evaluate cache usage.
+
+For specificity though, we will likely run our code on the Gates 3000
+machines, or even locally.
 
 ***
 ## Goals / Deliverables
 
-Blah
+### Immediate plans
+- A performance evaluation of different cache coherence protocols under
+different types of workloads.
+
+- A C++ API that programmers can use, instead of the runtime library memory
+functions (e.g. `malloc`, memory accesses, etc.) to evaluate cache usage.
+
+### Stretch goals
+- To develop a runtime cache simulator that takes executables and analyzes
+their cache usage based on their memory access trace. This means being able
+to tell a developer what the cache usage pattern of their program is, and
+identify any problems, such as instances of false sharing, etc.
 
 ***
 ## Platform Choice
 
-Blah
+As described in the "Resources" session, our project will culminate in a
+tool for analyzing parallel programs, but won't be a parallel program itself.
+And so we have no specific platform choice; in fact, we would *prefer* for
+our project to be platform-independent, allowing it to be as flexible as
+possible.
 
 ***
 ## Proposed Schedule
