@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
-#include <stdarg.h>
 #include <assert.h>
 
 #include "cache.h"

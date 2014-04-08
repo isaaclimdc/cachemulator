@@ -6,6 +6,7 @@
 #include <vector>
 #include "modules/debug.h"
 #include "modules/CMSet.h"
+#include "modules/CMLine.h"
 
 CMCache::CMCache(int s, int E) {
   dprintf("Initializing CMCache...\n");
@@ -17,7 +18,7 @@ CMCache::CMCache(int s, int E) {
 
     for (int Ei = 0; Ei < E; Ei++) {
       CMLine *line = new CMLine();
-      set.lines.push_back(line);
+      set->lines.push_back(line);
     }
 
     sets.push_back(set);

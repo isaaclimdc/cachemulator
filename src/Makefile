@@ -7,7 +7,7 @@ CXXFLAGS = -g -Wall -Werror -O3
 default: cache
 
 cache:
-	$(CXX) $(CXXFLAGS) -o $@ cache.cpp
+	$(CXX) $(CXXFLAGS) -o $@ *.cpp modules/*.cpp
 	rm -rf *.dSYM
 
 run: default

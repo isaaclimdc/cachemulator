@@ -4,6 +4,7 @@
 
 #include "CMSet.h"
 #include "CMLine.h"
+#include "debug.h"
 
 CMSet::CMSet() {
   dprintf("Initializing CMSet...\n");
