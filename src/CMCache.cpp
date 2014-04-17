@@ -14,13 +14,7 @@ CMCache::CMCache(int s, int E) {
   int S = 1 << s;
 
   for (int Si = 0; Si < S; Si++) {
-    CMSet *set = new CMSet();
-
-    for (int Ei = 0; Ei < E; Ei++) {
-      CMLine *line = new CMLine();
-      set->lines.push_back(line);
-    }
-
+    CMSet *set = new CMSet(E);
     sets.push_back(set);
   }
 }
@@ -28,4 +22,9 @@ CMCache::CMCache(int s, int E) {
 CMCache::~CMCache() {
   sets.clear();
   dprintf("Freeing CMCache...\n");
+}
+
+bool CMCache::isInCache(CMAddr *addr) {
+  CMSet *set = sets.at(addr->set_index);
+  return set->isInSet(addr);
 }

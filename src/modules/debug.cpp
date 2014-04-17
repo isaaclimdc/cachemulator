@@ -11,8 +11,7 @@ void dprintf(const char *format, ...) {
   return;
 #endif
   va_list arg;
-  int done;
   va_start(arg, format);
-  done = vfprintf(stdout, format, arg);
+  vfprintf(stdout, format, arg);
   va_end(arg);
 }

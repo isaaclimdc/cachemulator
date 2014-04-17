@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include "modules/CMAddr.h"
 
 class CMSet;  // Forward-declare
 
@@ -15,5 +16,6 @@ class CMCache {
     CMCache(int s, int E);
     ~CMCache();
 
-    std::vector<CMSet *> sets;
+    bool isInCache(CMAddr *addr);
+    std::vector<CMSet*> sets;
 };

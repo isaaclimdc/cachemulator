@@ -3,6 +3,7 @@
  */
 
 #pragma once
+#include "CMAddr.h"
 
 class CMLine {
   private:
@@ -11,7 +12,8 @@ class CMLine {
     CMLine();
     ~CMLine();
 
-    int tag;
+    bool isHit(CMAddr *addr);
+    unsigned tag;
     bool valid;
     bool dirty;
     int age;

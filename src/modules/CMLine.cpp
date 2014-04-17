@@ -12,3 +12,6 @@ CMLine::CMLine() {
 CMLine::~CMLine() {
   dprintf("Freeing CMLine...\n");
 }
+bool CMLine::isHit(CMAddr *addr) {
+  return (valid && (addr->tag == tag) );
+}
