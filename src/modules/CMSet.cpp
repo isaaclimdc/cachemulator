@@ -2,19 +2,18 @@
  * Yuyang Guo (yuyangg) and Isaac Lim (idl)
  */
 
-#include "CMAddr.h"
 #include "CMSet.h"
+#include "CMAddr.h"
 #include "CMLine.h"
 #include "debug.h"
 
-CMSet::CMSet(int E) : _E(E) {
+CMSet::CMSet(int E) {
   dprintf("Initializing CMSet...\n");
   for (int Ei = 0; Ei < E; Ei++) {
     CMLine *line = new CMLine();
     lines.push_back(line);
   }
 }
-
 
 CMSet::~CMSet() {
   lines.clear();
@@ -49,5 +48,6 @@ void CMSet::bringLineIntoSet(CMAddr *addr) {
       oldest = line;
     }
   }
+
   oldest->update(addr);
 }

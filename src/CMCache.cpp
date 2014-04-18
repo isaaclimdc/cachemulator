@@ -3,11 +3,11 @@
  */
 
 #include "CMCache.h"
-#include "modules/CMAddr.h"
 #include <vector>
 #include "modules/debug.h"
 #include "modules/CMSet.h"
 #include "modules/CMLine.h"
+#include "modules/CMAddr.h"
 
 CMCache::CMCache(int s, int E) {
   dprintf("Initializing CMCache...\n");

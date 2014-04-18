@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class CMSet;  // Forward-declare
+class CMSet;
 class CMAddr;
 
 class CMCache {

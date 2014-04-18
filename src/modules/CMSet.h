@@ -6,12 +6,11 @@
 
 #include <vector>
 
-class CMLine;  // Forward-declare
+class CMLine;
 class CMAddr;
 
 class CMSet {
   private:
-    int _E;
 
   public:
     CMSet(int E);
