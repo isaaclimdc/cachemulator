@@ -46,8 +46,7 @@ int main(int argc, char **argv) {
   std::vector<CMAddr*> addrs = test->addrs;
   for (it = addrs.begin(); it != addrs.end(); ++it) {
     CMAddr *addr = *it;
-    (void)addr;
-    dprintf("Hello");
+    addr->printAddr();
     // cache->accessCache(addr);
   }
 

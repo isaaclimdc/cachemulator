@@ -11,6 +11,8 @@ class CMAddr {
     CMAddr(long long unsigned raw_addr, int s, int b);
     ~CMAddr();
 
+    void printAddr();
+
     unsigned tag;
     unsigned set_index;
     unsigned block_offset;

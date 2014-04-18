@@ -20,3 +20,7 @@ CMAddr::CMAddr(long long unsigned raw_addr, int s, int b) {
 CMAddr::~CMAddr() {
   dprintf("Freeing CMAddr...\n");
 }
+
+void CMAddr::printAddr() {
+  dprintf("%llx\n", raw);
+}
