@@ -2,6 +2,7 @@
  * Yuyang Guo (yuyangg) and Isaac Lim (idl)
  */
 
+#include "CMAddr.h"
 #include "CMSet.h"
 #include "CMLine.h"
 #include "debug.h"

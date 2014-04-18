@@ -3,7 +3,8 @@
  */
 
 #pragma once
-#include "CMAddr.h"
+
+class CMAddr;
 
 class CMLine {
   private:

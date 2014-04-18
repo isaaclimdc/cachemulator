@@ -5,9 +5,9 @@
 #pragma once
 
 #include <vector>
-#include "modules/CMAddr.h"
 
 class CMSet;  // Forward-declare
+class CMAddr;
 
 class CMCache {
   private:

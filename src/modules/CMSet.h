@@ -5,9 +5,9 @@
 #pragma once
 
 #include <vector>
-#include "CMAddr.h"
 
 class CMLine;  // Forward-declare
+class CMAddr;
 
 class CMSet {
   private:

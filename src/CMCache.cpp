@@ -3,6 +3,7 @@
  */
 
 #include "CMCache.h"
+#include "modules/CMAddr.h"
 #include <vector>
 #include "modules/debug.h"
 #include "modules/CMSet.h"
