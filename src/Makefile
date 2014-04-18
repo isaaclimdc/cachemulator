@@ -1,38 +1,44 @@
 # CACHEMULATOR
 # Yuyang Guo (yuyangg) and Isaac Lim (idl)
 
-OBJS = main.o CMCache.o CMSet.o CMLine.o CMAddr.o CMTest.o debug.o
+MODDIR = modules
+OBJDIR = objs
+OBJS = $(OBJDIR)/main.o $(OBJDIR)/CMCache.o $(OBJDIR)/CMSet.o $(OBJDIR)/CMLine.o $(OBJDIR)/CMAddr.o $(OBJDIR)/CMTest.o $(OBJDIR)/debug.o
+
 CC = g++
 DEBUG = -g
 CFLAGS = -m64 -Wall -Werror -O3 -c $(DEBUG)
 LFLAGS = -m64 -Wall -Werror -O3 $(DEBUG)
-MODDIR = modules
 
-cache: $(OBJS)
+default: cache
+
+dirs:
+	mkdir -p $(OBJDIR)/
+
+cache: dirs $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o $@
-	rm *.o
 
-main.o: main.cpp CMCache.h $(MODDIR)/CMSet.h $(MODDIR)/CMAddr.h $(MODDIR)/CMLine.h $(MODDIR)/CMTest.h $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) main.cpp
+$(OBJDIR)/main.o: main.cpp CMCache.h $(MODDIR)/CMSet.h $(MODDIR)/CMAddr.h $(MODDIR)/CMLine.h $(MODDIR)/CMTest.h $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) main.cpp -o $@
 
-CMCache.o: CMCache.h CMCache.cpp $(MODDIR)/CMSet.h $(MODDIR)/CMLine.h $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) CMCache.cpp
+$(OBJDIR)/CMCache.o: CMCache.h CMCache.cpp $(MODDIR)/CMSet.h $(MODDIR)/CMLine.h $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) CMCache.cpp -o $@
 
-CMSet.o: $(MODDIR)/CMSet.h $(MODDIR)/CMSet.cpp $(MODDIR)/CMAddr.h $(MODDIR)/CMLine.h $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) $(MODDIR)/CMSet.cpp
+$(OBJDIR)/CMSet.o: $(MODDIR)/CMSet.h $(MODDIR)/CMSet.cpp $(MODDIR)/CMAddr.h $(MODDIR)/CMLine.h $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) $(MODDIR)/CMSet.cpp -o $@
 
-CMLine.o: $(MODDIR)/CMLine.h $(MODDIR)/CMLine.cpp $(MODDIR)/CMAddr.h $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) $(MODDIR)/CMLine.cpp
+$(OBJDIR)/CMLine.o: $(MODDIR)/CMLine.h $(MODDIR)/CMLine.cpp $(MODDIR)/CMAddr.h $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) $(MODDIR)/CMLine.cpp -o $@
 
-CMAddr.o: $(MODDIR)/CMAddr.h $(MODDIR)/CMAddr.cpp $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) $(MODDIR)/CMAddr.cpp
+$(OBJDIR)/CMAddr.o: $(MODDIR)/CMAddr.h $(MODDIR)/CMAddr.cpp $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) $(MODDIR)/CMAddr.cpp -o $@
 
-CMTest.o: $(MODDIR)/CMTest.h $(MODDIR)/CMTest.cpp $(MODDIR)/CMAddr.h $(MODDIR)/debug.h
-	$(CC) $(CFLAGS) $(MODDIR)/CMTest.cpp
+$(OBJDIR)/CMTest.o: $(MODDIR)/CMTest.h $(MODDIR)/CMTest.cpp $(MODDIR)/CMAddr.h $(MODDIR)/debug.h
+	$(CC) $(CFLAGS) $(MODDIR)/CMTest.cpp -o $@
 
-debug.o:
-	$(CC) $(CFLAGS) $(MODDIR)/debug.cpp
+$(OBJDIR)/debug.o:
+	$(CC) $(CFLAGS) $(MODDIR)/debug.cpp -o $@
 
 clean:
-	rm -rf *.o *.dSYM
+	rm -rf $(OBJDIR) *.o *.dSYM
 	rm -f cache
