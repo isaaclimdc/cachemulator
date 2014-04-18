@@ -5,9 +5,9 @@
 #pragma once
 
 #include <vector>
-#include "modules/CMAddr.h"
 
 class CMSet;  // Forward-declare
+class CMAddr;
 
 class CMCache {
   private:
@@ -17,5 +17,7 @@ class CMCache {
     ~CMCache();
 
     bool isInCache(CMAddr *addr);
+    void bringLineIntoCache(CMAddr *addr);
+
     std::vector<CMSet*> sets;
 };

@@ -5,9 +5,9 @@
 #pragma once
 
 #include <vector>
-#include "CMAddr.h"
 
 class CMLine;  // Forward-declare
+class CMAddr;
 
 class CMSet {
   private:
@@ -18,5 +18,7 @@ class CMSet {
     ~CMSet();
 
     bool isInSet(CMAddr *addr);
-    std::vector<CMLine *> lines;
+    void bringLineIntoSet(CMAddr *addr);
+
+    std::vector<CMLine*> lines;
 };
