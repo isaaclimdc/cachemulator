@@ -8,7 +8,7 @@
 #include "debug.h"
 
 CMSet::CMSet(int E) {
-  dprintf("Initializing CMSet...\n");
+  // dprintf("Initializing CMSet...\n");
   for (int Ei = 0; Ei < E; Ei++) {
     CMLine *line = new CMLine();
     lines.push_back(line);
@@ -17,7 +17,7 @@ CMSet::CMSet(int E) {
 
 CMSet::~CMSet() {
   lines.clear();
-  dprintf("Freei CMSet...\n");
+  // dprintf("Freeing CMSet...\n");
 }
 
 bool CMSet::isInSet(CMAddr *addr) {

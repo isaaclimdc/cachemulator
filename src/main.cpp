@@ -14,13 +14,13 @@
 #include "modules/debug.h"
 
 #define MAX_TRACE_LINE_LENGTH 20
-#define NUM_SET_BITS 5
-#define NUM_LINES 6
-#define NUM_BLOCK_BITS 3  //TODO: Use proper numbers here
+#define NUM_SET_BITS 4
+#define NUM_LINES 2
+#define NUM_BLOCK_BITS 4  //TODO: Use proper numbers here
 
 /* Function declarations */
 
-CMTest *parseTraceFile(char *filePath);
+void parseTraceFile(char *filePath, CMTest *test);
 
 /* Function definitions */
 
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
   char *filePath;
 
   char c;
-  while ((c = getopt(argc, argv, "t")) != -1) {
+  while ((c = getopt(argc, argv, "t:")) != -1) {
     switch (c) {
       case 't':
         filePath = optarg;
@@ -38,7 +38,8 @@ int main(int argc, char **argv) {
     }
   }
 
-  CMTest *test = parseTraceFile(filePath);
+  CMTest *test = new CMTest();
+  parseTraceFile(filePath, test);
 
   CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);
 
@@ -47,18 +48,22 @@ int main(int argc, char **argv) {
   for (it = addrs.begin(); it != addrs.end(); ++it) {
     CMAddr *addr = *it;
     addr->printAddr();
-    // cache->accessCache(addr);
+    state_t stype = cache->accessCache(addr);
+    cache->printSType(stype);
   }
 
+  delete test;
   delete cache;
+
   return 0;
 }
 
-CMTest *parseTraceFile(char *filePath) {
+void parseTraceFile(char *filePath, CMTest *test) {
   FILE *traceFile = fopen(filePath, "r");
 
   if (traceFile == NULL) {
     perror("Error opening file.");
+    exit(1);
   }
 
   char traceLine[MAX_TRACE_LINE_LENGTH];
@@ -66,22 +71,21 @@ CMTest *parseTraceFile(char *filePath) {
   while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
     char op;
     long long unsigned rawAddr;
-    int tid;
+    size_t tid;
 
-    sscanf(traceLine, "%c %llx %d", &op, &rawAddr, &tid);
+    sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &tid);
 
-    CMAddr addr(rawAddr, NUM_SET_BITS, NUM_BLOCK_BITS);
+    inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
+    CMAddr *addr = new CMAddr(rawAddr, NUM_SET_BITS, NUM_BLOCK_BITS,
+                              itype, tid);
 
-    if (op == 'R') {
-      dprintf("READ on thread %d!\n", tid);
-    }
-    else if (op == 'W') {
-      dprintf("WRITE on thread %d!\n", tid);
-    }
+    // if (op == 'R') {
+    // }
+    // else if (op == 'W') {
+    // }
+
+    test->addToTest(addr);
   }
 
-  // Clean up
   fclose(traceFile);
-
-  return 0;
 }

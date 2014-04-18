@@ -7,11 +7,12 @@
 #include "debug.h"
 
 CMTest::CMTest() {
-  dprintf("Initializing CMTest...\n");
+  // dprintf("Initializing CMTest...\n");
 }
 
 CMTest::~CMTest() {
-  dprintf("Freeing CMTest...\n");
+  // dprintf("Freeing CMTest...\n");
+  addrs.clear();
 }
 
 void CMTest::addToTest(CMAddr *addr) {

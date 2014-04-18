@@ -10,7 +10,7 @@
 #include "modules/CMAddr.h"
 
 CMCache::CMCache(int s, int E) {
-  dprintf("Initializing CMCache...\n");
+  // dprintf("Initializing CMCache...\n")
 
   int S = 1 << s;
 
@@ -22,7 +22,17 @@ CMCache::CMCache(int s, int E) {
 
 CMCache::~CMCache() {
   sets.clear();
-  dprintf("Freeing CMCache...\n");
+  // dprintf("Freeing CMCache...\n");
+}
+
+//TODO: Proper implementation
+state_t CMCache::accessCache(CMAddr *addr) {
+  if (isInCache(addr)) {
+    return STYPE_HIT;
+  }
+
+  bringLineIntoCache(addr);
+  return STYPE_MISS;
 }
 
 bool CMCache::isInCache(CMAddr *addr) {
@@ -33,4 +43,16 @@ bool CMCache::isInCache(CMAddr *addr) {
 void CMCache::bringLineIntoCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->bringLineIntoSet(addr);
+}
+
+void CMCache::printSType(state_t stype) {
+  if (stype == STYPE_HIT) {
+    dprintf("HIT\n");
+  }
+  else if (stype == STYPE_MISS) {
+    dprintf("MISS\n");
+  }
+  else if (stype == STYPE_EVICT) {
+    dprintf("EVICT\n");
+  }
 }
