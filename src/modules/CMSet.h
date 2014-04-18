@@ -18,5 +18,7 @@ class CMSet {
     ~CMSet();
 
     bool isInSet(CMAddr *addr);
-    std::vector<CMLine *> lines;
+    void bringLineIntoSet(CMAddr *addr);
+
+    std::vector<CMLine*> lines;
 };

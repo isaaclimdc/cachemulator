@@ -28,3 +28,8 @@ bool CMCache::isInCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->isInSet(addr);
 }
+
+void CMCache::bringLineIntoCache(CMAddr *addr) {
+  CMSet *set = sets.at(addr->set_index);
+  return set->bringLineIntoSet(addr);
+}

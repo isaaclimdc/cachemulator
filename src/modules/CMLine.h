@@ -13,6 +13,8 @@ class CMLine {
     ~CMLine();
 
     bool isHit(CMAddr *addr);
+    void update(CMAddr *addr);
+
     unsigned tag;
     bool valid;
     bool dirty;

@@ -17,5 +17,7 @@ class CMCache {
     ~CMCache();
 
     bool isInCache(CMAddr *addr);
+    void bringLineIntoCache(CMAddr *addr);
+
     std::vector<CMSet*> sets;
 };

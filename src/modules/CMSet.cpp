@@ -14,15 +14,39 @@ CMSet::CMSet(int E) : _E(E) {
   }
 }
 
+
 CMSet::~CMSet() {
   lines.clear();
-  dprintf("Freeing CMSet...\n");
+  dprintf("Freei CMSet...\n");
 }
 
 bool CMSet::isInSet(CMAddr *addr) {
-  for (int i = 0; i < _E; i++) {
-    if (lines.at(i)->isHit(addr))
+  std::vector<CMLine*>::iterator it;
+  for (it = lines.begin(); it != lines.end(); ++it) {
+    CMLine *line = *it;
+    if (line->isHit(addr))
       return true;
   }
   return false;
+}
+
+void CMSet::bringLineIntoSet(CMAddr *addr) {
+  if (isInSet(addr)) {
+    throw;
+  }
+
+  std::vector<CMLine*>::iterator it;
+  int oldestAge = 0;
+  CMLine *oldest = *lines.begin();
+  for (it = lines.begin(); it != lines.end(); ++it) {
+    CMLine *line = *it;
+    if (!line->valid) {
+      line->update(addr);
+      return;
+    } else if (line->age > oldestAge) {
+      oldestAge = line->age;
+      oldest = line;
+    }
+  }
+  oldest->update(addr);
 }
