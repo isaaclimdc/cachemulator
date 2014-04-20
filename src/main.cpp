@@ -25,7 +25,7 @@ void parseTraceFile(char *filePath, CMTest *test);
 /* Function definitions */
 
 int main(int argc, char **argv) {
-  char *filePath;
+  char *filePath = NULL;
 
   char c;
   while ((c = getopt(argc, argv, "t:")) != -1) {
