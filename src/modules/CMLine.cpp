@@ -17,8 +17,13 @@ CMLine::~CMLine() {
   // dprintf("Freeing CMLine...\n");
 }
 
-bool CMLine::isHit(CMAddr *addr) {
-  return (valid && (addr->tag == tag) );
+bool CMLine::isHit(CMAddr *addr, long long unsigned cacheAge) {
+  if (valid && (addr->tag == tag)) {
+    age = cacheAge;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void CMLine::update(CMAddr *addr) {

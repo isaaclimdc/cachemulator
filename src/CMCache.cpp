@@ -4,6 +4,8 @@
 
 #include "CMCache.h"
 #include <vector>
+#include <limits>
+#include <string>
 #include "modules/debug.h"
 #include "modules/CMSet.h"
 #include "modules/CMLine.h"
@@ -12,6 +14,7 @@
 CMCache::CMCache(int s, int E) {
   // dprintf("Initializing CMCache...\n")
 
+  cacheAge = 0;
   int S = 1 << s;
 
   for (int Si = 0; Si < S; Si++) {
@@ -27,6 +30,12 @@ CMCache::~CMCache() {
 
 //TODO: Proper implementation
 state_t CMCache::accessCache(CMAddr *addr) {
+  // tick the cache system time
+  cacheAge++;
+  if (cacheAge == std::numeric_limits<long long unsigned>::max()) {
+    throw std::string("SYSTEM IN CRITICAL STATE...GOING TO BREEAAAKKKKK!!!!");
+  }
+
   if (isInCache(addr)) {
     return STYPE_HIT;
   }
@@ -37,7 +46,7 @@ state_t CMCache::accessCache(CMAddr *addr) {
 
 bool CMCache::isInCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
-  return set->isInSet(addr);
+  return set->isInSet(addr, cacheAge);
 }
 
 void CMCache::bringLineIntoCache(CMAddr *addr) {

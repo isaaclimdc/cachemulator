@@ -16,7 +16,7 @@ class CMSet {
     CMSet(int E);
     ~CMSet();
 
-    bool isInSet(CMAddr *addr);
+    bool isInSet(CMAddr *addr, long long unsigned cacheAge);
     void bringLineIntoSet(CMAddr *addr);
 
     std::vector<CMLine*> lines;

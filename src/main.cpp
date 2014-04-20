@@ -14,9 +14,9 @@
 #include "modules/debug.h"
 
 #define MAX_TRACE_LINE_LENGTH 20
-#define NUM_SET_BITS 4
+#define NUM_SET_BITS 8
 #define NUM_LINES 2
-#define NUM_BLOCK_BITS 4  //TODO: Use proper numbers here
+#define NUM_BLOCK_BITS 8  //TODO: Use proper numbers here
 
 /* Function declarations */
 

@@ -20,18 +20,18 @@ CMSet::~CMSet() {
   // dprintf("Freeing CMSet...\n");
 }
 
-bool CMSet::isInSet(CMAddr *addr) {
+bool CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {
   std::vector<CMLine*>::iterator it;
   for (it = lines.begin(); it != lines.end(); ++it) {
     CMLine *line = *it;
-    if (line->isHit(addr))
+    if (line->isHit(addr, cacheAge))
       return true;
   }
   return false;
 }
 
 void CMSet::bringLineIntoSet(CMAddr *addr) {
-  if (isInSet(addr)) {
+  if (isInSet(addr, 0)) {
     throw;
   }
 
@@ -43,7 +43,7 @@ void CMSet::bringLineIntoSet(CMAddr *addr) {
     if (!line->valid) {
       line->update(addr);
       return;
-    } else if (line->age > oldestAge) {
+    } else if (line->age < oldestAge) {
       oldestAge = line->age;
       oldest = line;
     }

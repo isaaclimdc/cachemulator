@@ -13,7 +13,7 @@ class CMLine {
     CMLine();
     ~CMLine();
 
-    bool isHit(CMAddr *addr);
+    bool isHit(CMAddr *addr, long long unsigned cacheAge);
     void update(CMAddr *addr);
 
     unsigned tag;

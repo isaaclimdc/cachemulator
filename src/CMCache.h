@@ -26,6 +26,7 @@ class CMCache {
     bool isInCache(CMAddr *addr);
     void bringLineIntoCache(CMAddr *addr);
     void printSType(state_t stype);
+    long long unsigned cacheAge;
 
     std::vector<CMSet*> sets;
 };
