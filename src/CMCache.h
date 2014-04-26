@@ -24,7 +24,7 @@ class CMCache {
 
     state_t accessCache(CMAddr *addr);
     bool isInCache(CMAddr *addr);
-    void bringLineIntoCache(CMAddr *addr);
+    bool bringLineIntoCache(CMAddr *addr);
     void printSType(state_t stype);
     long long unsigned cacheAge;
 

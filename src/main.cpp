@@ -38,6 +38,11 @@ int main(int argc, char **argv) {
     }
   }
 
+  if (filePath == NULL) {
+    printf("Usage: %s [-t <trace file>]\n", argv[0]);
+    exit(1);
+  }
+
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 

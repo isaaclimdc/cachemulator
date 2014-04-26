@@ -12,8 +12,6 @@
 #include "modules/CMAddr.h"
 
 CMCache::CMCache(int s, int E) {
-  // dprintf("Initializing CMCache...\n")
-
   cacheAge = 0;
   int S = 1 << s;
 
@@ -25,10 +23,8 @@ CMCache::CMCache(int s, int E) {
 
 CMCache::~CMCache() {
   sets.clear();
-  // dprintf("Freeing CMCache...\n");
 }
 
-//TODO: Proper implementation
 state_t CMCache::accessCache(CMAddr *addr) {
   // tick the cache system time
   cacheAge++;
@@ -40,8 +36,8 @@ state_t CMCache::accessCache(CMAddr *addr) {
     return STYPE_HIT;
   }
 
-  bringLineIntoCache(addr);
-  return STYPE_MISS;
+  bool foundSpace = bringLineIntoCache(addr);
+  return foundSpace ? STYPE_MISS : STYPE_EVICT;
 }
 
 bool CMCache::isInCache(CMAddr *addr) {
@@ -49,7 +45,8 @@ bool CMCache::isInCache(CMAddr *addr) {
   return set->isInSet(addr, cacheAge);
 }
 
-void CMCache::bringLineIntoCache(CMAddr *addr) {
+// Returns a MISS or EVICT for that line
+bool CMCache::bringLineIntoCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->bringLineIntoSet(addr);
 }
