@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <getopt.h>
 
-#include "CMCache.h"
+#include "modules/CMCache.h"
 #include "modules/CMSet.h"
 #include "modules/CMAddr.h"
 #include "modules/CMLine.h"

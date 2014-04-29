@@ -6,10 +6,10 @@
 #include <vector>
 #include <limits>
 #include <string>
-#include "modules/debug.h"
-#include "modules/CMSet.h"
-#include "modules/CMLine.h"
-#include "modules/CMAddr.h"
+#include "debug.h"
+#include "CMSet.h"
+#include "CMLine.h"
+#include "CMAddr.h"
 
 CMCache::CMCache(int s, int E) {
   cacheAge = 0;
