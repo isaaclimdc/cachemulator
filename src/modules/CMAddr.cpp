@@ -6,9 +6,7 @@
 #include "debug.h"
 
 CMAddr::CMAddr(long long unsigned raw_addr, int s, int b,
-               inst_t _itype, size_t _tid) {
-  // dprintf("Initializing CMAddr...\n");
-
+               inst_t _itype, size_t _pid) {
   unsigned s_mask = (1 << s) - 1;
   unsigned b_mask = (1 << b) - 1;
 
@@ -18,14 +16,13 @@ CMAddr::CMAddr(long long unsigned raw_addr, int s, int b,
   raw = raw_addr;
 
   itype = _itype;
-  tid = _tid;
+  pid = _pid;
 }
 
 CMAddr::~CMAddr() {
-  // dprintf("Freeing CMAddr...\n");
 }
 
 void CMAddr::printAddr() {
   char type = itype == ITYPE_READ ? 'R' : 'W';
-  dprintf("%c at 0x%llx on thread %d\n", type, raw, tid);
+  dprintf("%c at 0x%llx on proc %d\n", type, raw, pid);
 }

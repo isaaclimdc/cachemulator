@@ -16,7 +16,7 @@ class CMAddr {
 
   public:
     CMAddr(long long unsigned raw_addr, int s, int b,
-           inst_t _itype, size_t _tid);
+           inst_t _itype, size_t _pid);
     ~CMAddr();
 
     void printAddr();
@@ -27,5 +27,5 @@ class CMAddr {
     long long unsigned raw;
 
     inst_t itype; //TODO: Should these be here or in CMInst?
-    size_t tid;
+    size_t pid;
 };

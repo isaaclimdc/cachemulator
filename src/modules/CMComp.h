@@ -4,10 +4,20 @@
 
 #pragma once
 
+#include <vector>
+
+class CMProc;
+class CMTest;
+
 class CMComp {
   private:
 
   public:
-    CMComp();
+    CMComp(int P);
     ~CMComp();
+
+    void tick();
+    void distrbTrace(CMTest *test);
+
+    std::vector<CMProc*> procs;
 };
