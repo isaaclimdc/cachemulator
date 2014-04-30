@@ -12,12 +12,12 @@
 #include "CMAddr.h"
 #include "CMGlobals.h"
 
-CMCache::CMCache(int s, int E) {
+CMCache::CMCache() {
   cacheAge = 0;
-  int S = 1 << s;
+  int S = 1 << CONFIG->num_set_bits;
 
   for (int Si = 0; Si < S; Si++) {
-    CMSet *set = new CMSet(E);
+    CMSet *set = new CMSet();
     sets.push_back(set);
   }
 }

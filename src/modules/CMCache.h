@@ -19,7 +19,7 @@ class CMCache {
   private:
 
   public:
-    CMCache(int s, int E);
+    CMCache();
     ~CMCache();
 
     state_t accessCache(CMAddr *addr);

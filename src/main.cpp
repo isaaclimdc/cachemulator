@@ -46,8 +46,9 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  // initalize config
+  // Initialize a config singleton
   CONFIG = new CMConfig();
+
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 
@@ -61,16 +62,7 @@ int main(int argc, char **argv) {
     comp->tick(verif);
   }
 
-  // CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);
-
-  // std::vector<CMAddr*>::iterator it;
-  // std::vector<CMAddr*> addrs = test->addrs;
-  // for (it = addrs.begin(); it != addrs.end(); ++it) {
-  //   CMAddr *addr = *it;
-  //   addr->printAddr();
-  //   state_t stype = cache->accessCache(addr);
-  //   cache->printSType(stype);
-  // }
+  // Check verif here
 
   delete test;
   delete comp;

@@ -13,7 +13,7 @@ class CMSet {
   private:
 
   public:
-    CMSet(int E);
+    CMSet();
     ~CMSet();
 
     bool isInSet(CMAddr *addr, long long unsigned cacheAge);

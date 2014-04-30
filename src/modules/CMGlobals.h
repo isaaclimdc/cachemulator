@@ -5,4 +5,5 @@
 #pragma once
 
 #include "CMConfig.h"
+
 extern CMConfig *CONFIG;

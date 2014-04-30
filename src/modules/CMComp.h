@@ -17,7 +17,7 @@ class CMComp {
     CMComp(int P);
     ~CMComp();
 
-    void tick(std::vector<state_t> verif);
+    void tick(std::vector<state_t> &verif);
     void distrbTrace(CMTest *test);
 
     std::vector<CMProc*> procs;

@@ -18,7 +18,7 @@ CMComp::CMComp(int P) {
 CMComp::~CMComp() {
 }
 
-void CMComp::tick(std::vector<state_t> verif) {
+void CMComp::tick(std::vector<state_t> &verif) {
   // Tick bus
 
   // Tick each processor
@@ -35,6 +35,6 @@ void CMComp::distrbTrace(CMTest *test) {
   for (it = addrs.begin(); it != addrs.end(); ++it) {
     CMAddr *addr = *it;
     CMProc *proc = procs.at(addr->pid);
-    proc->jobs.push_back(addr);
+    proc->jobs.push(addr);
   }
 }

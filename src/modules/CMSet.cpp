@@ -6,8 +6,11 @@
 #include "CMAddr.h"
 #include "CMLine.h"
 #include "debug.h"
+#include "CMGlobals.h"
 
-CMSet::CMSet(int E) {
+CMSet::CMSet() {
+  int E = CONFIG->num_lines;
+
   for (int Ei = 0; Ei < E; Ei++) {
     CMLine *line = new CMLine();
     lines.push_back(line);
