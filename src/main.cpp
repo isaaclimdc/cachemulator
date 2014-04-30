@@ -49,11 +49,11 @@ int main(int argc, char **argv) {
   parseTraceFile(filePath, test);
 
   CMComp *comp = new CMComp(NUM_PROCS);
-  comp.distrbTrace(test);
+  comp->distrbTrace(test);
 
   while (true) {
     // Tick computer
-    comp.tick();
+    comp->tick();
   }
 
   // CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);

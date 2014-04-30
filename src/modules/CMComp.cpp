@@ -23,10 +23,9 @@ void CMComp::tick() {
 
   // Tick each processor
   std::vector<CMProc*>::iterator it;
-  std::vector<CMProc*> addrs = test->addrs;
-  for (it = addrs.begin(); it != addrs.end(); ++it) {
+  for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
-    proc.tick();
+    proc->tick();
   }
 }
 
