@@ -4,9 +4,11 @@
 
 #include "CMAddr.h"
 #include "debug.h"
+#include "CMGlobals.h"
 
-CMAddr::CMAddr(long long unsigned raw_addr, int s, int b,
-               inst_t _itype, size_t _pid) {
+CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid) {
+  int s = CONFIG->num_set_bits;
+  int b = CONFIG->num_block_bits;
   unsigned s_mask = (1 << s) - 1;
   unsigned b_mask = (1 << b) - 1;
 

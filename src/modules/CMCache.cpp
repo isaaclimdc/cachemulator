@@ -10,6 +10,7 @@
 #include "CMSet.h"
 #include "CMLine.h"
 #include "CMAddr.h"
+#include "CMGlobals.h"
 
 CMCache::CMCache(int s, int E) {
   cacheAge = 0;

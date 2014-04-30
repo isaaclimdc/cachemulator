@@ -13,6 +13,7 @@
 #include "modules/CMLine.h"
 #include "modules/CMTest.h"
 #include "modules/debug.h"
+#include "modules/CMGlobals.h"
 
 #define MAX_TRACE_LINE_LENGTH 20
 #define NUM_PROCS 4
@@ -45,6 +46,8 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  // initalize config
+  CONFIG = new CMConfig();
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 
@@ -91,8 +94,7 @@ void parseTraceFile(char *filePath, CMTest *test) {
     sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &tid);
 
     inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
-    CMAddr *addr = new CMAddr(rawAddr, NUM_SET_BITS, NUM_BLOCK_BITS,
-                              itype, tid);
+    CMAddr *addr = new CMAddr(rawAddr, itype, tid);
 
     // if (op == 'R') {
     // }
