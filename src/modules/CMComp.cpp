@@ -40,15 +40,13 @@ void CMComp::distrbTrace(CMTest *test) {
 }
 
 bool CMComp::hasOutstandingJobs() {
-  bool hasJobs = false;
-
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
-    if (proc->jobs.size() > 0) {
-      hasJobs = true;
+    if (!proc->isDone) {
+      return true;
     }
   }
 
-  return hasJobs;
+  return false;
 }

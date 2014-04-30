@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <algorithm>
 
 #include "modules/CMComp.h"
 #include "modules/CMCache.h"
@@ -18,6 +19,7 @@
 /* Function declarations */
 
 void parseTraceFile(char *filePath, CMTest *test);
+bool verifyOutput(char *filePath, std::vector<state_t> verif);
 
 /* Function definitions */
 
@@ -57,7 +59,12 @@ int main(int argc, char **argv) {
   }
 
   // Check verif here
-  dprintf("VERIF SIZE: %d\n", verif.size());
+  if (verifyOutput(filePath, verif)) {
+    dprintf("TEST PASSED!\n");
+  }
+  else {
+    dprintf("TEST FAILED...\n");
+  }
 
   delete test;
   delete comp;
@@ -87,13 +94,14 @@ void parseTraceFile(char *filePath, CMTest *test) {
     inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
     CMAddr *addr = new CMAddr(rawAddr, itype, tid);
 
-    // if (op == 'R') {
-    // }
-    // else if (op == 'W') {
-    // }
-
     test->addToTest(addr);
   }
 
   fclose(traceFile);
+}
+
+bool verifyOutput(char *filePath, std::vector<state_t> verif) {
+  static const state_t arr[] = {STYPE_MISS, STYPE_MISS, STYPE_MISS, STYPE_HIT, STYPE_HIT, STYPE_MISS, STYPE_HIT, STYPE_HIT, STYPE_HIT, STYPE_HIT};
+  std::vector<state_t> check(arr, arr + verif.size());
+  return std::equal(verif.begin(), verif.begin() + verif.size(), check.begin());
 }

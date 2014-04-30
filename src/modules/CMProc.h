@@ -22,4 +22,5 @@ class CMProc {
     void tick(std::vector<state_t> &verif);
 
     std::queue<CMAddr*> jobs;
+    bool isDone;
 };
