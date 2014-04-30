@@ -51,9 +51,11 @@ int main(int argc, char **argv) {
   CMComp *comp = new CMComp(NUM_PROCS);
   comp->distrbTrace(test);
 
+  std::vector<state_t> verif;
+
   while (true) {
     // Tick computer
-    comp->tick();
+    comp->tick(verif);
   }
 
   // CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);
@@ -68,7 +70,7 @@ int main(int argc, char **argv) {
   // }
 
   delete test;
-  // delete cache;
+  delete comp;
 
   return 0;
 }

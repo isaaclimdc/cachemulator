@@ -5,8 +5,10 @@
 #pragma once
 
 #include <vector>
+#include "CMCache.h"
 
 class CMAddr;
+class CMCache;
 
 class CMProc {
   private:
@@ -15,7 +17,7 @@ class CMProc {
     CMProc();
     ~CMProc();
 
-    void tick();
+    void tick(std::vector<state_t> verif);
 
     std::vector<CMAddr*> jobs;
 };
