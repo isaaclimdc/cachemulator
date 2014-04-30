@@ -38,3 +38,17 @@ void CMComp::distrbTrace(CMTest *test) {
     proc->jobs.push(addr);
   }
 }
+
+bool CMComp::hasOutstandingJobs() {
+  bool hasJobs = false;
+
+  std::vector<CMProc*>::iterator it;
+  for (it = procs.begin(); it != procs.end(); ++it) {
+    CMProc *proc = *it;
+    if (proc->jobs.size() > 0) {
+      hasJobs = true;
+    }
+  }
+
+  return hasJobs;
+}

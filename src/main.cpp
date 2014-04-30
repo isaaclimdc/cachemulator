@@ -51,12 +51,13 @@ int main(int argc, char **argv) {
 
   std::vector<state_t> verif;
 
-  while (true) {
+  while (comp->hasOutstandingJobs()) {
     // Tick computer
     comp->tick(verif);
   }
 
   // Check verif here
+  dprintf("VERIF SIZE: %d\n", verif.size());
 
   delete test;
   delete comp;

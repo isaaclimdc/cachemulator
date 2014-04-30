@@ -19,6 +19,7 @@ class CMComp {
 
     void tick(std::vector<state_t> &verif);
     void distrbTrace(CMTest *test);
+    bool hasOutstandingJobs();
 
     std::vector<CMProc*> procs;
 };
