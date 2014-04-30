@@ -3,4 +3,5 @@
  */
 
 #include "CMGlobals.h"
-CONFIG = new CMConfig();
+
+CMConfig *CONFIG = new CMConfig();

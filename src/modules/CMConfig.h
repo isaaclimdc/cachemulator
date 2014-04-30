@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <vector>
-
 class CMConfig {
   private:
 

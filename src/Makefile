@@ -3,7 +3,7 @@
 
 MD = modules
 OD = objs
-OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMConfig.o $(OD)/debug.o
+OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMGlobals.o $(OD)/CMConfig.o $(OD)/debug.o
 
 CC = g++
 DEBUG = -g
@@ -41,6 +41,9 @@ $(OD)/CMAddr.o: $(MD)/CMAddr.h $(MD)/CMAddr.cpp $(MD)/debug.h $(MD)/CMGlobals.h 
 
 $(OD)/CMTest.o: $(MD)/CMTest.h $(MD)/CMTest.cpp $(MD)/CMAddr.h $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMTest.cpp -o $@
+
+$(OD)/CMGlobals.o: $(MD)/CMGlobals.h $(MD)/CMGlobals.cpp
+	$(CC) $(CFLAGS) $(MD)/CMGlobals.cpp -o $@
 
 $(OD)/CMConfig.o: $(MD)/CMConfig.h $(MD)/CMConfig.cpp
 	$(CC) $(CFLAGS) $(MD)/CMConfig.cpp -o $@

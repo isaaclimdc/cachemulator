@@ -15,12 +15,6 @@
 #include "modules/debug.h"
 #include "modules/CMGlobals.h"
 
-#define MAX_TRACE_LINE_LENGTH 20
-#define NUM_PROCS 4
-#define NUM_SET_BITS 8
-#define NUM_LINES 2
-#define NUM_BLOCK_BITS 8  //TODO: Use proper numbers here
-
 /* Function declarations */
 
 void parseTraceFile(char *filePath, CMTest *test);
@@ -46,13 +40,13 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  // Initialize a config singleton
+  // Initialize a config singleton before doing anything else
   CONFIG = new CMConfig();
 
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 
-  CMComp *comp = new CMComp(NUM_PROCS);
+  CMComp *comp = new CMComp(CONFIG->num_procs);
   comp->distrbTrace(test);
 
   std::vector<state_t> verif;
@@ -78,9 +72,11 @@ void parseTraceFile(char *filePath, CMTest *test) {
     exit(1);
   }
 
-  char traceLine[MAX_TRACE_LINE_LENGTH];
+  int max_len = CONFIG->max_trace_line_length;
 
-  while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
+  char traceLine[max_len];
+
+  while (fgets(traceLine, max_len, traceFile) != NULL) {
     char op;
     long long unsigned rawAddr;
     size_t tid;

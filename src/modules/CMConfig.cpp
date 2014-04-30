@@ -3,6 +3,7 @@
  */
 
 #include "CMConfig.h"
+
 CMConfig::CMConfig() {
   // TODO: parse a file to do all these settings
   num_procs = 4;
