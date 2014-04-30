@@ -10,3 +10,7 @@ CMProc::CMProc() {
 
 CMProc::~CMProc() {
 }
+
+void CMProc::tick() {
+
+}

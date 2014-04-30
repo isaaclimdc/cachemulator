@@ -15,5 +15,7 @@ class CMProc {
     CMProc();
     ~CMProc();
 
+    void tick();
+
     std::vector<CMAddr*> jobs;
 };

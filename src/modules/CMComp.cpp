@@ -18,6 +18,18 @@ CMComp::CMComp(int P) {
 CMComp::~CMComp() {
 }
 
+void CMComp::tick() {
+  // Tick bus
+
+  // Tick each processor
+  std::vector<CMProc*>::iterator it;
+  std::vector<CMProc*> addrs = test->addrs;
+  for (it = addrs.begin(); it != addrs.end(); ++it) {
+    CMProc *proc = *it;
+    proc.tick();
+  }
+}
+
 void CMComp::distrbTrace(CMTest *test) {
   std::vector<CMAddr*>::iterator it;
   std::vector<CMAddr*> addrs = test->addrs;

@@ -19,7 +19,7 @@ class CMAddr {
            inst_t _itype, size_t _pid);
     ~CMAddr();
 
-    void printAddr();
+    void print();
 
     unsigned tag;
     unsigned set_index;

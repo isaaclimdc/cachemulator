@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <getopt.h>
 
+#include "modules/CMComp.h"
 #include "modules/CMCache.h"
 #include "modules/CMSet.h"
 #include "modules/CMAddr.h"
@@ -14,6 +15,7 @@
 #include "modules/debug.h"
 
 #define MAX_TRACE_LINE_LENGTH 20
+#define NUM_PROCS 4
 #define NUM_SET_BITS 8
 #define NUM_LINES 2
 #define NUM_BLOCK_BITS 8  //TODO: Use proper numbers here
@@ -46,19 +48,27 @@ int main(int argc, char **argv) {
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 
-  CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);
+  CMComp *comp = new CMComp(NUM_PROCS);
+  comp.distrbTrace(test);
 
-  std::vector<CMAddr*>::iterator it;
-  std::vector<CMAddr*> addrs = test->addrs;
-  for (it = addrs.begin(); it != addrs.end(); ++it) {
-    CMAddr *addr = *it;
-    addr->printAddr();
-    state_t stype = cache->accessCache(addr);
-    cache->printSType(stype);
+  while (true) {
+    // Tick computer
+    comp.tick();
   }
 
+  // CMCache *cache = new CMCache(NUM_SET_BITS, NUM_LINES);
+
+  // std::vector<CMAddr*>::iterator it;
+  // std::vector<CMAddr*> addrs = test->addrs;
+  // for (it = addrs.begin(); it != addrs.end(); ++it) {
+  //   CMAddr *addr = *it;
+  //   addr->printAddr();
+  //   state_t stype = cache->accessCache(addr);
+  //   cache->printSType(stype);
+  // }
+
   delete test;
-  delete cache;
+  // delete cache;
 
   return 0;
 }
