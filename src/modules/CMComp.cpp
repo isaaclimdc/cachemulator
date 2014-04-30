@@ -18,14 +18,14 @@ CMComp::CMComp(int P) {
 CMComp::~CMComp() {
 }
 
-void CMComp::tick() {
+void CMComp::tick(std::vector<state_t> verif) {
   // Tick bus
 
   // Tick each processor
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
-    proc->tick();
+    proc->tick(verif);
   }
 }
 
