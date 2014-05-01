@@ -4,6 +4,12 @@
 
 #pragma once
 
+enum state_t {
+  STYPE_SHARED,
+  STYPE_MODIFIED,
+  STYPE_INVALID
+};
+
 class CMAddr;
 
 class CMLine {
@@ -20,4 +26,5 @@ class CMLine {
     bool valid;
     bool dirty;
     int age;
+    state_t stype;
 };

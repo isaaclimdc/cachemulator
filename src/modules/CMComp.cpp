@@ -58,7 +58,7 @@ void CMComp::distrbTrace(CMTest *test) {
   for (it = addrs.begin(); it != addrs.end(); ++it) {
     CMAddr *addr = *it;
     CMProc *proc = procs.at(addr->pid);
-    proc->jobs.push(addr);
+    proc->requests.push(addr);
   }
 }
 

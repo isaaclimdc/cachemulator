@@ -29,4 +29,11 @@ void CMLine::update(CMAddr *addr) {
   valid = true;
   dirty = false;
   age = 0;
+
+  if (addr->itype == ITYPE_READ) {
+    stype = STYPE_SHARED;
+  }
+  else if (addr->itype == ITYPE_WRITE) {
+    stype = STYPE_MODIFIED;
+  }
 }

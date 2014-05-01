@@ -4,8 +4,10 @@
 
 #pragma once
 
-#define JOB_TYPE_DELAY 0
-#define JOB_TYPE_WAIT_UNTIL 1
+enum job_t {
+  JTYPE_DELAY,
+  JTYPE_WAIT_UNTIL
+};
 
 class CMJob {
   private:
@@ -14,12 +16,12 @@ class CMJob {
     CMJob();
     ~CMJob();
 
-    void newJob(int _jobType, int _delayTime, CMJob *_requestingJob);
+    void update(job_t _jobType, int _delayTime, CMJob *_requestingJob);
     void tick();
     void signalDone();
 
     bool jobDone;
-    int jobType;
+    job_t jobType;
     int remainingTicks;
     CMJob *requestingJob;
 };

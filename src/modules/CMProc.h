@@ -26,6 +26,6 @@ class CMProc {
     void tick(std::vector<res_t> &verif);
 
     CMBusShout *pendingBusShout;
-    std::queue<CMAddr*> jobs;
+    std::queue<CMAddr*> requests;
     bool isDone;
 };
