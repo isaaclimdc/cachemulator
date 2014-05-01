@@ -24,7 +24,11 @@ CMCache::CMCache() {
 }
 
 CMCache::~CMCache() {
-  sets.clear();
+  std::vector<CMSet*>::iterator it;
+  for (it = sets.begin(); it != sets.end(); ++it) {
+    CMSet *set = *it;
+    delete set;
+  }
 }
 
 state_t CMCache::accessCache(CMAddr *addr) {

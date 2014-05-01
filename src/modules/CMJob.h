@@ -9,16 +9,17 @@
 
 class CMJob {
   private:
-    int remainingTicks;
-    int jobType;
-    CMJob *requestingJob;
 
   public:
-    CMJob(int jobType, int delayTicks, CMJob *requestingJob);
+    CMJob();
     ~CMJob();
 
+    void newJob(int _jobType, int _delayTime, CMJob *_requestingJob);
     void tick();
     void signalDone();
 
     bool jobDone;
+    int jobType;
+    int remainingTicks;
+    CMJob *requestingJob;
 };

@@ -18,7 +18,11 @@ CMSet::CMSet() {
 }
 
 CMSet::~CMSet() {
-  lines.clear();
+  std::vector<CMLine*>::iterator it;
+  for (it = lines.begin(); it != lines.end(); ++it) {
+    CMLine *line = *it;
+    delete line;
+  }
 }
 
 bool CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {

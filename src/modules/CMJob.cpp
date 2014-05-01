@@ -4,14 +4,18 @@
 
 #include "CMJob.h"
 
-CMJob::CMJob(int jobType, int delayTime, CMJob *requestingJob) {
-  jobType = jobType;
-  remainingTicks = delayTime;
-  jobDone = (remainingTicks == 0);
-  requestingJob = requestingJob;
+CMJob::CMJob() {
+  jobDone = true;
 }
 
 CMJob::~CMJob() {
+}
+
+void CMJob::newJob(int _jobType, int _delayTime, CMJob *_requestingJob) {
+  jobType = _jobType;
+  remainingTicks = _delayTime;
+  jobDone = (remainingTicks == 0);
+  requestingJob = _requestingJob;
 }
 
 void CMJob::tick() {

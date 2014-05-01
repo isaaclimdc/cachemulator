@@ -13,3 +13,6 @@ CMConfig::CMConfig() {
   num_block_bits = 8;
   cache_hit_delay = 4;
 }
+
+CMConfig::~CMConfig() {
+}

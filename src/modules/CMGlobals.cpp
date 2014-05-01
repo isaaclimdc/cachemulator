@@ -3,8 +3,7 @@
  */
 
 #include "CMGlobals.h"
-#include <malloc.h>
+#include <cstddef>
 
-CMConfig *CONFIG = new CMConfig();
-bool *BUSRequests = (bool*)calloc(CONFIG->num_procs, sizeof(bool));
-bool *BUSGranted = (bool*)calloc(CONFIG->num_procs, sizeof(bool));
+CMConfig *CONFIG = NULL;
+bool *BUSRequests = NULL;

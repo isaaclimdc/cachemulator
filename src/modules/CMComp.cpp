@@ -23,6 +23,13 @@ CMComp::CMComp(int P) {
 }
 
 CMComp::~CMComp() {
+  std::vector<CMProc*>::iterator it;
+  for (it = procs.begin(); it != procs.end(); ++it) {
+    CMProc *proc = *it;
+    delete proc;
+  }
+
+  delete busCtrlr;
 }
 
 void CMComp::tick(std::vector<state_t> &verif) {

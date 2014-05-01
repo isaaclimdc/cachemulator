@@ -7,12 +7,14 @@
 #include "debug.h"
 
 CMTest::CMTest() {
-  // dprintf("Initializing CMTest...\n");
 }
 
 CMTest::~CMTest() {
-  // dprintf("Freeing CMTest...\n");
-  addrs.clear();
+  std::vector<CMAddr*>::iterator it;
+  for (it = addrs.begin(); it != addrs.end(); ++it) {
+    CMAddr *addr = *it;
+    delete addr;
+  }
 }
 
 void CMTest::addToTest(CMAddr *addr) {

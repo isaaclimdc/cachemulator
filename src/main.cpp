@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 
   // Initialize a config singleton before doing anything else
   CONFIG = new CMConfig();
+  BUSRequests = new bool[CONFIG->num_procs];
 
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
@@ -60,6 +61,7 @@ int main(int argc, char **argv) {
     comp->tick(verif);
   }
 
+#ifdef DEBUG
   // Check verif here
   if (verifyOutput(filePath, verif)) {
     dprintf("TEST PASSED!\n");
@@ -67,9 +69,12 @@ int main(int argc, char **argv) {
   else {
     dprintf("TEST FAILED...\n");
   }
+#endif
 
   delete test;
   delete comp;
+  delete CONFIG;
+  delete[] BUSRequests;
 
   return 0;
 }
@@ -125,9 +130,10 @@ bool verifyOutput(std::string filePath, std::vector<state_t> verif) {
     check.push_back(STYPE_EVICT);
     check.push_back(STYPE_EVICT);
   }
-  else {
+
+  if (check.size() != verif.size()) {
     return false;
   }
 
-  return std::equal(verif.begin(), verif.begin() + verif.size(), check.begin());
+  return std::equal(verif.begin(), verif.begin()+verif.size(), check.begin());
 }

@@ -12,15 +12,17 @@
 #include "CMBusShout.h"
 #include <string>
 
-CMProc::CMProc(int procId) {
+CMProc::CMProc(int _procId) {
   cache = new CMCache();
   isDone = false;
-  currentJob = NULL;
+  currentJob = new CMJob();
   pendingBusShout = NULL;
-  procId = procId;
+  procId = _procId;
 }
 
 CMProc::~CMProc() {
+  delete cache;
+  delete currentJob;
 }
 
 void CMProc::tick(std::vector<state_t> &verif) {
@@ -30,52 +32,46 @@ void CMProc::tick(std::vector<state_t> &verif) {
     return;
   }
 
-  if (currentJob == NULL || currentJob->jobDone) {
-
-    // free old job
-    if (currentJob != NULL) {
-      delete currentJob;
-    }
-
-    // fetch next memory access
+  if (currentJob->jobDone) {
     CMAddr *nextJob = jobs.front();
     nextJob->printAddr();
     state_t stype = cache->accessCache(nextJob);
 
     // create current job or busRequest based on cache access result
     switch (stype) {
-    case STYPE_HIT:
-      currentJob = new CMJob(JOB_TYPE_DELAY, CONFIG->cache_hit_delay, NULL);
-      break;
+      case STYPE_HIT:
+        currentJob->newJob(JOB_TYPE_DELAY, CONFIG->cache_hit_delay, NULL);
+        break;
 
-    // miss and evict both need bus shouts
-    case STYPE_MISS:
-    case STYPE_EVICT:
-      BUSRequests[procId] = true;
-      currentJob = new CMJob(JOB_TYPE_WAIT_UNTIL, -1, NULL);
+      // miss and evict both need bus shouts
+      case STYPE_MISS:
+      case STYPE_EVICT:
+        BUSRequests[procId] = true;
+        currentJob->newJob(JOB_TYPE_WAIT_UNTIL, -1, NULL);
 
-      // decide shout type based on R/W
-      shout_t shoutType;
-      if (nextJob->itype == ITYPE_READ) {
-        shoutType = BusRd;
-      } else if (nextJob->itype == ITYPE_WRITE) {
-        shoutType = BusRdX;
-      } else {
-        throw std::string("Unsupported ITYPE!!!");
-      }
+        // decide shout type based on R/W
+        shout_t shoutType;
+        if (nextJob->itype == ITYPE_READ) {
+          shoutType = BusRd;
+        } else if (nextJob->itype == ITYPE_WRITE) {
+          shoutType = BusRdX;
+        } else {
+          throw std::string("Unsupported ITYPE!!!");
+        }
 
-      pendingBusShout = new CMBusShout(nextJob, shoutType, currentJob);
-      break;
-    default:
-      break;
+        pendingBusShout = new CMBusShout(nextJob, shoutType, currentJob);
+        break;
+      default:
+        break;
     }
+
     jobs.pop();
 
     // for testing
-    #ifdef DEBUG
+#ifdef DEBUG
     verif.push_back(stype);
     cache->printSType(stype);
-    #endif
+#endif
 
   } else {
       currentJob->tick();
