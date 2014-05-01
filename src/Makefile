@@ -3,7 +3,7 @@
 
 MD = modules
 OD = objs
-OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMGlobals.o $(OD)/CMConfig.o $(OD)/CMJob.o $(OD)/debug.o
+OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMGlobals.o $(OD)/CMConfig.o $(OD)/CMJob.o $(OD)/CMBusShout.o $(OD)/CMBusCtrlr.o $(OD)/debug.o
 
 CC = g++
 DEBUG = -g
@@ -21,10 +21,10 @@ cache: dirs $(OBJS)
 $(OD)/main.o: main.cpp $(MD)/CMCache.h $(MD)/CMSet.h $(MD)/CMAddr.h $(MD)/CMLine.h $(MD)/CMTest.h $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) main.cpp -o $@
 
-$(OD)/CMComp.o: $(MD)/CMComp.h $(MD)/CMComp.cpp $(MD)/CMProc.h $(MD)/CMGlobals.h $(MD)/debug.h
+$(OD)/CMComp.o: $(MD)/CMComp.h $(MD)/CMComp.cpp $(MD)/CMProc.h $(MD)/CMGlobals.h $(MD)/debug.h $(MD)/CMBusCtrlr.h
 	$(CC) $(CFLAGS) $(MD)/CMComp.cpp -o $@
 
-$(OD)/CMProc.o: $(MD)/CMProc.h $(MD)/CMProc.cpp $(MD)/CMCache.h $(MD)/CMGlobals.h $(MD)/CMJob.h $(MD)/debug.h
+$(OD)/CMProc.o: $(MD)/CMProc.h $(MD)/CMProc.cpp $(MD)/CMCache.h $(MD)/CMGlobals.h $(MD)/CMJob.h $(MD)/debug.h $(MD)/CMBusShout.h
 	$(CC) $(CFLAGS) $(MD)/CMProc.cpp -o $@
 
 $(OD)/CMCache.o: $(MD)/CMCache.h $(MD)/CMCache.cpp $(MD)/CMSet.h $(MD)/CMLine.h $(MD)/CMGlobals.h $(MD)/debug.h
@@ -50,6 +50,12 @@ $(OD)/CMConfig.o: $(MD)/CMConfig.h $(MD)/CMConfig.cpp
 
 $(OD)/CMJob.o: $(MD)/CMJob.h $(MD)/CMJob.cpp
 	$(CC) $(CFLAGS) $(MD)/CMJob.cpp -o $@
+
+$(OD)/CMBusShout.o: $(MD)/CMBusShout.h $(MD)/CMBusShout.cpp
+	$(CC) $(CFLAGS) $(MD)/CMBusShout.cpp -o $@
+
+$(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp
+	$(CC) $(CFLAGS) $(MD)/CMBusCtrlr.cpp -o $@
 
 $(OD)/debug.o:
 	$(CC) $(CFLAGS) $(MD)/debug.cpp -o $@

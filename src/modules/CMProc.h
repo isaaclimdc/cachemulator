@@ -11,6 +11,7 @@
 class CMAddr;
 class CMCache;
 class CMJob;
+class CMBusShout;
 
 class CMProc {
   private:
@@ -24,6 +25,7 @@ class CMProc {
 
     void tick(std::vector<state_t> &verif);
 
+    CMBusShout *pendingBusShout;
     std::queue<CMAddr*> jobs;
     bool isDone;
 };

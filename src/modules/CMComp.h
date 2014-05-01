@@ -8,6 +8,7 @@
 #include "CMCache.h"
 
 class CMProc;
+class CMBusCtrlr;
 class CMTest;
 
 class CMComp {
@@ -22,4 +23,5 @@ class CMComp {
     bool hasOutstandingJobs();
 
     std::vector<CMProc*> procs;
+    CMBusCtrlr *busCtrlr;
 };

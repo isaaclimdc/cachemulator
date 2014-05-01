@@ -7,26 +7,42 @@
 #include "CMAddr.h"
 #include "CMProc.h"
 #include "CMTest.h"
+#include "CMBusCtrlr.h"
+#include <string>
 
 CMComp::CMComp(int P) {
+
+  // get new processors
   for (int i=0; i<P; i++) {
     CMProc *proc = new CMProc(i);
     procs.push_back(proc);
   }
+
+  // get a bus controller
+  busCtrlr = new CMBusCtrlr();
 }
 
 CMComp::~CMComp() {
 }
 
 void CMComp::tick(std::vector<state_t> &verif) {
-  // Tick bus
-
   // Tick each processor
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
     proc->tick(verif);
   }
+  // Tick bus
+  int shoutingProc = busCtrlr->tick();
+
+  dprintf("Proc %d got access to Bus!!!", shoutingProc);
+  // The processor Granted access make request
+  CMBusShout *outstandingReq = procs.at(shoutingProc)->pendingBusShout;
+  if (outstandingReq == NULL) {
+    throw std::string("Granted access to a non-requesting proc???");
+  }
+
+  // TODO: tick Memory
 }
 
 void CMComp::distrbTrace(CMTest *test) {
