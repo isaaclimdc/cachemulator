@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <algorithm>
+#include <cstring>
+#include <iostream>
 
 #include "modules/CMComp.h"
 #include "modules/CMCache.h"
@@ -18,13 +20,13 @@
 
 /* Function declarations */
 
-void parseTraceFile(char *filePath, CMTest *test);
-bool verifyOutput(char *filePath, std::vector<state_t> verif);
+void parseTraceFile(std::string filePath, CMTest *test);
+bool verifyOutput(std::string filePath, std::vector<state_t> verif);
 
 /* Function definitions */
 
 int main(int argc, char **argv) {
-  char *filePath = NULL;
+  std::string filePath;
 
   char c;
   while ((c = getopt(argc, argv, "t:")) != -1) {
@@ -37,7 +39,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  if (filePath == NULL) {
+  if (filePath.empty()) {
     printf("Usage: %s [-t <trace file>]\n", argv[0]);
     exit(1);
   }
@@ -72,8 +74,8 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void parseTraceFile(char *filePath, CMTest *test) {
-  FILE *traceFile = fopen(filePath, "r");
+void parseTraceFile(std::string filePath, CMTest *test) {
+  FILE *traceFile = fopen(filePath.c_str(), "r");
 
   if (traceFile == NULL) {
     perror("Error opening file.");
@@ -100,8 +102,32 @@ void parseTraceFile(char *filePath, CMTest *test) {
   fclose(traceFile);
 }
 
-bool verifyOutput(char *filePath, std::vector<state_t> verif) {
-  static const state_t arr[] = {STYPE_MISS, STYPE_MISS, STYPE_MISS, STYPE_HIT, STYPE_HIT, STYPE_MISS, STYPE_HIT, STYPE_HIT, STYPE_HIT, STYPE_HIT};
-  std::vector<state_t> check(arr, arr + verif.size());
+bool verifyOutput(std::string filePath, std::vector<state_t> verif) {
+  std::vector<state_t> check;
+
+  if (filePath.compare("traces/easy1.trace") == 0) {
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_HIT);
+  }
+  else if (filePath.compare("traces/evict1.trace") == 0) {
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_MISS);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_HIT);
+    check.push_back(STYPE_EVICT);
+    check.push_back(STYPE_EVICT);
+  }
+  else {
+    return false;
+  }
+
   return std::equal(verif.begin(), verif.begin() + verif.size(), check.begin());
 }
