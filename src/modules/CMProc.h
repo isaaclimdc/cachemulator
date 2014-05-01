@@ -23,7 +23,7 @@ class CMProc {
     CMProc(int procId);
     ~CMProc();
 
-    void tick(std::vector<state_t> &verif);
+    void tick(std::vector<res_t> &verif);
 
     CMBusShout *pendingBusShout;
     std::queue<CMAddr*> jobs;

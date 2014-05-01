@@ -6,10 +6,10 @@
 
 #include <vector>
 
-enum state_t {
-  STYPE_HIT,
-  STYPE_MISS,
-  STYPE_EVICT
+enum res_t {
+  RTYPE_HIT,
+  RTYPE_MISS,
+  RTYPE_EVICT
 };
 
 class CMSet;
@@ -22,10 +22,10 @@ class CMCache {
     CMCache();
     ~CMCache();
 
-    state_t accessCache(CMAddr *addr);
+    res_t accessCache(CMAddr *addr);
     bool isInCache(CMAddr *addr);
     bool bringLineIntoCache(CMAddr *addr);
-    void printSType(state_t stype);
+    void printRType(res_t rtype);
     long long unsigned cacheAge;
 
     std::vector<CMSet*> sets;

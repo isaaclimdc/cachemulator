@@ -31,7 +31,7 @@ CMCache::~CMCache() {
   }
 }
 
-state_t CMCache::accessCache(CMAddr *addr) {
+res_t CMCache::accessCache(CMAddr *addr) {
   // tick the cache system time
   cacheAge++;
   if (cacheAge == std::numeric_limits<long long unsigned>::max()) {
@@ -39,11 +39,11 @@ state_t CMCache::accessCache(CMAddr *addr) {
   }
 
   if (isInCache(addr)) {
-    return STYPE_HIT;
+    return RTYPE_HIT;
   }
 
   bool foundSpace = bringLineIntoCache(addr);
-  return foundSpace ? STYPE_MISS : STYPE_EVICT;
+  return foundSpace ? RTYPE_MISS : RTYPE_EVICT;
 }
 
 bool CMCache::isInCache(CMAddr *addr) {
@@ -51,20 +51,19 @@ bool CMCache::isInCache(CMAddr *addr) {
   return set->isInSet(addr, cacheAge);
 }
 
-// Returns a MISS or EVICT for that line
 bool CMCache::bringLineIntoCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->bringLineIntoSet(addr);
 }
 
-void CMCache::printSType(state_t stype) {
-  if (stype == STYPE_HIT) {
+void CMCache::printRType(res_t rtype) {
+  if (rtype == RTYPE_HIT) {
     dprintf("HIT\n");
   }
-  else if (stype == STYPE_MISS) {
+  else if (rtype == RTYPE_MISS) {
     dprintf("MISS\n");
   }
-  else if (stype == STYPE_EVICT) {
+  else if (rtype == RTYPE_EVICT) {
     dprintf("EVICT\n");
   }
 }

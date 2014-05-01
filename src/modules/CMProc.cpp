@@ -25,7 +25,7 @@ CMProc::~CMProc() {
   delete currentJob;
 }
 
-void CMProc::tick(std::vector<state_t> &verif) {
+void CMProc::tick(std::vector<res_t> &verif) {
   // TODO: Need to take into account idle cycles
   if (jobs.size() == 0) {
     isDone = true;
@@ -35,17 +35,17 @@ void CMProc::tick(std::vector<state_t> &verif) {
   if (currentJob->jobDone) {
     CMAddr *nextJob = jobs.front();
     nextJob->printAddr();
-    state_t stype = cache->accessCache(nextJob);
+    res_t rtype = cache->accessCache(nextJob);
 
     // create current job or busRequest based on cache access result
-    switch (stype) {
-      case STYPE_HIT:
+    switch (rtype) {
+      case RTYPE_HIT:
         currentJob->newJob(JOB_TYPE_DELAY, CONFIG->cache_hit_delay, NULL);
         break;
 
       // miss and evict both need bus shouts
-      case STYPE_MISS:
-      case STYPE_EVICT:
+      case RTYPE_MISS:
+      case RTYPE_EVICT:
         BUSRequests[procId] = true;
         currentJob->newJob(JOB_TYPE_WAIT_UNTIL, -1, NULL);
 
@@ -69,8 +69,8 @@ void CMProc::tick(std::vector<state_t> &verif) {
 
     // for testing
 #ifdef DEBUG
-    verif.push_back(stype);
-    cache->printSType(stype);
+    verif.push_back(rtype);
+    cache->printRType(rtype);
 #endif
 
   } else {

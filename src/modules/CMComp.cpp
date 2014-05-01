@@ -32,7 +32,7 @@ CMComp::~CMComp() {
   delete busCtrlr;
 }
 
-void CMComp::tick(std::vector<state_t> &verif) {
+void CMComp::tick(std::vector<res_t> &verif) {
   // Tick each processor
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {

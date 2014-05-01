@@ -21,7 +21,7 @@
 /* Function declarations */
 
 void parseTraceFile(std::string filePath, CMTest *test);
-bool verifyOutput(std::string filePath, std::vector<state_t> verif);
+bool verifyOutput(std::string filePath, std::vector<res_t> verif);
 
 /* Function definitions */
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
   // Initialize a config singleton before doing anything else
   CONFIG = new CMConfig();
-  BUSRequests = new bool[CONFIG->num_procs];
+  BUSRequests = new bool[CONFIG->num_procs]();
 
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
   CMComp *comp = new CMComp(CONFIG->num_procs);
   comp->distrbTrace(test);
 
-  std::vector<state_t> verif;
+  std::vector<res_t> verif;
 
   while (comp->hasOutstandingJobs()) {
     // Tick computer
@@ -107,28 +107,28 @@ void parseTraceFile(std::string filePath, CMTest *test) {
   fclose(traceFile);
 }
 
-bool verifyOutput(std::string filePath, std::vector<state_t> verif) {
-  std::vector<state_t> check;
+bool verifyOutput(std::string filePath, std::vector<res_t> verif) {
+  std::vector<res_t> check;
 
   if (filePath.compare("traces/easy1.trace") == 0) {
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_HIT);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
   }
   else if (filePath.compare("traces/evict1.trace") == 0) {
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_MISS);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_HIT);
-    check.push_back(STYPE_EVICT);
-    check.push_back(STYPE_EVICT);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_EVICT);
+    check.push_back(RTYPE_EVICT);
   }
 
   if (check.size() != verif.size()) {
