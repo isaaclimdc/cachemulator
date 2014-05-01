@@ -5,3 +5,4 @@
 #include "CMGlobals.h"
 
 CMConfig *CONFIG = new CMConfig();
+bool *BUSRequests = new bool[CONFIG->num_procs];

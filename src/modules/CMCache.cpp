@@ -6,6 +6,7 @@
 #include <vector>
 #include <limits>
 #include <string>
+#include <stdio.h>
 #include "debug.h"
 #include "CMSet.h"
 #include "CMLine.h"

@@ -10,7 +10,7 @@
 
 CMComp::CMComp(int P) {
   for (int i=0; i<P; i++) {
-    CMProc *proc = new CMProc();
+    CMProc *proc = new CMProc(i);
     procs.push_back(proc);
   }
 }

@@ -10,13 +10,16 @@
 
 class CMAddr;
 class CMCache;
+class CMJob;
 
 class CMProc {
   private:
     CMCache *cache;
+    CMJob *currentJob;
+    int procId;
 
   public:
-    CMProc();
+    CMProc(int procId);
     ~CMProc();
 
     void tick(std::vector<state_t> &verif);

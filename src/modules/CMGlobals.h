@@ -7,3 +7,4 @@
 #include "CMConfig.h"
 
 extern CMConfig *CONFIG;
+extern bool *BUSRequests;

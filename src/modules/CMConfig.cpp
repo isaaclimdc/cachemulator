@@ -11,4 +11,5 @@ CMConfig::CMConfig() {
   num_set_bits = 8;
   num_lines = 2;
   num_block_bits = 8;
+  cache_hit_delay = 4;
 }
