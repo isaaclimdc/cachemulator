@@ -16,4 +16,5 @@ class CMConfig {
     int numLines;
     int numBlockBits;
     int cacheHitDelay;
+    int memDelay;
 };

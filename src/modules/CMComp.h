@@ -10,6 +10,7 @@
 class CMProc;
 class CMBusCtrlr;
 class CMTest;
+class CMMemCtrlr;
 
 class CMComp {
   private:
@@ -24,4 +25,5 @@ class CMComp {
 
     std::vector<CMProc*> procs;
     CMBusCtrlr *busCtrlr;
+    CMMemCtrlr *memCtrlr;
 };

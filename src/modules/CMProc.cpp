@@ -49,7 +49,6 @@ void CMProc::tick(std::vector<res_t> &verif) {
       case RTYPE_MISS:
       case RTYPE_EVICT: {
         BUSRequests[pid] = true;  // flag the request vector
-        currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
 
         // decide shout type based on R/W
         shout_t shoutType = BusRd;
@@ -83,12 +82,12 @@ void CMProc::tick(std::vector<res_t> &verif) {
     currentJob->tick();
   }
 
-  printBUSRequests();
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout) {
   // A request is pending on this processor; don't respond
   if (BUSRequests[pid]) {
+    currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     return;
   }
 

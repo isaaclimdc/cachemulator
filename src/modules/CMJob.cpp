@@ -4,6 +4,7 @@
 
 #include "CMJob.h"
 #include <string>
+#include "debug.h"
 
 CMJob::CMJob() {
   jobDone = true;
@@ -20,24 +21,26 @@ void CMJob::update(job_t _jobType, int _delayTime, CMJob *_requestingJob) {
 }
 
 void CMJob::tick() {
-  switch (jobType) {
-    case JTYPE_DELAY:
-      remainingTicks--;
-      if (remainingTicks == 0) {
-        setDone();
-      }
-      break;
+  if (!jobDone) {
+    switch (jobType) {
+      case JTYPE_DELAY:
+        remainingTicks--;
+        if (remainingTicks == 0) {
+          setDone();
+        }
+        break;
 
-    case JTYPE_WAIT_UNTIL:
-      break;
+      case JTYPE_WAIT_UNTIL:
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
 }
 
 void CMJob::signalDone() {
-  jobDone = true;
+  setDone();
 }
 
 void CMJob::setDone() {

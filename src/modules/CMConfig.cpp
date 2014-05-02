@@ -11,6 +11,7 @@ CMConfig::CMConfig() {
   numLines = 2;
   numBlockBits = 8;
   cacheHitDelay = 4;
+  memDelay = 100;
 }
 
 CMConfig::~CMConfig() {

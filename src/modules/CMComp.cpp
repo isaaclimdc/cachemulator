@@ -9,6 +9,7 @@
 #include "CMTest.h"
 #include "CMBusCtrlr.h"
 #include "CMGlobals.h"
+#include "CMMemCtrlr.h"
 #include <string>
 
 CMComp::CMComp(int P) {
@@ -20,6 +21,9 @@ CMComp::CMComp(int P) {
 
   // Get a bus controller
   busCtrlr = new CMBusCtrlr();
+
+  // Get a mem controller
+  memCtrlr = new CMMemCtrlr();
 }
 
 CMComp::~CMComp() {
@@ -47,7 +51,7 @@ void CMComp::tick(std::vector<res_t> &verif) {
   if (shoutPid  < (size_t)CONFIG->numProcs) {
     // Granted access on this cycle
     // The winning processor makes its request
-    dprintf("Proc %d wins access to the bus!\n", shoutPid);
+    dprintf("Proc %lu wins access to the bus!\n", shoutPid);
 
     CMProc *grantedProc = procs.at(shoutPid);
     CMBusShout *outstandingShout = grantedProc->pendingShout;
@@ -60,9 +64,15 @@ void CMComp::tick(std::vector<res_t> &verif) {
     }
     // set the bus to wait until our transaction is done
     busCtrlr->setJob(grantedProc->currentJob);
+    // TODO: This only works if there is only one
+    // outstanding request in the system!!!
+    // If more, busCtrlr have to create different jobs
+    memCtrlr->addJob(busCtrlr->currentJob);
   }
 
   // TODO: Tick memory
+  memCtrlr->tick();
+
 }
 
 void CMComp::distrbTrace(CMTest *test) {
