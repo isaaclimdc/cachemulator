@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include "CMLine.h"
 
 enum res_t {
   RTYPE_HIT,
@@ -13,6 +14,7 @@ enum res_t {
 };
 
 class CMSet;
+class CMLine;
 class CMAddr;
 
 class CMCache {
@@ -23,10 +25,19 @@ class CMCache {
     ~CMCache();
 
     res_t accessCache(CMAddr *addr);
-    bool isInCache(CMAddr *addr);
-    bool bringLineIntoCache(CMAddr *addr);
-    void printRType(res_t rtype);
-    long long unsigned cacheAge;
 
+    // If addr is in the cache, return the line it is in,
+    // otherwise return NULL.
+    CMLine *isInCache(CMAddr *addr);
+
+    bool bringLineIntoCache(CMAddr *addr);
+
+    // If addr is in the cache, return the state of the line,
+    // otherwise return NULL.
+    state_t getLineState(CMAddr *addr);
+
+    void printRType(res_t rtype);
+
+    long long unsigned cacheAge;
     std::vector<CMSet*> sets;
 };

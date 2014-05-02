@@ -4,13 +4,15 @@
 
 #pragma once
 
+#include <cstring>
+
 class CMBusCtrlr {
   private:
-    int round_robin;
+    int roundRobin;
 
   public:
     CMBusCtrlr();
     ~CMBusCtrlr();
 
-    int tick();
+    size_t tick();
 };

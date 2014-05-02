@@ -19,6 +19,7 @@ class CMAddr {
     ~CMAddr();
 
     void printAddr();
+    CMAddr *copy();
 
     unsigned tag;
     unsigned set_index;

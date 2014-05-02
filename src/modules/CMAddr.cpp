@@ -7,8 +7,8 @@
 #include "CMGlobals.h"
 
 CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid) {
-  int s = CONFIG->num_set_bits;
-  int b = CONFIG->num_block_bits;
+  int s = CONFIG->numSetBits;
+  int b = CONFIG->numBlockBits;
   unsigned s_mask = (1 << s) - 1;
   unsigned b_mask = (1 << b) - 1;
 
@@ -19,6 +19,10 @@ CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid) {
 
   itype = _itype;
   pid = _pid;
+}
+
+CMAddr *CMAddr::copy() {
+  return new CMAddr(raw, itype, pid);
 }
 
 CMAddr::~CMAddr() {

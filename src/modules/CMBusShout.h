@@ -4,9 +4,6 @@
 
 #pragma once
 
-class CMAddr;
-class CMJob;
-
 enum shout_t {
   BusRd,
   BusRdX,
@@ -14,14 +11,17 @@ enum shout_t {
   BusUpg
 };
 
+class CMAddr;
+class CMJob;
+
 class CMBusShout {
   private:
-    CMAddr *addr;
-    shout_t shoutType;
     CMJob *requestingJob;
 
   public:
-    CMBusShout(CMAddr *addr, shout_t shoutType, CMJob *requestingJob);
+    CMBusShout(CMAddr *_addr, shout_t _shoutType, CMJob *_requestingJob);
     ~CMBusShout();
 
+    CMAddr *addr;
+    shout_t shoutType;
 };

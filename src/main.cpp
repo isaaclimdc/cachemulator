@@ -18,6 +18,8 @@
 #include "modules/debug.h"
 #include "modules/CMGlobals.h"
 
+#define MAX_TRACE_LINE_LENGTH 20
+
 /* Function declarations */
 
 void parseTraceFile(std::string filePath, CMTest *test);
@@ -44,14 +46,15 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
-  // Initialize a config singleton before doing anything else
+  // Initialize the global singletons
   CONFIG = new CMConfig();
-  BUSRequests = new bool[CONFIG->num_procs]();
+  BUSRequests = new bool[CONFIG->numProcs]();
 
+  // Parse traces
   CMTest *test = new CMTest();
   parseTraceFile(filePath, test);
 
-  CMComp *comp = new CMComp(CONFIG->num_procs);
+  CMComp *comp = new CMComp(CONFIG->numProcs);
   comp->distrbTrace(test);
 
   std::vector<res_t> verif;
@@ -87,11 +90,9 @@ void parseTraceFile(std::string filePath, CMTest *test) {
     exit(1);
   }
 
-  int max_len = CONFIG->max_trace_line_length;
+  char traceLine[MAX_TRACE_LINE_LENGTH];
 
-  char traceLine[max_len];
-
-  while (fgets(traceLine, max_len, traceFile) != NULL) {
+  while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
     char op;
     long long unsigned rawAddr;
     size_t tid;

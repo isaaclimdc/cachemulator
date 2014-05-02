@@ -4,29 +4,31 @@
 
 #include "CMBusCtrlr.h"
 #include "CMGlobals.h"
-#include <string.h>
 #include "debug.h"
 
 CMBusCtrlr::CMBusCtrlr() {
-  round_robin = 0;
+  roundRobin = 0;
 }
 
 CMBusCtrlr::~CMBusCtrlr() {
 }
 
-int CMBusCtrlr::tick() {
-  // use round robin arbitration
+// Use round robin arbitration to grant access. Returns pid
+// of the 'winning' processor.
+size_t CMBusCtrlr::tick() {
+  size_t arb = 0;
 
-  int arb = 0;
-  for (int i=round_robin; i<round_robin + CONFIG->num_procs; ++i) {
-    arb = i % CONFIG->num_procs;
+  int P = CONFIG->numProcs;
+
+  for (int i=roundRobin; i<roundRobin + P; ++i) {
+    arb = i % P;
     if (BUSRequests[arb]) {
       break;
     }
   }
-  round_robin = (round_robin + 1) % CONFIG->num_procs;
 
-  memset(BUSRequests, 0, sizeof(bool) * CONFIG->num_procs);
+  roundRobin = (roundRobin + 1) % P;
+  memset(BUSRequests, 0, sizeof(bool) * P);
 
   return arb;
 }

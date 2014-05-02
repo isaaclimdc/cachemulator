@@ -8,4 +8,3 @@
 
 extern CMConfig *CONFIG;
 extern bool *BUSRequests;
-extern bool *BUSGranted;

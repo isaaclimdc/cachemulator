@@ -15,7 +15,7 @@
 
 CMCache::CMCache() {
   cacheAge = 0;
-  int S = 1 << CONFIG->num_set_bits;
+  int S = 1 << CONFIG->numSetBits;
 
   for (int Si = 0; Si < S; Si++) {
     CMSet *set = new CMSet();
@@ -38,7 +38,7 @@ res_t CMCache::accessCache(CMAddr *addr) {
     throw std::string("SYSTEM IN CRITICAL STATE...GOING TO BREEAAAKKKKK!!!!");
   }
 
-  if (isInCache(addr)) {
+  if (isInCache(addr) != NULL) {
     return RTYPE_HIT;
   }
 
@@ -46,7 +46,9 @@ res_t CMCache::accessCache(CMAddr *addr) {
   return foundSpace ? RTYPE_MISS : RTYPE_EVICT;
 }
 
-bool CMCache::isInCache(CMAddr *addr) {
+// If addr is in the cache, return the line it is in,
+// otherwise return NULL.
+CMLine *CMCache::isInCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->isInSet(addr, cacheAge);
 }
@@ -54,6 +56,13 @@ bool CMCache::isInCache(CMAddr *addr) {
 bool CMCache::bringLineIntoCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
   return set->bringLineIntoSet(addr);
+}
+
+// If addr is in the cache, return the state of the line,
+// otherwise return NULL.
+state_t CMCache::getLineState(CMAddr *addr) {
+  CMLine *line = isInCache(addr);
+  return (line == NULL) ? STYPE_NONE : line->stype;
 }
 
 void CMCache::printRType(res_t rtype) {

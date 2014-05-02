@@ -17,15 +17,16 @@ class CMProc {
   private:
     CMCache *cache;
     CMJob *currentJob;
-    int procId;
+    int pid;
 
   public:
-    CMProc(int procId);
+    CMProc(int _pid);
     ~CMProc();
 
     void tick(std::vector<res_t> &verif);
+    void respondToBusShout(CMBusShout *shout);
 
-    CMBusShout *pendingBusShout;
+    CMBusShout *pendingShout;
     std::queue<CMAddr*> requests;
     bool isDone;
 };

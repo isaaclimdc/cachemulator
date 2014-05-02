@@ -10,6 +10,8 @@ CMLine::CMLine() {
   valid = false;
   dirty = false;
   age = 0;
+  stype = STYPE_NONE;
+  tag = 0;
 }
 
 CMLine::~CMLine() {

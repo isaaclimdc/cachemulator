@@ -5,19 +5,21 @@
 #include "CMProc.h"
 #include "debug.h"
 #include <stdio.h>
+#include <string>
+
 #include "CMAddr.h"
 #include "CMCache.h"
+#include "CMLine.h"
 #include "CMJob.h"
 #include "CMGlobals.h"
 #include "CMBusShout.h"
-#include <string>
 
-CMProc::CMProc(int _procId) {
+CMProc::CMProc(int _pid) {
   cache = new CMCache();
   isDone = false;
   currentJob = new CMJob();
-  pendingBusShout = NULL;
-  procId = _procId;
+  pendingShout = NULL;
+  pid = _pid;
 }
 
 CMProc::~CMProc() {
@@ -40,13 +42,13 @@ void CMProc::tick(std::vector<res_t> &verif) {
     // create current job or busRequest based on cache access result
     switch (rtype) {
       case RTYPE_HIT:
-        currentJob->update(JTYPE_DELAY, CONFIG->cache_hit_delay, NULL);
+        currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
         break;
 
       // miss and evict both need bus shouts
       case RTYPE_MISS:
-      case RTYPE_EVICT:
-        BUSRequests[procId] = true;  // flag the request vector
+      case RTYPE_EVICT: {
+        BUSRequests[pid] = true;  // flag the request vector
         currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
 
         // decide shout type based on R/W
@@ -59,8 +61,12 @@ void CMProc::tick(std::vector<res_t> &verif) {
           throw std::string("Unsupported ITYPE!!!");
         }
 
-        pendingBusShout = new CMBusShout(newReq, shoutType, currentJob);
+        // Save this shout until request granted by bus arbiter
+        // Copy newReq because pop destroys it
+        CMAddr *newReqCopy = newReq->copy();
+        pendingShout = new CMBusShout(newReqCopy, shoutType, currentJob);
         break;
+      }
       default:
         break;
     }
@@ -75,5 +81,44 @@ void CMProc::tick(std::vector<res_t> &verif) {
   }
   else {
     currentJob->tick();
+  }
+
+  printBUSRequests();
+}
+
+void CMProc::respondToBusShout(CMBusShout *shout) {
+  // A request is pending on this processor; don't respond
+  if (BUSRequests[pid]) {
+    return;
+  }
+
+  state_t stype = cache->getLineState(shout->addr);
+  switch (stype) {
+    case STYPE_SHARED: {
+      switch (shout->shoutType) {
+        case BusRd:
+          // Other proc just reading. Stay in SHARED state.
+          break;
+        case BusRdX:
+          // Other proc has intention to write. INVALIDATE, but don't flush.
+          break;
+        default:
+          break;
+      }
+    }
+    case STYPE_MODIFIED: {
+      switch (shout->shoutType) {
+        case BusRd:
+          // Other proc reading. Move to SHARED state and FLUSH.
+          break;
+        case BusRdX:
+          // Other proc has intention to write. INVALIDATE and FLUSH.
+          break;
+        default:
+          break;
+      }
+    }
+    default:
+      break;
   }
 }

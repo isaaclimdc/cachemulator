@@ -11,14 +11,13 @@
 #include <string>
 
 CMComp::CMComp(int P) {
-
-  // get new processors
+  // Get new processors, i is their pid
   for (int i=0; i<P; i++) {
     CMProc *proc = new CMProc(i);
     procs.push_back(proc);
   }
 
-  // get a bus controller
+  // Get a bus controller
   busCtrlr = new CMBusCtrlr();
 }
 
@@ -39,17 +38,26 @@ void CMComp::tick(std::vector<res_t> &verif) {
     CMProc *proc = *it;
     proc->tick(verif);
   }
-  // Tick bus
-  int shoutingProc = busCtrlr->tick();
 
-  dprintf("Proc %d got access to Bus!!!", shoutingProc);
-  // The processor Granted access make request
-  CMBusShout *outstandingReq = procs.at(shoutingProc)->pendingBusShout;
-  if (outstandingReq == NULL) {
-    throw std::string("Granted access to a non-requesting proc???");
+  // Tick bus, returns pid of the 'winning' processor
+  size_t shoutPid = busCtrlr->tick();
+
+  dprintf("Proc %d wins access to the bus!\n", shoutPid);
+
+  // The winning processor makes its request
+  CMBusShout *outstandingShout = procs.at(shoutPid)->pendingShout;
+  if (outstandingShout == NULL) {
+    dprintf("Granted access to a non-requesting proc!!!\n");
+    throw;
   }
 
-  // TODO: tick Memory
+  // Other processors respond
+  for (it = procs.begin(); it != procs.end(); ++it) {
+    CMProc *proc = *it;
+    proc->respondToBusShout(outstandingShout);
+  }
+
+  // TODO: Tick memory
 }
 
 void CMComp::distrbTrace(CMTest *test) {

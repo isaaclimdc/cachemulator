@@ -7,3 +7,4 @@
 #define DEBUG 1
 
 void dprintf(const char *format, ...);
+void printBUSRequests();

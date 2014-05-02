@@ -6,12 +6,11 @@
 
 CMConfig::CMConfig() {
   // TODO: parse a file to do all these settings
-  num_procs = 4;
-  max_trace_line_length = 20;
-  num_set_bits = 8;
-  num_lines = 2;
-  num_block_bits = 8;
-  cache_hit_delay = 4;
+  numProcs = 4;
+  numSetBits = 8;
+  numLines = 2;
+  numBlockBits = 8;
+  cacheHitDelay = 4;
 }
 
 CMConfig::~CMConfig() {

@@ -5,9 +5,9 @@
 #pragma once
 
 enum state_t {
+  STYPE_NONE,  // Not in this cache
   STYPE_SHARED,
-  STYPE_MODIFIED,
-  STYPE_INVALID
+  STYPE_MODIFIED
 };
 
 class CMAddr;

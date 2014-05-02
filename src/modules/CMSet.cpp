@@ -9,7 +9,7 @@
 #include "CMGlobals.h"
 
 CMSet::CMSet() {
-  int E = CONFIG->num_lines;
+  int E = CONFIG->numLines;
 
   for (int Ei = 0; Ei < E; Ei++) {
     CMLine *line = new CMLine();
@@ -25,14 +25,16 @@ CMSet::~CMSet() {
   }
 }
 
-bool CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {
+// If addr is in the set, return the line it is in,
+// otherwise return NULL.
+CMLine *CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {
   std::vector<CMLine*>::iterator it;
   for (it = lines.begin(); it != lines.end(); ++it) {
     CMLine *line = *it;
     if (line->isHit(addr, cacheAge))
-      return true;
+      return line;
   }
-  return false;
+  return NULL;
 }
 
 // Returns true if it finds a place to insert the new line,
