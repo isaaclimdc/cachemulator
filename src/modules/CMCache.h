@@ -36,6 +36,8 @@ class CMCache {
     // otherwise return NULL.
     state_t getLineState(CMAddr *addr);
 
+    void invalidate(CMAddr *addr);
+
     void printRType(res_t rtype);
 
     long long unsigned cacheAge;

@@ -101,6 +101,7 @@ void CMProc::respondToBusShout(CMBusShout *shout) {
           break;
         case BusRdX:
           // Other proc has intention to write. INVALIDATE, but don't flush.
+          cache->invalidate(shout->addr);
           break;
         default:
           break;
