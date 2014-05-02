@@ -34,9 +34,8 @@ CMCache::~CMCache() {
 res_t CMCache::accessCache(CMAddr *addr) {
   // tick the cache system time
   cacheAge++;
-  if (cacheAge == std::numeric_limits<long long unsigned>::max()) {
-    throw std::string("SYSTEM IN CRITICAL STATE...GOING TO BREEAAAKKKKK!!!!");
-  }
+  dassert(cacheAge != std::numeric_limits<long long unsigned>::max(),
+          "Cache age about to overflow!");
 
   if (isInCache(addr) != NULL) {
     return RTYPE_HIT;

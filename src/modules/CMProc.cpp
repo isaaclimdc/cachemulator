@@ -52,13 +52,13 @@ void CMProc::tick(std::vector<res_t> &verif) {
         currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
 
         // decide shout type based on R/W
-        shout_t shoutType;
+        shout_t shoutType = BusRd;
         if (newReq->itype == ITYPE_READ) {
           shoutType = BusRd;
         } else if (newReq->itype == ITYPE_WRITE) {
           shoutType = BusRdX;
         } else {
-          throw std::string("Unsupported ITYPE!!!");
+          dassert(false, "Unsupported itype!");
         }
 
         // Save this shout until request granted by bus arbiter
@@ -83,7 +83,7 @@ void CMProc::tick(std::vector<res_t> &verif) {
     currentJob->tick();
   }
 
-  //printBUSRequests();
+  printBUSRequests();
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout) {

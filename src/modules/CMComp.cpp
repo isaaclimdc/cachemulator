@@ -51,10 +51,8 @@ void CMComp::tick(std::vector<res_t> &verif) {
 
     CMProc *grantedProc = procs.at(shoutPid);
     CMBusShout *outstandingShout = grantedProc->pendingShout;
-    if (outstandingShout == NULL) {
-      dprintf("Granted access to a non-requesting proc!!!\n");
-      throw;
-    }
+    dassert(outstandingShout != NULL, "Granted access to a non-requesting proc!");
+
     // Other processors respond
     for (it = procs.begin(); it != procs.end(); ++it) {
       CMProc *proc = *it;
