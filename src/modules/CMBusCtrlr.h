@@ -6,6 +6,8 @@
 
 #include <cstring>
 
+class CMJob;
+
 class CMBusCtrlr {
   private:
     int roundRobin;
@@ -15,4 +17,6 @@ class CMBusCtrlr {
     ~CMBusCtrlr();
 
     size_t tick();
+    CMJob *currentJob;
+    void setJob(CMJob *respondToJob);
 };

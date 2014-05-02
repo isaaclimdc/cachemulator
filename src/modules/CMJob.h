@@ -19,6 +19,7 @@ class CMJob {
     void update(job_t _jobType, int _delayTime, CMJob *_requestingJob);
     void tick();
     void signalDone();
+    void setDone();
 
     bool jobDone;
     job_t jobType;

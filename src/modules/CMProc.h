@@ -16,7 +16,6 @@ class CMBusShout;
 class CMProc {
   private:
     CMCache *cache;
-    CMJob *currentJob;
     int pid;
 
   public:
@@ -29,4 +28,5 @@ class CMProc {
     CMBusShout *pendingShout;
     std::queue<CMAddr*> requests;
     bool isDone;
+    CMJob *currentJob;
 };

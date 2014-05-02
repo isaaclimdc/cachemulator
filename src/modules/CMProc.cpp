@@ -83,7 +83,7 @@ void CMProc::tick(std::vector<res_t> &verif) {
     currentJob->tick();
   }
 
-  printBUSRequests();
+  //printBUSRequests();
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout) {

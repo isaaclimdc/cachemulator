@@ -8,6 +8,7 @@
 #include "CMProc.h"
 #include "CMTest.h"
 #include "CMBusCtrlr.h"
+#include "CMGlobals.h"
 #include <string>
 
 CMComp::CMComp(int P) {
@@ -42,19 +43,25 @@ void CMComp::tick(std::vector<res_t> &verif) {
   // Tick bus, returns pid of the 'winning' processor
   size_t shoutPid = busCtrlr->tick();
 
-  dprintf("Proc %d wins access to the bus!\n", shoutPid);
 
-  // The winning processor makes its request
-  CMBusShout *outstandingShout = procs.at(shoutPid)->pendingShout;
-  if (outstandingShout == NULL) {
-    dprintf("Granted access to a non-requesting proc!!!\n");
-    throw;
-  }
+  if (shoutPid  < (size_t)CONFIG->numProcs) {
+    // Granted access on this cycle
+    // The winning processor makes its request
+    dprintf("Proc %d wins access to the bus!\n", shoutPid);
 
-  // Other processors respond
-  for (it = procs.begin(); it != procs.end(); ++it) {
-    CMProc *proc = *it;
-    proc->respondToBusShout(outstandingShout);
+    CMProc *grantedProc = procs.at(shoutPid);
+    CMBusShout *outstandingShout = grantedProc->pendingShout;
+    if (outstandingShout == NULL) {
+      dprintf("Granted access to a non-requesting proc!!!\n");
+      throw;
+    }
+    // Other processors respond
+    for (it = procs.begin(); it != procs.end(); ++it) {
+      CMProc *proc = *it;
+      proc->respondToBusShout(outstandingShout);
+    }
+    // set the bus to wait until our transaction is done
+    busCtrlr->setJob(grantedProc->currentJob);
   }
 
   // TODO: Tick memory

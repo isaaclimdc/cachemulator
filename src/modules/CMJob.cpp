@@ -3,6 +3,7 @@
  */
 
 #include "CMJob.h"
+#include <string>
 
 CMJob::CMJob() {
   jobDone = true;
@@ -22,11 +23,12 @@ void CMJob::tick() {
   switch (jobType) {
     case JTYPE_DELAY:
       remainingTicks--;
-      jobDone = (remainingTicks == 0);
+      if (remainingTicks == 0) {
+        setDone();
+      }
       break;
 
     case JTYPE_WAIT_UNTIL:
-      // do nothing
       break;
 
     default:
@@ -35,5 +37,12 @@ void CMJob::tick() {
 }
 
 void CMJob::signalDone() {
+  jobDone = true;
+}
+
+void CMJob::setDone() {
+  if (requestingJob != NULL) {
+    requestingJob->signalDone();
+  }
   jobDone = true;
 }

@@ -54,7 +54,7 @@ $(OD)/CMJob.o: $(MD)/CMJob.h $(MD)/CMJob.cpp
 $(OD)/CMBusShout.o: $(MD)/CMBusShout.h $(MD)/CMBusShout.cpp
 	$(CC) $(CFLAGS) $(MD)/CMBusShout.cpp -o $@
 
-$(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp
+$(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp $(MD)/CMJob.h
 	$(CC) $(CFLAGS) $(MD)/CMBusCtrlr.cpp -o $@
 
 $(OD)/debug.o:
