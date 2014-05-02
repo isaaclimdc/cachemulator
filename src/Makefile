@@ -42,22 +42,22 @@ $(OD)/CMAddr.o: $(MD)/CMAddr.h $(MD)/CMAddr.cpp $(MD)/debug.h $(MD)/CMGlobals.h 
 $(OD)/CMTest.o: $(MD)/CMTest.h $(MD)/CMTest.cpp $(MD)/CMAddr.h $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMTest.cpp -o $@
 
-$(OD)/CMGlobals.o: $(MD)/CMGlobals.h $(MD)/CMGlobals.cpp
+$(OD)/CMGlobals.o: $(MD)/CMGlobals.h $(MD)/CMGlobals.cpp $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMGlobals.cpp -o $@
 
-$(OD)/CMConfig.o: $(MD)/CMConfig.h $(MD)/CMConfig.cpp
+$(OD)/CMConfig.o: $(MD)/CMConfig.h $(MD)/CMConfig.cpp $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMConfig.cpp -o $@
 
-$(OD)/CMJob.o: $(MD)/CMJob.h $(MD)/CMJob.cpp
+$(OD)/CMJob.o: $(MD)/CMJob.h $(MD)/CMJob.cpp $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMJob.cpp -o $@
 
-$(OD)/CMBusShout.o: $(MD)/CMBusShout.h $(MD)/CMBusShout.cpp
+$(OD)/CMBusShout.o: $(MD)/CMBusShout.h $(MD)/CMBusShout.cpp $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMBusShout.cpp -o $@
 
-$(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp $(MD)/CMJob.h
+$(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMBusCtrlr.cpp -o $@
 
-$(OD)/debug.o:
+$(OD)/debug.o: $(MD)/debug.h $(MD)/debug.cpp
 	$(CC) $(CFLAGS) $(MD)/debug.cpp -o $@
 
 clean:
