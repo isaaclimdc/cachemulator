@@ -29,7 +29,7 @@ CMProc::~CMProc() {
 
 void CMProc::tick(std::vector<res_t> &verif) {
   // TODO: Need to take into account idle cycles
-  if (requests.size() == 0) {
+  if (requests.size() == 0 && currentJob->jobDone) {
     isDone = true;
     return;
   }

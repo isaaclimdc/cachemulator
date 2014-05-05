@@ -24,9 +24,12 @@ CMComp::CMComp(int P) {
 
   // Get a mem controller
   memCtrlr = new CMMemCtrlr();
+
+  totalTicks = 0;
 }
 
 CMComp::~CMComp() {
+  dprintf("totalTicksAre: %llu\n", totalTicks);
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
@@ -37,6 +40,7 @@ CMComp::~CMComp() {
 }
 
 void CMComp::tick(std::vector<res_t> &verif) {
+  totalTicks++;
   // Tick each processor
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
