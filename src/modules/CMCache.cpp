@@ -75,7 +75,7 @@ bool CMCache::bringLineIntoCache(CMAddr *addr) {
 // otherwise return NULL.
 state_t CMCache::getLineState(CMAddr *addr) {
   CMLine *line = getLine(addr);
-  return (line == NULL) ? STYPE_NONE : line->stype;
+  return (line == NULL) ? STYPE_INVALID : line->stype;
 }
 
 void CMCache::setLineState(CMAddr *addr, state_t setToState) {
@@ -87,7 +87,7 @@ void CMCache::setLineState(CMAddr *addr, state_t setToState) {
 void CMCache::invalidate(CMAddr *addr) {
   CMLine *line = getLine(addr);
   dassert(line != NULL, "Line is NULL");
-  line->valid = false;
+  line->stype = STYPE_INVALID;
 }
 
 void CMCache::printRType(res_t rtype) {

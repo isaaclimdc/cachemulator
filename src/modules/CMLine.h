@@ -5,7 +5,7 @@
 #pragma once
 
 enum state_t {
-  STYPE_NONE,  // Not in this cache
+  STYPE_INVALID,  // Not in this cache
   STYPE_SHARED,
   STYPE_MODIFIED
 };
@@ -23,7 +23,6 @@ class CMLine {
     void update(CMAddr *addr);
 
     unsigned tag;
-    bool valid;
     bool dirty;
     int age;
     state_t stype;

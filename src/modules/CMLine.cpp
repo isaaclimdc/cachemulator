@@ -7,10 +7,9 @@
 #include "debug.h"
 
 CMLine::CMLine() {
-  valid = false;
   dirty = false;
   age = 0;
-  stype = STYPE_NONE;
+  stype = STYPE_INVALID;
   tag = 0;
 }
 
@@ -18,7 +17,7 @@ CMLine::~CMLine() {
 }
 
 bool CMLine::isHit(CMAddr *addr, long long unsigned cacheAge) {
-  if (valid && (addr->tag == tag)) {
+  if (stype != STYPE_INVALID && (addr->tag == tag)) {
     age = cacheAge;
     return true;
   } else {
@@ -28,7 +27,6 @@ bool CMLine::isHit(CMAddr *addr, long long unsigned cacheAge) {
 
 void CMLine::update(CMAddr *addr) {
   tag = addr->tag;
-  valid = true;
   dirty = false;
   age = 0;
 
@@ -37,5 +35,8 @@ void CMLine::update(CMAddr *addr) {
   }
   else if (addr->itype == ITYPE_WRITE) {
     stype = STYPE_MODIFIED;
+  }
+  else {
+    stype = STYPE_INVALID;
   }
 }

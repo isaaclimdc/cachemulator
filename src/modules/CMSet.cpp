@@ -47,7 +47,7 @@ bool CMSet::bringLineIntoSet(CMAddr *addr) {
   CMLine *oldest = *lines.begin();
   for (it = lines.begin(); it != lines.end(); ++it) {
     CMLine *line = *it;
-    if (!line->valid) {
+    if (line->stype == STYPE_INVALID) {
       // Found a place to stick in the new line
       line->update(addr);
       return false;

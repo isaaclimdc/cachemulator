@@ -30,7 +30,6 @@ class CMCache {
     // If addr is in the cache, return the line it is in,
     // otherwise return NULL.
     CMLine *getLine(CMAddr *addr);
-    void writeToCache(CMAddr *addr);
 
     bool bringLineIntoCache(CMAddr *addr);
 
@@ -46,5 +45,4 @@ class CMCache {
 
     long long unsigned cacheAge;
     std::vector<CMSet*> sets;
-    // std::map<long long unsigned, int> dataMap;
 };
