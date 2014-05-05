@@ -38,6 +38,8 @@ class CMCache {
     // otherwise return NULL.
     state_t getLineState(CMAddr *addr);
 
+    void setLineState(CMAddr *addr, state_t setToState);
+
     void invalidate(CMAddr *addr);
 
     void printRType(res_t rtype);

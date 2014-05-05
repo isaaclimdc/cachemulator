@@ -78,6 +78,12 @@ state_t CMCache::getLineState(CMAddr *addr) {
   return (line == NULL) ? STYPE_NONE : line->stype;
 }
 
+void CMCache::setLineState(CMAddr *addr, state_t setToState) {
+  CMLine *line = getLine(addr);
+  dassert(line != NULL, "setting line state to a line not in cache");
+  line->stype = setToState;
+}
+
 void CMCache::invalidate(CMAddr *addr) {
   CMLine *line = getLine(addr);
   dassert(line != NULL, "Line is NULL");

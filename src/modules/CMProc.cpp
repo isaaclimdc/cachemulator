@@ -85,8 +85,32 @@ void CMProc::tick(std::vector<res_t> &verif) {
 
 }
 
-void CMProc::respondToBusShout(CMBusShout *shout) {
+void CMProc::updateLineSType(CMAddr *addr, shout_t shoutType, bool shared) {
+  switch (shoutType) {
+  case BusRd:
+    if (shared) {
+      cache->setLineState(addr, STYPE_SHARED);
+    } else {
+      cache->setLineState(addr, STYPE_SHARED); //TODO: exclusive
+    }
+    break;
+
+  case BusRdX:
+    cache->setLineState(addr, STYPE_MODIFIED);
+    break;
+
+  default:
+    dassert(false, "updateLine to a type not implemented");
+    break;
+  }
+}
+
+void CMProc::respondToBusShout(CMBusShout *shout,
+                               bool *shared,
+                               bool *dirty) {
   // A request is pending on this processor; don't respond
+  *shared = false;
+  *dirty = false;
   if (BUSRequests[pid]) {
     currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     return;
@@ -94,22 +118,28 @@ void CMProc::respondToBusShout(CMBusShout *shout) {
 
   state_t stype = cache->getLineState(shout->addr);
   switch (stype) {
-    case STYPE_SHARED: {
+    case STYPE_SHARED:
       switch (shout->shoutType) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
-          dprintf("Staying in SHARED state, addr %p\n", shout->addr);
+          dprintf("Staying in SHARED state, addr");
+          shout->addr->printAddr();
+          *shared = true;
           break;
         case BusRdX:
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
-          dprintf("Move to INVALID state, addr %p\n", shout->addr);
+          dprintf("Move to INVALID state, addr");
+          shout->addr->printAddr();
           break;
         default:
+          dassert(false, "Cache shared, but not busRd or busRdx not implemented");
           break;
       }
-    }
-    case STYPE_MODIFIED: {
+      break;
+
+    case STYPE_MODIFIED:
+      *dirty = true;
       switch (shout->shoutType) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
@@ -122,7 +152,9 @@ void CMProc::respondToBusShout(CMBusShout *shout) {
         default:
           break;
       }
-    }
+    break;
+
+    case STYPE_NONE:
     default:
       break;
   }

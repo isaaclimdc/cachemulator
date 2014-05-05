@@ -7,6 +7,7 @@
 #include <vector>
 #include <queue>
 #include "CMCache.h"
+#include "CMBusShout.h"
 
 class CMAddr;
 class CMCache;
@@ -23,8 +24,9 @@ class CMProc {
     ~CMProc();
 
     void tick(std::vector<res_t> &verif);
-    void respondToBusShout(CMBusShout *shout);
+    void respondToBusShout(CMBusShout *shout, bool *sharedVec, bool* dirtyVec);
 
+    void updateLineSType(CMAddr *addr, shout_t shoutType, bool shared);
     CMBusShout *pendingShout;
     std::queue<CMAddr*> requests;
     bool isDone;

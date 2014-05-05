@@ -18,5 +18,5 @@ class CMMemCtrlr {
     ~CMMemCtrlr();
 
     void tick();
-    void addJob(CMJob *requestingJob);
+    void addJob(CMJob *requestingJob, int delay);
 };

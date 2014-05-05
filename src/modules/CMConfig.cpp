@@ -12,6 +12,7 @@ CMConfig::CMConfig() {
   numBlockBits = 8;
   cacheHitDelay = 4;
   memDelay = 100;
+  flushAndLoadDelay = 200;
 }
 
 CMConfig::~CMConfig() {

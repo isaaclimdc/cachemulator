@@ -58,19 +58,37 @@ void CMComp::tick(std::vector<res_t> &verif) {
     dassert(outstandingShout != NULL, "Granted access to a non-requesting proc!");
 
     // Other processors respond
+    bool hasShare = false;
+    bool hasDirty = false;
     for (it = procs.begin(); it != procs.end(); ++it) {
+      bool shared;
+      bool dirty;
       CMProc *proc = *it;
-      proc->respondToBusShout(outstandingShout);
+      proc->respondToBusShout(outstandingShout, &shared, &dirty);
+      hasShare = shared || hasShare;
+      hasDirty = dirty || hasDirty;
     }
+
     // set the bus to wait until our transaction is done
     busCtrlr->setJob(grantedProc->currentJob);
     // TODO: This only works if there is only one
     // outstanding request in the system!!!
     // If more, busCtrlr have to create different jobs
-    memCtrlr->addJob(busCtrlr->currentJob);
+
+
+    // then look at the response and react accordingly
+    // TODO: need to do fancy things to actually bring in the values from memory
+      // TODO: mem need to get correct value from processor too...
+    if (hasDirty) {
+      memCtrlr->addJob(busCtrlr->currentJob, CONFIG->flushAndLoadDelay);
+    } else {
+      memCtrlr->addJob(busCtrlr->currentJob, CONFIG->memDelay);
+    }
+
+    // the granted processor updates its access tag
+    grantedProc->updateLineSType(outstandingShout->addr, outstandingShout->shoutType, hasShare);
   }
 
-  // TODO: Tick memory
   memCtrlr->tick();
 
 }

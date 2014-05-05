@@ -17,4 +17,5 @@ class CMConfig {
     int numBlockBits;
     int cacheHitDelay;
     int memDelay;
+    int flushAndLoadDelay;
 };

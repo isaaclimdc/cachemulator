@@ -26,9 +26,9 @@ void CMMemCtrlr::tick() {
   }
 }
 
-void CMMemCtrlr::addJob(CMJob *requestingJob) {
+void CMMemCtrlr::addJob(CMJob *requestingJob, int delay) {
   // should loop through and replace the done jobs
   CMJob *newJob = new CMJob();
-  newJob->update(JTYPE_DELAY, CONFIG->memDelay, requestingJob);
+  newJob->update(JTYPE_DELAY, delay, requestingJob);
   memReqs.push_back(newJob);
 }
