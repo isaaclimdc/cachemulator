@@ -53,17 +53,17 @@ res_t CMCache::accessCache(CMAddr *addr, int &data) {
 // If addr is in the cache, return the line it is in,
 // otherwise return NULL.
 CMLine *CMCache::getLine(CMAddr *addr) {
-  CMSet *set = sets.at(addr->set_index);
+  CMSet *set = sets.at(addr->setIndex);
   return set->getLine(addr, cacheAge);
 }
 
 bool CMCache::probeLine(CMAddr *addr) {
-  CMSet *set = sets.at(addr->set_index);
+  CMSet *set = sets.at(addr->setIndex);
   return set->probeLine(addr);
 }
 
 void CMCache::bringLineIntoCache(CMAddr *addr, bool shared) {
-  CMSet *set = sets.at(addr->set_index);
+  CMSet *set = sets.at(addr->setIndex);
   set->bringLineIntoSet(addr, shared);
 }
 

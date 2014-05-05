@@ -74,28 +74,25 @@ void CMProc::tick(std::vector<res_t> &verif) {
 
     requests.pop();
 
-    // for testing
-    #ifdef DEBUG
+#ifdef DEBUG
     verif.push_back(rtype);
     cache->printRType(rtype);
-    #endif
+#endif
   }
   else {
     currentJob->tick();
   }
-
 }
 
 void CMProc::bringShoutedLineIntoCache(bool shared) {
   cache->bringLineIntoCache(pendingShout->addr, shared);
 }
 
-void CMProc::respondToBusShout(CMBusShout *shout,
-                               bool *shared,
-                               bool *dirty) {
+void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
   // A request is pending on this processor; don't respond
-  *shared = false;
-  *dirty = false;
+  shared = false;
+  dirty = false;
+
   if (BUSRequests[pid]) {
     currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     return;
@@ -109,7 +106,7 @@ void CMProc::respondToBusShout(CMBusShout *shout,
           // Other proc just reading. Stay in SHARED state.
           dprintf("Staying in SHARED state, addr");
           shout->addr->printAddr();
-          *shared = true;
+          shared = true;
           break;
         case BusRdX:
           // Other proc has intention to write. INVALIDATE, but don't flush.
@@ -124,7 +121,7 @@ void CMProc::respondToBusShout(CMBusShout *shout,
       break;
 
     case STYPE_MODIFIED:
-      *dirty = true;
+      dirty = true;
       switch (shout->shoutType) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.

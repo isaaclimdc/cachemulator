@@ -24,7 +24,7 @@ class CMProc {
     ~CMProc();
 
     void tick(std::vector<res_t> &verif);
-    void respondToBusShout(CMBusShout *shout, bool *sharedVec, bool* dirtyVec);
+    void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty);
 
     void bringShoutedLineIntoCache(bool shared);
     CMBusShout *pendingShout;

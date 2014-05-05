@@ -63,7 +63,7 @@ void CMComp::tick(std::vector<res_t> &verif) {
       bool shared;
       bool dirty;
       CMProc *proc = *it;
-      proc->respondToBusShout(outstandingShout, &shared, &dirty);
+      proc->respondToBusShout(outstandingShout, shared, dirty);
       hasShare = shared || hasShare;
       hasDirty = dirty || hasDirty;
     }
@@ -74,10 +74,8 @@ void CMComp::tick(std::vector<res_t> &verif) {
     // outstanding request in the system!!!
     // If more, busCtrlr have to create different jobs
 
-
     // then look at the response and react accordingly
-    // TODO: need to do fancy things to actually bring in the values from memory
-      // TODO: mem need to get correct value from processor too...
+    // TODO: mem need to get correct value from processor too...
     if (hasDirty) {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->flushAndLoadDelay);
     } else {
@@ -89,7 +87,6 @@ void CMComp::tick(std::vector<res_t> &verif) {
   }
 
   memCtrlr->tick();
-
 }
 
 void CMComp::distrbTrace(CMTest *test) {

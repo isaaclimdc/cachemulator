@@ -22,8 +22,8 @@ class CMAddr {
     CMAddr *copy();
 
     unsigned tag;
-    unsigned set_index;
-    unsigned block_offset;
+    unsigned setIndex;
+    unsigned blockOffset;
     long long unsigned raw;
     int data;  // For debug purposes
 
