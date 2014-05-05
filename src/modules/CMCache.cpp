@@ -67,6 +67,7 @@ state_t CMCache::getLineState(CMAddr *addr) {
 void CMCache::invalidate(CMAddr *addr) {
   CMLine *line = isInCache(addr);
   dassert(line != NULL, "Line is NULL");
+  line->valid = false;
 }
 
 void CMCache::printRType(res_t rtype) {

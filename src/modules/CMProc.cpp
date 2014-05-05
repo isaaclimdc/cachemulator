@@ -97,10 +97,12 @@ void CMProc::respondToBusShout(CMBusShout *shout) {
       switch (shout->shoutType) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
+          dprintf("Staying in SHARED state, addr %p\n", shout->addr);
           break;
         case BusRdX:
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
+          dprintf("Move to INVALID state, addr %p\n", shout->addr);
           break;
         default:
           break;
@@ -110,9 +112,11 @@ void CMProc::respondToBusShout(CMBusShout *shout) {
       switch (shout->shoutType) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
+          dprintf("Move to SHARED state and FLUSH, addr %p\n", shout->addr);
           break;
         case BusRdX:
           // Other proc has intention to write. INVALIDATE and FLUSH.
+          dprintf("Move to INVALID state and FLUSH, addr %p\n", shout->addr);
           break;
         default:
           break;

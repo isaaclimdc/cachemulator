@@ -93,6 +93,11 @@ void parseTraceFile(std::string filePath, CMTest *test) {
   char traceLine[MAX_TRACE_LINE_LENGTH];
 
   while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
+    // if (traceLine[0] == '/' && traceLine[1] == '/') {
+    //   dprintf("HEREz\n");
+    //   continue;
+    // }
+
     char op;
     long long unsigned rawAddr;
     size_t tid;
@@ -104,7 +109,7 @@ void parseTraceFile(std::string filePath, CMTest *test) {
 
     test->addToTest(addr);
   }
-
+  dprintf("numtests %d\n", test->addrs.size());
   fclose(traceFile);
 }
 
@@ -130,6 +135,14 @@ bool verifyOutput(std::string filePath, std::vector<res_t> verif) {
     check.push_back(RTYPE_HIT);
     check.push_back(RTYPE_EVICT);
     check.push_back(RTYPE_EVICT);
+  }
+  else if (filePath.compare("traces/coherent1.trace") == 0) {
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_MISS);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
+    check.push_back(RTYPE_HIT);
   }
 
   if (check.size() != verif.size()) {
