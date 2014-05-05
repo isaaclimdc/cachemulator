@@ -31,7 +31,8 @@ class CMCache {
     // otherwise return NULL.
     CMLine *getLine(CMAddr *addr);
 
-    bool bringLineIntoCache(CMAddr *addr);
+    bool probeLine(CMAddr *addr);
+    void bringLineIntoCache(CMAddr *addr, bool shared);
 
     // If addr is in the cache, return the state of the line,
     // otherwise return NULL.

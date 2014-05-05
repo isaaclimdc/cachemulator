@@ -43,13 +43,9 @@ res_t CMCache::accessCache(CMAddr *addr, int &data) {
     rtype = RTYPE_HIT;
   }
   else {
-    bool didEvict = bringLineIntoCache(addr);
+    bool didEvict = probeLine(addr);
     rtype = didEvict ? RTYPE_EVICT : RTYPE_MISS;
   }
-
-  // if (addr->itype == ITYPE_WRITE) {
-  //   writeToCache(addr);
-  // }
 
   return rtype;
 }
@@ -61,14 +57,14 @@ CMLine *CMCache::getLine(CMAddr *addr) {
   return set->getLine(addr, cacheAge);
 }
 
-// void CMCache::writeToCache(CMAddr *addr) {
-//   dassert(addr->itype == ITYPE_WRITE);
-//   dataMap[addr->raw] = addr->data;
-// }
-
-bool CMCache::bringLineIntoCache(CMAddr *addr) {
+bool CMCache::probeLine(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
-  return set->bringLineIntoSet(addr);
+  return set->probeLine(addr);
+}
+
+void CMCache::bringLineIntoCache(CMAddr *addr, bool shared) {
+  CMSet *set = sets.at(addr->set_index);
+  set->bringLineIntoSet(addr, shared);
 }
 
 // If addr is in the cache, return the state of the line,

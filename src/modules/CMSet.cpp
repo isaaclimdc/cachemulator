@@ -37,9 +37,28 @@ CMLine *CMSet::getLine(CMAddr *addr, long long unsigned cacheAge) {
   return NULL;
 }
 
-// Returns true if found an invalid line, false if evicts. Updates the
-// line accordingly.
-bool CMSet::bringLineIntoSet(CMAddr *addr) {
+// Returns true iff need to evict.
+bool CMSet::probeLine(CMAddr *addr) {
+  dassert(getLine(addr, 0) == NULL, "Line not in cache!");
+
+  std::vector<CMLine*>::iterator it;
+  int oldestAge = 0;
+  for (it = lines.begin(); it != lines.end(); ++it) {
+    CMLine *line = *it;
+    if (line->stype == STYPE_INVALID) {
+      // Found a place to stick in the new line, so no evict.
+      return false;
+    }
+    else if (line->age < oldestAge) {
+      oldestAge = line->age;
+    }
+  }
+
+  // Need to evict
+  return true;
+}
+
+bool CMSet::bringLineIntoSet(CMAddr *addr, bool shared) {
   dassert(getLine(addr, 0) == NULL, "Line not in cache!");
 
   std::vector<CMLine*>::iterator it;
@@ -49,7 +68,7 @@ bool CMSet::bringLineIntoSet(CMAddr *addr) {
     CMLine *line = *it;
     if (line->stype == STYPE_INVALID) {
       // Found a place to stick in the new line
-      line->update(addr);
+      line->update(addr, shared);
       return false;
     }
     else if (line->age < oldestAge) {
@@ -59,6 +78,6 @@ bool CMSet::bringLineIntoSet(CMAddr *addr) {
   }
 
   // No place, evict oldest line
-  oldest->update(addr);
+  oldest->update(addr, shared);
   return true;
 }

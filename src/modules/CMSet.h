@@ -19,7 +19,8 @@ class CMSet {
     // If addr is in the set, return the line it is in,
     // otherwise return NULL.
     CMLine *getLine(CMAddr *addr, long long unsigned cacheAge);
-    bool bringLineIntoSet(CMAddr *addr);
+    bool probeLine(CMAddr *addr);
+    bool bringLineIntoSet(CMAddr *addr, bool shared);
 
     std::vector<CMLine*> lines;
 };

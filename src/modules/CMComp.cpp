@@ -47,8 +47,7 @@ void CMComp::tick(std::vector<res_t> &verif) {
   // Tick bus, returns pid of the 'winning' processor
   size_t shoutPid = busCtrlr->tick();
 
-
-  if (shoutPid  < (size_t)CONFIG->numProcs) {
+  if (shoutPid < (size_t)CONFIG->numProcs) {
     // Granted access on this cycle
     // The winning processor makes its request
     dprintf("Proc %lu wins access to the bus!\n", shoutPid);
@@ -86,7 +85,7 @@ void CMComp::tick(std::vector<res_t> &verif) {
     }
 
     // the granted processor updates its access tag
-    grantedProc->updateLineSType(outstandingShout->addr, outstandingShout->shoutType, hasShare);
+    grantedProc->bringShoutedLineIntoCache(hasShare);
   }
 
   memCtrlr->tick();

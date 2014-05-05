@@ -25,18 +25,27 @@ bool CMLine::isHit(CMAddr *addr, long long unsigned cacheAge) {
   }
 }
 
-void CMLine::update(CMAddr *addr) {
+void CMLine::update(CMAddr *addr, bool shared) {
   tag = addr->tag;
   dirty = false;
-  age = 0;
+  age = 0; //TODO wrong!!!
 
   if (addr->itype == ITYPE_READ) {
-    stype = STYPE_SHARED;
+    dprintf("Loading into shared\n");
+    if (shared) {
+      stype = STYPE_SHARED;
+    }
+    else {
+      stype = STYPE_SHARED; // TODO: change to exclusive
+    }
   }
   else if (addr->itype == ITYPE_WRITE) {
     stype = STYPE_MODIFIED;
+    dirty = true;
+    dprintf("Loading into modified\n");
   }
   else {
+    dassert(false, "Incorrect itype!");
     stype = STYPE_INVALID;
   }
 }

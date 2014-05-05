@@ -20,7 +20,7 @@ class CMLine {
     ~CMLine();
 
     bool isHit(CMAddr *addr, long long unsigned cacheAge);
-    void update(CMAddr *addr);
+    void update(CMAddr *addr, bool shared);
 
     unsigned tag;
     bool dirty;

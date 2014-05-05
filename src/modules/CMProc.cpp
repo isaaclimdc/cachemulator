@@ -85,24 +85,8 @@ void CMProc::tick(std::vector<res_t> &verif) {
 
 }
 
-void CMProc::updateLineSType(CMAddr *addr, shout_t shoutType, bool shared) {
-  switch (shoutType) {
-  case BusRd:
-    if (shared) {
-      cache->setLineState(addr, STYPE_SHARED);
-    } else {
-      cache->setLineState(addr, STYPE_SHARED); //TODO: exclusive
-    }
-    break;
-
-  case BusRdX:
-    cache->setLineState(addr, STYPE_MODIFIED);
-    break;
-
-  default:
-    dassert(false, "updateLine to a type not implemented");
-    break;
-  }
+void CMProc::bringShoutedLineIntoCache(bool shared) {
+  cache->bringLineIntoCache(pendingShout->addr, shared);
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout,
@@ -154,7 +138,7 @@ void CMProc::respondToBusShout(CMBusShout *shout,
       }
     break;
 
-    case STYPE_NONE:
+    case STYPE_INVALID:
     default:
       break;
   }
