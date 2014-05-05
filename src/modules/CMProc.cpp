@@ -65,6 +65,7 @@ void CMProc::tick(std::vector<res_t> &verif) {
         // Copy newReq because pop destroys it
         CMAddr *newReqCopy = newReq->copy();
         pendingShout = new CMBusShout(newReqCopy, shoutType, currentJob);
+        currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
         break;
       }
       default:
