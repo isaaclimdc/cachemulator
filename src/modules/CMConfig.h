@@ -18,4 +18,5 @@ class CMConfig {
     int cacheHitDelay;
     int memDelay;
     int flushAndLoadDelay;
+    int upgDelay;
 };

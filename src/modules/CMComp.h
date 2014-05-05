@@ -26,4 +26,5 @@ class CMComp {
     std::vector<CMProc*> procs;
     CMBusCtrlr *busCtrlr;
     CMMemCtrlr *memCtrlr;
+    long long unsigned totalTicks;
 };

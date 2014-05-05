@@ -24,4 +24,5 @@ class CMBusShout {
 
     CMAddr *addr;
     shout_t shoutType;
+    bool isDone;
 };

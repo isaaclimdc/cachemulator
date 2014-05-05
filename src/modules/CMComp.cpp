@@ -75,15 +75,17 @@ void CMComp::tick(std::vector<res_t> &verif) {
     // If more, busCtrlr have to create different jobs
 
     // then look at the response and react accordingly
-    // TODO: mem need to get correct value from processor too...
     if (hasDirty) {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->flushAndLoadDelay);
+    } else if (outstandingShout->shoutType == BusUpg) {
+      memCtrlr->addJob(busCtrlr->currentJob, CONFIG->upgDelay);
     } else {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->memDelay);
     }
 
     // the granted processor updates its access tag
     grantedProc->bringShoutedLineIntoCache(hasShare);
+    grantedProc->pendingShout->isDone = true;
   }
 
   memCtrlr->tick();

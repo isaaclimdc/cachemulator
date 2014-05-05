@@ -10,6 +10,7 @@ CMBusShout::CMBusShout(CMAddr *_addr,
   addr = _addr;
   shoutType = _shoutType;
   requestingJob = _requestingJob;
+  isDone = false;
 }
 
 CMBusShout::~CMBusShout() {

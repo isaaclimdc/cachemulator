@@ -41,18 +41,23 @@ void CMProc::tick(std::vector<res_t> &verif) {
     res_t rtype = cache->accessCache(newReq, data);
 
     // create current job or busRequest based on cache access result
+    shout_t shoutType = BusRd;
+    bool makeShout = true;
     switch (rtype) {
       case RTYPE_HIT:
-        currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
+        if (newReq->itype == ITYPE_READ) {
+          currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
+          makeShout = false;
+        } else if (newReq->itype == ITYPE_WRITE) {
+          shoutType = BusUpg;
+        }
         break;
 
       // miss and evict both need bus shouts
       case RTYPE_MISS:
       case RTYPE_EVICT: {
-        BUSRequests[pid] = true;  // flag the request vector
 
         // decide shout type based on R/W
-        shout_t shoutType = BusRd;
         if (newReq->itype == ITYPE_READ) {
           shoutType = BusRd;
         } else if (newReq->itype == ITYPE_WRITE) {
@@ -61,15 +66,18 @@ void CMProc::tick(std::vector<res_t> &verif) {
           dassert(false, "Unsupported itype!");
         }
 
-        // Save this shout until request granted by bus arbiter
-        // Copy newReq because pop destroys it
-        CMAddr *newReqCopy = newReq->copy();
-        pendingShout = new CMBusShout(newReqCopy, shoutType, currentJob);
-        currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
         break;
       }
       default:
         break;
+    }
+    // Save this shout until request granted by bus arbiter
+    // Copy newReq because pop destroys it
+    if (makeShout) {
+      BUSRequests[pid] = true;  // flag the request vector
+      CMAddr *newReqCopy = newReq->copy();
+      pendingShout = new CMBusShout(newReqCopy, shoutType, currentJob);
+      currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     }
 
     requests.pop();
@@ -78,8 +86,10 @@ void CMProc::tick(std::vector<res_t> &verif) {
     verif.push_back(rtype);
     cache->printRType(rtype);
 #endif
-  }
-  else {
+  } else if (!pendingShout->isDone) {
+    // tried to make the request to shout, but wasn't granted, so try again
+    BUSRequests[pid] = true;  // flag the request vector
+  } else {
     currentJob->tick();
   }
 }
@@ -109,6 +119,7 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
           shared = true;
           break;
         case BusRdX:
+        case BusUpg:
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
           dprintf("Move to INVALID state, addr");
@@ -125,13 +136,17 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
       switch (shout->shoutType) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
+          cache->setLineState(shout->addr, STYPE_SHARED);
           dprintf("Move to SHARED state and FLUSH, addr %p\n", shout->addr);
           break;
+        case BusUpg:
         case BusRdX:
           // Other proc has intention to write. INVALIDATE and FLUSH.
+          cache->invalidate(shout->addr);
           dprintf("Move to INVALID state and FLUSH, addr %p\n", shout->addr);
           break;
         default:
+          dassert(false, "Cache shared, but not busRd or busRdx not implemented");
           break;
       }
     break;
