@@ -31,26 +31,40 @@ CMCache::~CMCache() {
   }
 }
 
-res_t CMCache::accessCache(CMAddr *addr) {
+res_t CMCache::accessCache(CMAddr *addr, int &data) {
   // tick the cache system time
   cacheAge++;
   dassert(cacheAge != std::numeric_limits<long long unsigned>::max(),
           "Cache age about to overflow!");
 
-  if (isInCache(addr) != NULL) {
-    return RTYPE_HIT;
+  res_t rtype;
+
+  if (getLine(addr) != NULL) {
+    rtype = RTYPE_HIT;
+  }
+  else {
+    bool didEvict = bringLineIntoCache(addr);
+    rtype = didEvict ? RTYPE_EVICT : RTYPE_MISS;
   }
 
-  bool foundSpace = bringLineIntoCache(addr);
-  return foundSpace ? RTYPE_MISS : RTYPE_EVICT;
+  // if (addr->itype == ITYPE_WRITE) {
+  //   writeToCache(addr);
+  // }
+
+  return rtype;
 }
 
 // If addr is in the cache, return the line it is in,
 // otherwise return NULL.
-CMLine *CMCache::isInCache(CMAddr *addr) {
+CMLine *CMCache::getLine(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
-  return set->isInSet(addr, cacheAge);
+  return set->getLine(addr, cacheAge);
 }
+
+// void CMCache::writeToCache(CMAddr *addr) {
+//   dassert(addr->itype == ITYPE_WRITE);
+//   dataMap[addr->raw] = addr->data;
+// }
 
 bool CMCache::bringLineIntoCache(CMAddr *addr) {
   CMSet *set = sets.at(addr->set_index);
@@ -60,12 +74,12 @@ bool CMCache::bringLineIntoCache(CMAddr *addr) {
 // If addr is in the cache, return the state of the line,
 // otherwise return NULL.
 state_t CMCache::getLineState(CMAddr *addr) {
-  CMLine *line = isInCache(addr);
+  CMLine *line = getLine(addr);
   return (line == NULL) ? STYPE_NONE : line->stype;
 }
 
 void CMCache::invalidate(CMAddr *addr) {
-  CMLine *line = isInCache(addr);
+  CMLine *line = getLine(addr);
   dassert(line != NULL, "Line is NULL");
   line->valid = false;
 }

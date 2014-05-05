@@ -6,7 +6,8 @@
 #include "debug.h"
 #include "CMGlobals.h"
 
-CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid) {
+CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid,
+               int _data) {
   int s = CONFIG->numSetBits;
   int b = CONFIG->numBlockBits;
   unsigned s_mask = (1 << s) - 1;
@@ -19,10 +20,12 @@ CMAddr::CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid) {
 
   itype = _itype;
   pid = _pid;
+
+  data = _data;
 }
 
 CMAddr *CMAddr::copy() {
-  return new CMAddr(raw, itype, pid);
+  return new CMAddr(raw, itype, pid, data);
 }
 
 CMAddr::~CMAddr() {
@@ -30,5 +33,12 @@ CMAddr::~CMAddr() {
 
 void CMAddr::printAddr() {
   char type = itype == ITYPE_READ ? 'R' : 'W';
-  dprintf("%c at 0x%llx on proc %d\n", type, raw, pid);
+
+  dprintf("%c at 0x%llx on proc %d", type, raw, pid);
+
+  if (itype == ITYPE_WRITE) {
+    dprintf(" with data %d", data);
+  }
+
+  dprintf("\n");
 }

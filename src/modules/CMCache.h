@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <map>
 #include "CMLine.h"
 
 enum res_t {
@@ -24,11 +25,12 @@ class CMCache {
     CMCache();
     ~CMCache();
 
-    res_t accessCache(CMAddr *addr);
+    res_t accessCache(CMAddr *addr, int &data);
 
     // If addr is in the cache, return the line it is in,
     // otherwise return NULL.
-    CMLine *isInCache(CMAddr *addr);
+    CMLine *getLine(CMAddr *addr);
+    void writeToCache(CMAddr *addr);
 
     bool bringLineIntoCache(CMAddr *addr);
 
@@ -42,4 +44,5 @@ class CMCache {
 
     long long unsigned cacheAge;
     std::vector<CMSet*> sets;
+    // std::map<long long unsigned, int> dataMap;
 };

@@ -94,22 +94,28 @@ void parseTraceFile(std::string filePath, CMTest *test) {
 
   while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
     // if (traceLine[0] == '/' && traceLine[1] == '/') {
-    //   dprintf("HEREz\n");
     //   continue;
     // }
 
-    char op;
     long long unsigned rawAddr;
     size_t tid;
+    int data = 0;
+    inst_t itype;
 
-    sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &tid);
+    if (traceLine[0] == 'W') {
+      sscanf(traceLine, "W %llx %zu %d", &rawAddr, &tid, &data);
+      itype = ITYPE_WRITE;
+    }
+    else {
+      sscanf(traceLine, "R %llx %zu", &rawAddr, &tid);
+      itype = ITYPE_READ;
+    }
 
-    inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
-    CMAddr *addr = new CMAddr(rawAddr, itype, tid);
+    CMAddr *addr = new CMAddr(rawAddr, itype, tid, data);
 
     test->addToTest(addr);
   }
-  dprintf("numtests %d\n", test->addrs.size());
+
   fclose(traceFile);
 }
 

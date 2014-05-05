@@ -37,7 +37,8 @@ void CMProc::tick(std::vector<res_t> &verif) {
   if (currentJob->jobDone) {
     CMAddr *newReq = requests.front();
     newReq->printAddr();
-    res_t rtype = cache->accessCache(newReq);
+    int data;
+    res_t rtype = cache->accessCache(newReq, data);
 
     // create current job or busRequest based on cache access result
     switch (rtype) {

@@ -27,7 +27,7 @@ CMSet::~CMSet() {
 
 // If addr is in the set, return the line it is in,
 // otherwise return NULL.
-CMLine *CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {
+CMLine *CMSet::getLine(CMAddr *addr, long long unsigned cacheAge) {
   std::vector<CMLine*>::iterator it;
   for (it = lines.begin(); it != lines.end(); ++it) {
     CMLine *line = *it;
@@ -37,12 +37,10 @@ CMLine *CMSet::isInSet(CMAddr *addr, long long unsigned cacheAge) {
   return NULL;
 }
 
-// Returns true if it finds a place to insert the new line,
-// false if it evicts.
+// Returns true if found an invalid line, false if evicts. Updates the
+// line accordingly.
 bool CMSet::bringLineIntoSet(CMAddr *addr) {
-  if (isInSet(addr, 0)) {
-    throw;
-  }
+  dassert(getLine(addr, 0) == NULL, "Line not in cache!");
 
   std::vector<CMLine*>::iterator it;
   int oldestAge = 0;
@@ -52,7 +50,7 @@ bool CMSet::bringLineIntoSet(CMAddr *addr) {
     if (!line->valid) {
       // Found a place to stick in the new line
       line->update(addr);
-      return true;
+      return false;
     }
     else if (line->age < oldestAge) {
       oldestAge = line->age;
@@ -62,5 +60,5 @@ bool CMSet::bringLineIntoSet(CMAddr *addr) {
 
   // No place, evict oldest line
   oldest->update(addr);
-  return false;
+  return true;
 }
