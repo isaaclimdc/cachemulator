@@ -42,6 +42,7 @@ class CMCache {
 
     void invalidate(CMAddr *addr);
 
+    char rTypeToChar(res_t rtype);
     void printRType(res_t rtype);
 
     long long unsigned cacheAge;

@@ -57,22 +57,10 @@ int main(int argc, char **argv) {
   CMComp *comp = new CMComp(CONFIG->numProcs);
   comp->distrbTrace(test);
 
-  std::vector<res_t> verif;
-
   while (comp->hasOutstandingJobs()) {
     // Tick computer
-    comp->tick(verif);
+    comp->tick();
   }
-
-#ifdef DEBUG
-  // Check verif here
-  if (verifyOutput(filePath, verif)) {
-    dprintf("TEST PASSED!\n");
-  }
-  else {
-    dprintf("TEST FAILED...\n");
-  }
-#endif
 
   delete test;
   delete comp;

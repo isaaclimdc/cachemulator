@@ -19,7 +19,7 @@ class CMComp {
     CMComp(int P);
     ~CMComp();
 
-    void tick(std::vector<res_t> &verif);
+    void tick();
     void distrbTrace(CMTest *test);
     bool hasOutstandingJobs();
 

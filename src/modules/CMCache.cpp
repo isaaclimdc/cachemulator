@@ -86,14 +86,22 @@ void CMCache::invalidate(CMAddr *addr) {
   line->stype = STYPE_INVALID;
 }
 
-void CMCache::printRType(res_t rtype) {
+char CMCache::rTypeToChar(res_t rtype) {
   if (rtype == RTYPE_HIT) {
-    dprintf("HIT\n");
+    return 'H';
   }
   else if (rtype == RTYPE_MISS) {
-    dprintf("MISS\n");
+    return 'M';
   }
   else if (rtype == RTYPE_EVICT) {
-    dprintf("EVICT\n");
+    return 'E';
   }
+  else {
+    dassert(false, "Bad rtype");
+    return ' ';
+  }
+}
+
+void CMCache::printRType(res_t rtype) {
+  dprintf("%c\n", rTypeToChar(rtype));
 }

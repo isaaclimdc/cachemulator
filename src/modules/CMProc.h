@@ -23,8 +23,10 @@ class CMProc {
     CMProc(int _pid);
     ~CMProc();
 
-    void tick(std::vector<res_t> &verif);
+    void tick();
     void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty);
+
+    void writeToFile(res_t rtype);
 
     void bringShoutedLineIntoCache(bool shared);
     CMBusShout *pendingShout;

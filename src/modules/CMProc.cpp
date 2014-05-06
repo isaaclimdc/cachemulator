@@ -6,6 +6,8 @@
 #include "debug.h"
 #include <stdio.h>
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include "CMAddr.h"
 #include "CMCache.h"
@@ -13,6 +15,8 @@
 #include "CMJob.h"
 #include "CMGlobals.h"
 #include "CMBusShout.h"
+
+#define FILE_HITSMISSES "hitsmisses.out"
 
 CMProc::CMProc(int _pid) {
   cache = new CMCache();
@@ -27,7 +31,7 @@ CMProc::~CMProc() {
   delete currentJob;
 }
 
-void CMProc::tick(std::vector<res_t> &verif) {
+void CMProc::tick() {
   // TODO: Need to take into account idle cycles
   if (requests.size() == 0 && currentJob->jobDone) {
     isDone = true;
@@ -83,7 +87,7 @@ void CMProc::tick(std::vector<res_t> &verif) {
     requests.pop();
 
 #ifdef DEBUG
-    verif.push_back(rtype);
+    writeToFile(rtype);
     cache->printRType(rtype);
 #endif
   } else if (!pendingShout->isDone) {
@@ -92,6 +96,13 @@ void CMProc::tick(std::vector<res_t> &verif) {
   } else {
     currentJob->tick();
   }
+}
+
+void CMProc::writeToFile(res_t rtype) {
+  std::ofstream file;
+  file.open(FILE_HITSMISSES, std::ios_base::app);
+  file << cache->rTypeToChar(rtype) << "\n";
+  file.close();
 }
 
 void CMProc::bringShoutedLineIntoCache(bool shared) {

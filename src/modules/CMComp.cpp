@@ -39,13 +39,13 @@ CMComp::~CMComp() {
   delete busCtrlr;
 }
 
-void CMComp::tick(std::vector<res_t> &verif) {
+void CMComp::tick() {
   totalTicks++;
   // Tick each processor
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {
     CMProc *proc = *it;
-    proc->tick(verif);
+    proc->tick();
   }
 
   // Tick bus, returns pid of the 'winning' processor
