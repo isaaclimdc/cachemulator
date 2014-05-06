@@ -7,7 +7,6 @@
 #include <assert.h>
 
 #define DEBUG
-// #define MESI
 
 #define dassert(exp, str)                        \
 do {                                             \

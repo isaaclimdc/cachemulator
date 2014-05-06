@@ -2,9 +2,10 @@
  * Yuyang Guo (yuyangg) and Isaac Lim (idl)
  */
 
-#include "CMAddr.h"
 #include "CMLine.h"
 #include "debug.h"
+#include "CMGlobals.h"
+#include "CMAddr.h"
 
 CMLine::CMLine() {
   dirty = false;
@@ -35,11 +36,12 @@ void CMLine::update(CMAddr *addr, bool shared) {
       stype = STYPE_SHARED;
     }
     else {
-      #ifdef MESI
-      stype = STYPE_EXCLUSIVE; // TODO: change to exclusive
-      #else
-      stype = STYPE_SHARED;
-      #endif
+      if (CONFIG->hasExclusiveState()) {
+        stype = STYPE_EXCLUSIVE;
+      }
+      else {
+        stype = STYPE_SHARED;
+      }
     }
   }
   else {

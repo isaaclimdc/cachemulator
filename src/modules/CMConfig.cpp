@@ -5,11 +5,13 @@
 #include "CMConfig.h"
 
 CMConfig::CMConfig() {
-  // TODO: parse a file to do all these settings
   numProcs = 20;
   numSetBits = 8;
   numLines = 2;
   numBlockBits = 8;
+
+  protocol = PTYPE_MSI;
+
   cacheHitDelay = 4;
   memDelay = 100;
   flushAndLoadDelay = 200;
@@ -17,4 +19,12 @@ CMConfig::CMConfig() {
 }
 
 CMConfig::~CMConfig() {
+}
+
+bool CMConfig::hasExclusiveState() {
+  return (protocol == PTYPE_MESI || protocol == PTYPE_MESIF);
+}
+
+bool CMConfig::hasForwardState() {
+  return (protocol == PTYPE_MESIF);
 }
