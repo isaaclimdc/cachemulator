@@ -17,6 +17,7 @@
 #include "modules/CMTest.h"
 #include "modules/debug.h"
 #include "modules/CMGlobals.h"
+#include "modules/CMSharing.h"
 
 #define MAX_TRACE_LINE_LENGTH 20
 
@@ -63,6 +64,7 @@ int main(int argc, char **argv) {
   }
 
   dprintf("Num ticks: %llu\n", comp->totalTicks);
+  comp->sharing->print();
 
   delete test;
   delete comp;

@@ -12,6 +12,7 @@ class CMBusCtrlr;
 class CMTest;
 class CMMemCtrlr;
 class CMBusShout;
+class CMSharing;
 
 class CMComp {
   private:
@@ -30,4 +31,5 @@ class CMComp {
     CMBusCtrlr *busCtrlr;
     CMMemCtrlr *memCtrlr;
     long long unsigned totalTicks;
+    CMSharing *sharing;
 };

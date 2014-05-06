@@ -20,6 +20,7 @@ class CMAddr {
 
     void print();
     CMAddr *copy();
+    long long unsigned computeLineStartAddr();
 
     unsigned tag;
     unsigned setIndex;

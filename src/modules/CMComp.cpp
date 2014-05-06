@@ -10,6 +10,7 @@
 #include "CMBusCtrlr.h"
 #include "CMGlobals.h"
 #include "CMMemCtrlr.h"
+#include "CMSharing.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -28,6 +29,8 @@ CMComp::CMComp(int P) {
   memCtrlr = new CMMemCtrlr();
 
   totalTicks = 0;
+
+  sharing = new CMSharing();
 }
 
 CMComp::~CMComp() {
@@ -38,6 +41,7 @@ CMComp::~CMComp() {
   }
 
   delete busCtrlr;
+  delete sharing;
 }
 
 void CMComp::tick() {
@@ -63,6 +67,9 @@ void CMComp::tick() {
     dassert(outstandingShout != NULL,
             "Granted access to a non-requesting proc!");
     outstandingShout->print();
+
+    // Save this shout in the sharing object
+    sharing->record(outstandingShout);
 
 #ifdef DEBUG
     writeToFile(outstandingShout);

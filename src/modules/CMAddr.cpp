@@ -28,6 +28,11 @@ CMAddr *CMAddr::copy() {
 CMAddr::~CMAddr() {
 }
 
+long long unsigned CMAddr::computeLineStartAddr() {
+  unsigned bMask = (1 << CONFIG->numBlockBits) - 1;
+  return raw & ~bMask;
+}
+
 void CMAddr::print() {
   char type = itype == ITYPE_READ ? 'R' : 'W';
   dprintf("\n====== %c at 0x%llx on proc %d ======\n", type, raw, pid);

@@ -3,7 +3,7 @@
 
 MD = modules
 OD = objs
-OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMGlobals.o $(OD)/CMConfig.o $(OD)/CMJob.o $(OD)/CMBusShout.o $(OD)/CMBusCtrlr.o $(OD)/CMMemCtrlr.o $(OD)/debug.o
+OBJS = $(OD)/main.o $(OD)/CMComp.o $(OD)/CMProc.o $(OD)/CMCache.o $(OD)/CMSet.o $(OD)/CMLine.o $(OD)/CMAddr.o $(OD)/CMTest.o $(OD)/CMGlobals.o $(OD)/CMConfig.o $(OD)/CMJob.o $(OD)/CMBusShout.o $(OD)/CMBusCtrlr.o $(OD)/CMMemCtrlr.o $(OD)/CMSharing.o $(OD)/debug.o
 
 CC = g++
 DEBUG = -g
@@ -57,11 +57,14 @@ $(OD)/CMBusShout.o: $(MD)/CMBusShout.h $(MD)/CMBusShout.cpp $(MD)/CMGlobals.h $(
 $(OD)/CMBusCtrlr.o: $(MD)/CMBusCtrlr.h $(MD)/CMBusCtrlr.cpp $(MD)/CMGlobals.h $(MD)/debug.h
 	$(CC) $(CFLAGS) $(MD)/CMBusCtrlr.cpp -o $@
 
-$(OD)/debug.o: $(MD)/debug.h $(MD)/debug.cpp
-	$(CC) $(CFLAGS) $(MD)/debug.cpp -o $@
-
 $(OD)/CMMemCtrlr.o: $(MD)/CMMemCtrlr.h $(MD)/CMMemCtrlr.cpp $(MD)/CMJob.h $(MD)/debug.h $(MD)/CMGlobals.h
 	$(CC) $(CFLAGS) $(MD)/CMMemCtrlr.cpp -o $@
+
+$(OD)/CMSharing.o: $(MD)/CMSharing.h $(MD)/CMSharing.cpp $(MD)/CMAddr.h $(MD)/CMBusShout.h $(MD)/debug.h $(MD)/CMGlobals.h
+	$(CC) $(CFLAGS) $(MD)/CMSharing.cpp -o $@
+
+$(OD)/debug.o: $(MD)/debug.h $(MD)/debug.cpp
+	$(CC) $(CFLAGS) $(MD)/debug.cpp -o $@
 
 clean:
 	rm -rf $(OD) *.o *.dSYM
