@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os, sys
 import subprocess
+import argparse
 
 outFiles = ["hitsmisses.out", "busshouts.out"]
 
@@ -45,8 +46,8 @@ def parse():
   return parsedFiles
 
 
-def run(traceFile):
-  subprocess.call(["./cache", "-t", traceFile])
+def run(traceFile, protocol):
+  subprocess.call(["./cache", "-t", traceFile, "-p", protocol])
 
 
 def clean():
@@ -55,12 +56,14 @@ def clean():
 
 
 def main():
-  if len(sys.argv) < 2:
-    print "Usage: python " + sys.argv[0] + " <trace file>"
-    sys.exit(1)
+  ap = argparse.ArgumentParser()
+  ap.add_argument('-t', help="Tracefile path")
+  ap.add_argument('-p', help="Coherence protocol")
+  opts = ap.parse_args()
 
-  traceFile = sys.argv[1]
-  run(traceFile)
+  traceFile = opts.t
+  protocol = opts.p
+  run(traceFile, protocol)
 
   print
   print "~ Verifying output"
