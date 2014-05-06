@@ -80,45 +80,40 @@ void CMProc::_updatePendingRequest(CMAddr *newReq,
     bool &makeShout, shout_t &shoutType, res_t &rtype) {
   int data;
   rtype = cache->accessCache(newReq, data);
+  state_t stype = cache->getLineState(newReq);
 
   // create current job or busRequest based on cache access result
   shoutType = BusRd;
   makeShout = true;
-  switch (rtype) {
-    case RTYPE_HIT:
-      if (newReq->itype == ITYPE_READ) {
-        currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
-        makeShout = false;
-      }
-      else if (newReq->itype == ITYPE_WRITE) {
-        CMLine *line = cache->getLine(newReq);
-        if (line->stype == STYPE_MODIFIED) {
-          makeShout = false;
-        }
-        else if (line->stype == STYPE_INVALID) {
-          shoutType = BusRdX;
-        }
-        else {  // stype == STYPE_SHARED
-          shoutType = BusUpg;
-        }
-      }
-      break;
+  inst_t itype = newReq->itype;
 
-    // miss and evict both need bus shouts
-    case RTYPE_MISS:
-    case RTYPE_EVICT: {
-      // decide shout type based on R/W
-      if (newReq->itype == ITYPE_READ) {
-        shoutType = BusRd;
-      }
-      else {
-        shoutType = BusRdX;
-      }
-
-      break;
+  switch(stype) {
+  case STYPE_INVALID:
+    if (itype == ITYPE_READ) {
+      makeShout = true;
+      shoutType = BusRd;
+    } else {
+      makeShout = true;
+      shoutType = BusRdX;
     }
-    default:
-      break;
+    break;
+
+  case STYPE_SHARED:
+    if (itype == ITYPE_READ) {
+      makeShout = false;
+    } else {
+      makeShout = true;
+      shoutType = BusUpg;
+    }
+    break;
+
+  case STYPE_MODIFIED:
+    makeShout = false;
+    break;
+
+  default:
+    dassert(false, "UNIMPLEMENTED state type");
+    break;
   }
 }
 
