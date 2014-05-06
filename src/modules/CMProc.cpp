@@ -22,13 +22,14 @@ CMProc::CMProc(int _pid) {
   cache = new CMCache();
   isDone = false;
   currentJob = new CMJob();
-  pendingShout = NULL;
+  pendingShout = new CMBusShout();
   pid = _pid;
 }
 
 CMProc::~CMProc() {
   delete cache;
   delete currentJob;
+  delete pendingShout;
 }
 
 void CMProc::tick() {
@@ -80,7 +81,7 @@ void CMProc::tick() {
     if (makeShout) {
       BUSRequests[pid] = true;  // flag the request vector
       CMAddr *newReqCopy = newReq->copy();
-      pendingShout = new CMBusShout(newReqCopy, shoutType, currentJob);
+      pendingShout->update(newReqCopy, shoutType, currentJob);
       currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     }
 

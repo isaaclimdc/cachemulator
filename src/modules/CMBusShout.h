@@ -19,8 +19,11 @@ class CMBusShout {
     CMJob *requestingJob;
 
   public:
-    CMBusShout(CMAddr *_addr, shout_t _shoutType, CMJob *_requestingJob);
+    CMBusShout();
     ~CMBusShout();
+    void update(CMAddr *_addr,
+                shout_t _shoutType,
+                CMJob *_requestingJob);
 
     CMAddr *addr;
     shout_t shoutType;

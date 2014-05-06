@@ -62,6 +62,8 @@ int main(int argc, char **argv) {
     comp->tick();
   }
 
+  dprintf("Num ticks: %llu\n", comp->totalTicks);
+
   delete test;
   delete comp;
   delete CONFIG;

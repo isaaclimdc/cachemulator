@@ -4,17 +4,23 @@
 
 #include "CMBusShout.h"
 #include "debug.h"
+#include "CMAddr.h"
 
-CMBusShout::CMBusShout(CMAddr *_addr,
-                       shout_t _shoutType,
-                       CMJob *_requestingJob) {
-  addr = _addr;
-  shoutType = _shoutType;
-  requestingJob = _requestingJob;
+CMBusShout::CMBusShout() {
   isDone = false;
 }
 
 CMBusShout::~CMBusShout() {
+  delete addr;
+}
+
+void CMBusShout::update(CMAddr *_addr,
+                        shout_t _shoutType,
+                        CMJob *_requestingJob) {
+  addr = _addr;
+  shoutType = _shoutType;
+  requestingJob = _requestingJob;
+  isDone = false;
 }
 
 char CMBusShout::toChar() {
