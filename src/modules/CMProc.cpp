@@ -5,8 +5,6 @@
 #include "CMProc.h"
 #include "debug.h"
 #include <stdio.h>
-#include <string>
-#include <iostream>
 #include <fstream>
 
 #include "CMAddr.h"
@@ -15,6 +13,10 @@
 #include "CMJob.h"
 #include "CMGlobals.h"
 #include "CMBusShout.h"
+#include "CMComp.h"
+
+#define REQS_REFILL_SIZE 100
+#define REQS_MIN_QUEUE_SIZE 10
 
 CMProc::CMProc(size_t _pid) {
   cache = new CMCache();
@@ -22,27 +24,33 @@ CMProc::CMProc(size_t _pid) {
   currentJob = new CMJob();
   pendingShout = new CMBusShout();
   pid = _pid;
+
+  reqFile.open(MAKE_TMP_FILEPATH(_pid).c_str(), std::ios_base::app);
+  refillReqsIfNeeded();
 }
 
 CMProc::~CMProc() {
   delete cache;
   delete currentJob;
   delete pendingShout;
+  reqFile.close();
 }
 
 void CMProc::tick() {
   // TODO: Need to take into account idle cycles
-  if (requests.size() == 0 && currentJob->jobDone) {
+  if (reqs.size() == 0 && currentJob->jobDone) {
     isDone = true;
     return;
   }
+
+  refillReqsIfNeeded();
 
   bool makeShout = true;
   shout_t shoutType = BusRd;
   res_t rtype = RTYPE_HIT;
   CMAddr *evictingAddr;
   if (currentJob->jobDone) {
-    CMAddr *newReq = requests.front();
+    CMAddr *newReq = reqs.front();
     newReq->print();
     evictingAddr = _updatePendingRequest(newReq, makeShout, shoutType, rtype);
 
@@ -67,7 +75,6 @@ void CMProc::tick() {
       requests.pop();
     }
 
-
     #ifdef DEBUG
     cache->printRType(rtype);
     writeToFile(rtype);
@@ -91,7 +98,32 @@ void CMProc::tick() {
   }
 }
 
-CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
+inline void CMProc::refillReqsIfNeeded() {
+  if (reqs.size() < REQS_MIN_QUEUE_SIZE) {
+    // Grab the next REQS_REFILL_SIZE from the file
+    int numCnt = 0;
+    std::string s;
+    while (std::getline(reqFile, s)) {
+      char op;
+      long long unsigned rawAddr;
+      size_t pid;
+
+      sscanf(s.c_str(), "%c %llx %zu", &op, &rawAddr, &pid);
+
+      inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
+      CMAddr *addr = new CMAddr(rawAddr, itype, pid);
+      addr->print();
+      reqs.push(addr);
+
+      numCnt++;
+      if (numCnt> REQS_REFILL_SIZE) {
+        return;
+      }
+    }
+  }
+}
+
+void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
                                    shout_t &shoutType, res_t &rtype) {
   CMAddr *evictingAddr = NULL;
   rtype = cache->accessCache(newReq, &evictingAddr);

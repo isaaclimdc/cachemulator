@@ -127,16 +127,6 @@ void CMComp::writeToFile(CMBusShout *shout) {
   file.close();
 }
 
-void CMComp::distrbTrace(CMTest *test) {
-  std::vector<CMAddr*>::iterator it;
-  std::vector<CMAddr*> addrs = test->addrs;
-  for (it = addrs.begin(); it != addrs.end(); ++it) {
-    CMAddr *addr = *it;
-    CMProc *proc = procs.at(addr->pid);
-    proc->requests.push(addr);
-  }
-}
-
 bool CMComp::hasOutstandingJobs() {
   std::vector<CMProc*>::iterator it;
   for (it = procs.begin(); it != procs.end(); ++it) {

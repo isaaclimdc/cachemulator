@@ -6,10 +6,12 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <algorithm>
-#include <iostream>
-#include <string.h>
+#include <vector>
+#include <string>
+#include <fstream>
 
 #include "modules/CMComp.h"
+#include "modules/CMProc.h"
 #include "modules/CMCache.h"
 #include "modules/CMSet.h"
 #include "modules/CMAddr.h"
@@ -23,7 +25,7 @@
 
 /* Function declarations */
 
-void parseTraceFile(char *filePath, CMTest *test);
+size_t parseTraceFile(char *filePath);
 prot_t parseProtocol(char *optarg);
 
 /* Function definitions */
@@ -55,14 +57,13 @@ int main(int argc, char **argv) {
   CONFIG = new CMConfig();
   BUSRequests = new bool[CONFIG->numProcs]();
 
+  size_t numProcs = parseTraceFile(filePath);
   CONFIG->protocol = protocol;
+  CONFIG->numProcs = numProcs;
 
-  // Parse traces
-  CMTest *test = new CMTest();
-  parseTraceFile(filePath, test);
+  dprintf("NUM PROCS: %d\n", CONFIG->numProcs);
 
   CMComp *comp = new CMComp(CONFIG->numProcs);
-  comp->distrbTrace(test);
 
   while (comp->hasOutstandingJobs()) {
     // Tick computer
@@ -72,7 +73,7 @@ int main(int argc, char **argv) {
   dprintf("Num ticks: %llu\n", comp->totalTicks);
   comp->sharing->print();
 
-  delete test;
+  // delete test;
   delete comp;
   delete CONFIG;
   delete[] BUSRequests;
@@ -80,13 +81,15 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void parseTraceFile(char *filePath, CMTest *test) {
+size_t parseTraceFile(char *filePath) {
   FILE *traceFile = fopen(filePath, "r");
 
   if (traceFile == NULL) {
     perror("Error opening file.");
     exit(1);
   }
+
+  std::vector<std::string> traceFiles;
 
   char traceLine[MAX_TRACE_LINE_LENGTH];
 
@@ -97,17 +100,35 @@ void parseTraceFile(char *filePath, CMTest *test) {
 
     char op;
     long long unsigned rawAddr;
-    size_t tid;
+    size_t pid;
 
-    sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &tid);
+    sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &pid);
 
-    inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
-    CMAddr *addr = new CMAddr(rawAddr, itype, tid);
+    //'New' processor discovered, create a new file
+    if (pid >= traceFiles.size()) {
+      std::string tmpPath = MAKE_TMP_FILEPATH(pid);
+      dprintf("TMP PATH: %s\n", tmpPath.c_str());
+      traceFiles.push_back(tmpPath);
+    }
 
-    test->addToTest(addr);
+    std::string procFilePath = traceFiles.at(pid);
+    std::ofstream procFile;
+    procFile.open(procFilePath.c_str(), std::ios_base::app);
+    procFile << traceLine;
+    procFile.close();
   }
 
+  // Close tmp files
+  // std::vector<std::ofstream>::iterator it;
+  // for (it = traceFiles.begin(); it != traceFiles.end(); ++it) {
+  //   std::ofstream file = *it;
+  //   file.close();
+  // }
+
+  // Close original trace file
   fclose(traceFile);
+
+  return traceFiles.size();
 }
 
 prot_t parseProtocol(char *optarg) {

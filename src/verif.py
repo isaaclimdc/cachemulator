@@ -4,6 +4,7 @@ import subprocess
 import argparse
 
 outFiles = ["hitsmisses.out", "busshouts.out"]
+tmpFilePrefix = "traceFileProc"
 
 def report(test, sol):
   if test == sol:
@@ -55,6 +56,11 @@ def run(traceFile, protocol):
 def clean():
   for outFile in outFiles:
     subprocess.call(["rm", outFile])
+
+  files = os.listdir(".")
+  for file in files:
+    if file.endswith(".tmp"):
+      subprocess.call(["rm", file])
 
 
 def main():

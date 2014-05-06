@@ -6,7 +6,9 @@
 
 #include <vector>
 #include <cstring>
+#include <fstream>
 #include <queue>
+
 #include "CMCache.h"
 #include "CMBusShout.h"
 
@@ -30,13 +32,16 @@ class CMProc {
     void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, bool &forward);
 
     void writeToFile(res_t rtype);
+    void refillReqsIfNeeded();
 
     void postShoutingProcess(bool shared);
 
     size_t pid;
     CMCache *cache;
     CMBusShout *pendingShout;
-    std::queue<CMAddr*> requests;
     bool isDone;
     CMJob *currentJob;
+
+    std::ifstream reqFile;
+    std::queue<CMAddr*> reqs;
 };

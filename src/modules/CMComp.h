@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 #include "CMCache.h"
 
 class CMProc;
@@ -22,7 +23,6 @@ class CMComp {
     ~CMComp();
 
     void tick();
-    void distrbTrace(CMTest *test);
     bool hasOutstandingJobs();
 
     void writeToFile(CMBusShout *shout);
