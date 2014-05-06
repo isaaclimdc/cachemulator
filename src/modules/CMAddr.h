@@ -18,7 +18,7 @@ class CMAddr {
     CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid);
     ~CMAddr();
 
-    void printAddr();
+    void print();
     CMAddr *copy();
 
     unsigned tag;

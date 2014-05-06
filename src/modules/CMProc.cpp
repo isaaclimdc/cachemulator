@@ -40,7 +40,7 @@ void CMProc::tick() {
 
   if (currentJob->jobDone) {
     CMAddr *newReq = requests.front();
-    newReq->printAddr();
+    newReq->print();
     int data;
     res_t rtype = cache->accessCache(newReq, data);
 
@@ -126,7 +126,7 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
           dprintf("Staying in SHARED state, addr");
-          shout->addr->printAddr();
+          shout->addr->print();
           shared = true;
           break;
         case BusRdX:
@@ -134,7 +134,7 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
           dprintf("Move to INVALID state, addr");
-          shout->addr->printAddr();
+          shout->addr->print();
           break;
         default:
           dassert(false, "Cache shared, but not busRd or busRdx not implemented");

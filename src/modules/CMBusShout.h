@@ -5,10 +5,10 @@
 #pragma once
 
 enum shout_t {
-  BusRd,
-  BusRdX,
-  BusWr,
-  BusUpg
+  BusRd,   // R
+  BusRdX,  // X
+  BusWr,   // W
+  BusUpg   // U
 };
 
 class CMAddr;
@@ -25,4 +25,7 @@ class CMBusShout {
     CMAddr *addr;
     shout_t shoutType;
     bool isDone;
+
+    char toChar();
+    void print();
 };

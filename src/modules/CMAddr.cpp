@@ -28,7 +28,7 @@ CMAddr *CMAddr::copy() {
 CMAddr::~CMAddr() {
 }
 
-void CMAddr::printAddr() {
+void CMAddr::print() {
   char type = itype == ITYPE_READ ? 'R' : 'W';
   dprintf("%c at 0x%llx on proc %d\n", type, raw, pid);
 }

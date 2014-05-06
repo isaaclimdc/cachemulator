@@ -24,7 +24,7 @@ $(OD)/main.o: main.cpp $(MD)/CMCache.h $(MD)/CMSet.h $(MD)/CMAddr.h $(MD)/CMLine
 $(OD)/CMComp.o: $(MD)/CMComp.h $(MD)/CMComp.cpp $(MD)/CMProc.h $(MD)/CMGlobals.h $(MD)/debug.h $(MD)/CMBusCtrlr.h $(MD)/CMMemCtrlr.h
 	$(CC) $(CFLAGS) $(MD)/CMComp.cpp -o $@
 
-$(OD)/CMProc.o: $(MD)/CMProc.h $(MD)/CMProc.cpp $(MD)/CMCache.h $(MD)/CMGlobals.h $(MD)/CMJob.h $(MD)/debug.h $(MD)/CMBusShout.h
+$(OD)/CMProc.o: $(MD)/CMProc.h $(MD)/CMProc.cpp $(MD)/CMCache.h $(MD)/CMGlobals.h $(MD)/CMAddr.h $(MD)/CMJob.h $(MD)/debug.h $(MD)/CMBusShout.h
 	$(CC) $(CFLAGS) $(MD)/CMProc.cpp -o $@
 
 $(OD)/CMCache.o: $(MD)/CMCache.h $(MD)/CMCache.cpp $(MD)/CMSet.h $(MD)/CMLine.h $(MD)/CMGlobals.h $(MD)/debug.h
