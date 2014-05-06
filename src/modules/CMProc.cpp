@@ -37,51 +37,13 @@ void CMProc::tick() {
     return;
   }
 
+  bool makeShout = true;
+  shout_t shoutType = BusRd;
+  res_t rtype = RTYPE_HIT;
   if (currentJob->jobDone) {
     CMAddr *newReq = requests.front();
     newReq->print();
-    int data;
-    res_t rtype = cache->accessCache(newReq, data);
-
-    // create current job or busRequest based on cache access result
-    shout_t shoutType = BusRd;
-    bool makeShout = true;
-    switch (rtype) {
-      case RTYPE_HIT:
-        if (newReq->itype == ITYPE_READ) {
-          currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
-          makeShout = false;
-        }
-        else if (newReq->itype == ITYPE_WRITE) {
-          CMLine *line = cache->getLine(newReq);
-          if (line->stype == STYPE_MODIFIED) {
-            makeShout = false;
-          }
-          else if (line->stype == STYPE_INVALID) {
-            shoutType = BusRdX;
-          }
-          else {  // stype == STYPE_SHARED
-            shoutType = BusUpg;
-          }
-        }
-        break;
-
-      // miss and evict both need bus shouts
-      case RTYPE_MISS:
-      case RTYPE_EVICT: {
-        // decide shout type based on R/W
-        if (newReq->itype == ITYPE_READ) {
-          shoutType = BusRd;
-        }
-        else {
-          shoutType = BusRdX;
-        }
-
-        break;
-      }
-      default:
-        break;
-    }
+    _updatePendingRequest(newReq, makeShout, shoutType, rtype);
     // Save this shout until request granted by bus arbiter
     // Copy newReq because pop destroys it
     if (makeShout) {
@@ -101,10 +63,62 @@ void CMProc::tick() {
   }
   else if (!pendingShout->isDone) {
     // tried to make the request to shout, but wasn't granted, so try again
-    BUSRequests[pid] = true;  // flag the request vector
+    _updatePendingRequest(pendingShout->addr, makeShout, shoutType, rtype);
+    if (makeShout) {
+      pendingShout->update(NULL, shoutType, NULL);
+      BUSRequests[pid] = true;  // flag the request vector
+    } else {
+      dassert(false, "update shout decides no longer need to make a shout, unimplemented!");
+    }
   }
   else {
     currentJob->tick();
+  }
+}
+
+void CMProc::_updatePendingRequest(CMAddr *newReq,
+    bool &makeShout, shout_t &shoutType, res_t &rtype) {
+  int data;
+  rtype = cache->accessCache(newReq, data);
+
+  // create current job or busRequest based on cache access result
+  shoutType = BusRd;
+  makeShout = true;
+  switch (rtype) {
+    case RTYPE_HIT:
+      if (newReq->itype == ITYPE_READ) {
+        currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
+        makeShout = false;
+      }
+      else if (newReq->itype == ITYPE_WRITE) {
+        CMLine *line = cache->getLine(newReq);
+        if (line->stype == STYPE_MODIFIED) {
+          makeShout = false;
+        }
+        else if (line->stype == STYPE_INVALID) {
+          shoutType = BusRdX;
+        }
+        else {  // stype == STYPE_SHARED
+          shoutType = BusUpg;
+        }
+      }
+      break;
+
+    // miss and evict both need bus shouts
+    case RTYPE_MISS:
+    case RTYPE_EVICT: {
+      // decide shout type based on R/W
+      if (newReq->itype == ITYPE_READ) {
+        shoutType = BusRd;
+      }
+      else {
+        shoutType = BusRdX;
+      }
+
+      break;
+    }
+    default:
+      break;
   }
 }
 

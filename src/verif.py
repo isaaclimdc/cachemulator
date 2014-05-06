@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os, sys
 import subprocess
 
@@ -8,6 +9,7 @@ def report(test, sol):
     print "TEST PASSED!"
   else:
     print "TEST FAILED..."
+
 
 def checkHitsMisses(parsed, traceFile):
   sol = []
@@ -20,6 +22,7 @@ def checkHitsMisses(parsed, traceFile):
 
   report(parsed[0], sol)
 
+
 def checkBusShouts(parsed, traceFile):
   sol = []
   if traceFile == "traces/easy1.trace":
@@ -31,6 +34,7 @@ def checkBusShouts(parsed, traceFile):
 
   report(parsed[1], sol)
 
+
 def parse():
   parsedFiles = []
   for outFile in outFiles:
@@ -40,12 +44,15 @@ def parse():
       parsedFiles.append(bare)
   return parsedFiles
 
+
 def run(traceFile):
   subprocess.call(["./cache", "-t", traceFile])
+
 
 def clean():
   for outFile in outFiles:
     subprocess.call(["rm", outFile])
+
 
 def main():
   if len(sys.argv) < 2:
@@ -67,6 +74,7 @@ def main():
   checkBusShouts(parsed, traceFile)
 
   clean()
+
 
 if __name__ == '__main__':
   main()

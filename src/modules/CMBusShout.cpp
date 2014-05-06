@@ -17,9 +17,13 @@ CMBusShout::~CMBusShout() {
 void CMBusShout::update(CMAddr *_addr,
                         shout_t _shoutType,
                         CMJob *_requestingJob) {
-  addr = _addr;
+  if (_addr != NULL) {
+    addr = _addr;
+  }
   shoutType = _shoutType;
-  requestingJob = _requestingJob;
+  if (_requestingJob != NULL) {
+    requestingJob = _requestingJob;
+  }
   isDone = false;
 }
 

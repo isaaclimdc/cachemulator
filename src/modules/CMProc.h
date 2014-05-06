@@ -17,6 +17,10 @@ class CMBusShout;
 
 class CMProc {
   private:
+    void _updatePendingRequest(CMAddr *newReq,
+                               bool &makeShout,
+                               shout_t &shoutType,
+                               res_t &rytpe);
 
   public:
     CMProc(size_t _pid);
