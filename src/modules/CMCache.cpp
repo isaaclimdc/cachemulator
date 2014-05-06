@@ -64,7 +64,7 @@ bool CMCache::probeLine(CMAddr *addr) {
 
 void CMCache::bringLineIntoCache(CMAddr *addr, bool shared) {
   CMSet *set = sets.at(addr->setIndex);
-  set->bringLineIntoSet(addr, shared);
+  set->bringLineIntoSet(addr, shared, cacheAge);
 }
 
 // If addr is in the cache, return the state of the line,
@@ -93,15 +93,19 @@ char CMCache::rTypeToChar(res_t rtype) {
   else if (rtype == RTYPE_MISS) {
     return 'M';
   }
-  else if (rtype == RTYPE_EVICT) {
-    return 'E';
-  }
   else {
-    dassert(false, "Bad rtype");
-    return ' ';
+    return 'E';
   }
 }
 
 void CMCache::printRType(res_t rtype) {
-  dprintf("%c\n", rTypeToChar(rtype));
+  if (rtype == RTYPE_HIT) {
+    dprintf("HIT\n");
+  }
+  else if (rtype == RTYPE_MISS) {
+    dprintf("MISS\n");
+  }
+  else {
+    dprintf("EVICT\n");
+  }
 }

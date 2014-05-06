@@ -58,18 +58,23 @@ bool CMSet::probeLine(CMAddr *addr) {
   return true;
 }
 
-bool CMSet::bringLineIntoSet(CMAddr *addr, bool shared) {
-  dassert(getLine(addr, 0) == NULL, "Line not in cache!");
+void CMSet::bringLineIntoSet(CMAddr *addr, bool shared,
+                             long long unsigned cacheAge) {
+  CMLine *line = getLine(addr, cacheAge);
+  if (line != NULL) {
+    line->update(addr, shared);
+    return;
+  }
 
   std::vector<CMLine*>::iterator it;
   int oldestAge = 0;
   CMLine *oldest = *lines.begin();
   for (it = lines.begin(); it != lines.end(); ++it) {
-    CMLine *line = *it;
+    line = *it;
     if (line->stype == STYPE_INVALID) {
       // Found a place to stick in the new line
       line->update(addr, shared);
-      return false;
+      return;
     }
     else if (line->age < oldestAge) {
       oldestAge = line->age;
@@ -79,5 +84,4 @@ bool CMSet::bringLineIntoSet(CMAddr *addr, bool shared) {
 
   // No place, evict oldest line
   oldest->update(addr, shared);
-  return true;
 }

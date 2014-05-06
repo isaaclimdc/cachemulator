@@ -18,7 +18,7 @@
 
 #define FILE_HITSMISSES "hitsmisses.out"
 
-CMProc::CMProc(int _pid) {
+CMProc::CMProc(size_t _pid) {
   cache = new CMCache();
   isDone = false;
   currentJob = new CMJob();
@@ -53,8 +53,15 @@ void CMProc::tick() {
         if (newReq->itype == ITYPE_READ) {
           currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
           makeShout = false;
-        } else if (newReq->itype == ITYPE_WRITE) {
-          shoutType = BusUpg;
+        }
+        else if (newReq->itype == ITYPE_WRITE) {
+          CMLine *line = cache->getLine(newReq);
+          if (line->stype == STYPE_MODIFIED) {
+            makeShout = false;
+          }
+          else {
+            shoutType = BusUpg;
+          }
         }
         break;
 
@@ -111,14 +118,8 @@ void CMProc::bringShoutedLineIntoCache(bool shared) {
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
-  // A request is pending on this processor; don't respond
   shared = false;
   dirty = false;
-
-  if (BUSRequests[pid]) {
-    currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
-    return;
-  }
 
   state_t stype = cache->getLineState(shout->addr);
   switch (stype) {
@@ -126,19 +127,17 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
       switch (shout->shoutType) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
-          dprintf("Staying in SHARED state, addr");
-          shout->addr->print();
+          dprintf("Proc %d responds: 0x%llx staying in SHARED state\n", pid, shout->addr->raw);
           shared = true;
           break;
         case BusRdX:
         case BusUpg:
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
-          dprintf("Move to INVALID state, addr");
-          shout->addr->print();
+          dprintf("Proc %d responds: Move 0x%llx to INVALID state\n", pid, shout->addr->raw);
           break;
         default:
-          dassert(false, "Cache shared, but not busRd or busRdx not implemented");
+          dassert(false, "Cache shared, but not BusRd or BusRdX not implemented");
           break;
       }
       break;
@@ -149,16 +148,16 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
           cache->setLineState(shout->addr, STYPE_SHARED);
-          dprintf("Move to SHARED state and FLUSH, addr %p\n", shout->addr);
+          dprintf("Proc %d responds: Move 0x%llx to SHARED state and FLUSH\n", pid, shout->addr->raw);
           break;
         case BusUpg:
         case BusRdX:
           // Other proc has intention to write. INVALIDATE and FLUSH.
           cache->invalidate(shout->addr);
-          dprintf("Move to INVALID state and FLUSH, addr %p\n", shout->addr);
+          dprintf("Proc %d responds: Move 0x%llx to INVALID state and FLUSH\n", pid, shout->addr->raw);
           break;
         default:
-          dassert(false, "Cache shared, but not busRd or busRdx not implemented");
+          dassert(false, "Cache shared, but not BusRd or BusRdX not implemented");
           break;
       }
     break;

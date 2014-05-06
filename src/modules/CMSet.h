@@ -20,7 +20,8 @@ class CMSet {
     // otherwise return NULL.
     CMLine *getLine(CMAddr *addr, long long unsigned cacheAge);
     bool probeLine(CMAddr *addr);
-    bool bringLineIntoSet(CMAddr *addr, bool shared);
+    void bringLineIntoSet(CMAddr *addr, bool shared,
+                          long long unsigned cacheAge);
 
     std::vector<CMLine*> lines;
 };

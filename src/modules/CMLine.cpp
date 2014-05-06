@@ -31,7 +31,6 @@ void CMLine::update(CMAddr *addr, bool shared) {
   age = 0; //TODO wrong!!!
 
   if (addr->itype == ITYPE_READ) {
-    dprintf("Loading into shared\n");
     if (shared) {
       stype = STYPE_SHARED;
     }
@@ -39,13 +38,8 @@ void CMLine::update(CMAddr *addr, bool shared) {
       stype = STYPE_SHARED; // TODO: change to exclusive
     }
   }
-  else if (addr->itype == ITYPE_WRITE) {
+  else {
     stype = STYPE_MODIFIED;
     dirty = true;
-    dprintf("Loading into modified\n");
-  }
-  else {
-    dassert(false, "Incorrect itype!");
-    stype = STYPE_INVALID;
   }
 }

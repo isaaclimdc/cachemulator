@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include <cstring>
 #include <queue>
 #include "CMCache.h"
 #include "CMBusShout.h"
@@ -16,11 +17,9 @@ class CMBusShout;
 
 class CMProc {
   private:
-    CMCache *cache;
-    int pid;
 
   public:
-    CMProc(int _pid);
+    CMProc(size_t _pid);
     ~CMProc();
 
     void tick();
@@ -29,6 +28,9 @@ class CMProc {
     void writeToFile(res_t rtype);
 
     void bringShoutedLineIntoCache(bool shared);
+
+    size_t pid;
+    CMCache *cache;
     CMBusShout *pendingShout;
     std::queue<CMAddr*> requests;
     bool isDone;

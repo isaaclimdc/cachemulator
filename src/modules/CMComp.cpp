@@ -58,18 +58,22 @@ void CMComp::tick() {
 
     CMProc *grantedProc = procs.at(shoutPid);
     CMBusShout *outstandingShout = grantedProc->pendingShout;
-    dassert(outstandingShout != NULL, "Granted access to a non-requesting proc!");
+    dassert(outstandingShout != NULL,
+            "Granted access to a non-requesting proc!");
+    outstandingShout->print();
 
     // Other processors respond
     bool hasShare = false;
     bool hasDirty = false;
     for (it = procs.begin(); it != procs.end(); ++it) {
-      bool shared;
-      bool dirty;
       CMProc *proc = *it;
-      proc->respondToBusShout(outstandingShout, shared, dirty);
-      hasShare = shared || hasShare;
-      hasDirty = dirty || hasDirty;
+      if (proc->pid != shoutPid) {
+        bool shared;
+        bool dirty;
+        proc->respondToBusShout(outstandingShout, shared, dirty);
+        hasShare = shared || hasShare;
+        hasDirty = dirty || hasDirty;
+      }
     }
 
     // set the bus to wait until our transaction is done
