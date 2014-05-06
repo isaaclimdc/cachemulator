@@ -135,16 +135,16 @@ CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
     makeShout = false;
     break;
 
-  #ifdef MESI
   case STYPE_EXCLUSIVE:
-    makeShout = false;
-    if (itype == ITYPE_WRITE) {
-      // secretly upgrade to Modified without shouting
-      dprintf("Secretly upgrading to modified state!!!\n");
-      cache->setLineState(newReq, STYPE_MODIFIED);
+    if (CONFIG->hasExclusiveState()) {
+      makeShout = false;
+      if (itype == ITYPE_WRITE) {
+        // Secretly upgrade to Modified without shouting
+        dprintf("Secretly upgrading to modified state!!!\n");
+        cache->setLineState(newReq, STYPE_MODIFIED);
+      }
     }
     break;
-  #endif
 
   default:
     dassert(false, "UNIMPLEMENTED state type");

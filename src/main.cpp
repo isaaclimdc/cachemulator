@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <algorithm>
-#include <cstring>
 #include <iostream>
+#include <string.h>
 
 #include "modules/CMComp.h"
 #include "modules/CMCache.h"
@@ -23,26 +23,30 @@
 
 /* Function declarations */
 
-void parseTraceFile(std::string filePath, CMTest *test);
-bool verifyOutput(std::string filePath, std::vector<res_t> verif);
+void parseTraceFile(char *filePath, CMTest *test);
+prot_t parseProtocol(char *optarg);
 
 /* Function definitions */
 
 int main(int argc, char **argv) {
-  std::string filePath;
+  char *filePath = NULL;
+  prot_t protocol = PTYPE_MSI;
 
   char c;
-  while ((c = getopt(argc, argv, "t:")) != -1) {
+  while ((c = getopt(argc, argv, "t:p:")) != -1) {
     switch (c) {
       case 't':
         filePath = optarg;
+        break;
+      case 'p':
+        protocol = parseProtocol(optarg);
         break;
       default:
         exit(1);
     }
   }
 
-  if (filePath.empty()) {
+  if (filePath == NULL) {
     printf("Usage: %s [-t <trace file>]\n", argv[0]);
     exit(1);
   }
@@ -50,6 +54,8 @@ int main(int argc, char **argv) {
   // Initialize the global singletons
   CONFIG = new CMConfig();
   BUSRequests = new bool[CONFIG->numProcs]();
+
+  CONFIG->protocol = protocol;
 
   // Parse traces
   CMTest *test = new CMTest();
@@ -74,8 +80,8 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void parseTraceFile(std::string filePath, CMTest *test) {
-  FILE *traceFile = fopen(filePath.c_str(), "r");
+void parseTraceFile(char *filePath, CMTest *test) {
+  FILE *traceFile = fopen(filePath, "r");
 
   if (traceFile == NULL) {
     perror("Error opening file.");
@@ -102,4 +108,16 @@ void parseTraceFile(std::string filePath, CMTest *test) {
   }
 
   fclose(traceFile);
+}
+
+prot_t parseProtocol(char *optarg) {
+  if (strcasecmp(optarg, "mesi") == 0) {
+    return PTYPE_MESI;
+  }
+  else if (strcasecmp(optarg, "mesif") == 0) {
+    return PTYPE_MESIF;
+  }
+  else {
+    return PTYPE_MSI;
+  }
 }
