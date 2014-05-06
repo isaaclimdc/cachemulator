@@ -51,16 +51,18 @@ void CMProc::tick() {
       CMAddr *newReqCopy = newReq->copy();
       pendingShout->update(newReqCopy, shoutType, currentJob);
       currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
+    } else {
+      currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
     }
 
     requests.pop();
 
+    #ifdef DEBUG
     cache->printRType(rtype);
-
-#ifdef DEBUG
     writeToFile(rtype);
-#endif
+    #endif
   }
+
   else if (!pendingShout->isDone) {
     // tried to make the request to shout, but wasn't granted, so try again
     _updatePendingRequest(pendingShout->addr, makeShout, shoutType, rtype);
@@ -71,6 +73,7 @@ void CMProc::tick() {
       dassert(false, "update shout decides no longer need to make a shout, unimplemented!");
     }
   }
+
   else {
     currentJob->tick();
   }
@@ -111,6 +114,17 @@ void CMProc::_updatePendingRequest(CMAddr *newReq,
     makeShout = false;
     break;
 
+  #ifdef MESI
+  case STYPE_EXCLUSIVE:
+    makeShout = false;
+    if (itype == ITYPE_WRITE) {
+      // secretly upgrade to Modified without shouting
+      dprintf("Secretly upgrading to modified state!!!\n");
+      cache->setLineState(newReq, STYPE_MODIFIED);
+    }
+    break;
+  #endif
+
   default:
     dassert(false, "UNIMPLEMENTED state type");
     break;
@@ -134,13 +148,14 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
 
   state_t stype = cache->getLineState(shout->addr);
   switch (stype) {
+
     case STYPE_SHARED:
+      shared = true;
       switch (shout->shoutType) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
           dprintf("Proc %d responds: 0x%llx staying in SHARED state\n",
                   pid, shout->addr->raw);
-          shared = true;
           break;
         case BusRdX:
         case BusUpg:
@@ -155,11 +170,36 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
       }
       break;
 
+    #ifdef MESI
+    case STYPE_EXCLUSIVE:
+      shared = true;
+      switch (shout->shoutType) {
+        case BusRd:
+          // Other proc just reading. Move to Shared
+          cache->setLineState(shout->addr, STYPE_SHARED);
+          dprintf("Proc %d responds: 0x%llx moving from Exclusive to SHARED state\n",
+                  pid, shout->addr->raw);
+          break;
+        case BusRdX:
+          // Other proc has intention to write. INVALIDATE, but don't flush.
+          cache->invalidate(shout->addr);
+          dprintf("Proc %d responds: Move 0x%llx from Exclusive to INVALID state\n",
+                  pid, shout->addr->raw);
+          break;
+        case BusUpg:
+        default:
+          dassert(false, "Cache Exclusive but received BusUpg");
+          break;
+      }
+      break;
+    #endif
+
     case STYPE_MODIFIED:
       dirty = true;
       switch (shout->shoutType) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
+          shared = true;
           cache->setLineState(shout->addr, STYPE_SHARED);
           dprintf("Proc %d responds: Move 0x%llx to SHARED state and FLUSH\n",
                   pid, shout->addr->raw);

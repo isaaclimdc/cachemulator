@@ -7,7 +7,8 @@
 enum state_t {
   STYPE_INVALID,  // Not in this cache
   STYPE_SHARED,
-  STYPE_MODIFIED
+  STYPE_MODIFIED,
+  STYPE_EXCLUSIVE
 };
 
 class CMAddr;

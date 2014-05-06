@@ -27,7 +27,17 @@ void CMMemCtrlr::tick() {
 }
 
 void CMMemCtrlr::addJob(CMJob *requestingJob, int delay) {
-  // should loop through and replace the done jobs
+  // loop through and replace the done jobs
+  std::vector<CMJob*>::iterator it;
+  for (it = memReqs.begin(); it != memReqs.end(); ++it) {
+    CMJob *job= *it;
+    if (job->jobDone) {
+      job->update(JTYPE_DELAY, delay, requestingJob);
+      return;
+    }
+  }
+
+  // all jobs not done, make a new
   CMJob *newJob = new CMJob();
   newJob->update(JTYPE_DELAY, delay, requestingJob);
   memReqs.push_back(newJob);

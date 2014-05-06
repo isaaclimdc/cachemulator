@@ -35,7 +35,11 @@ void CMLine::update(CMAddr *addr, bool shared) {
       stype = STYPE_SHARED;
     }
     else {
-      stype = STYPE_SHARED; // TODO: change to exclusive
+      #ifdef MESI
+      stype = STYPE_EXCLUSIVE; // TODO: change to exclusive
+      #else
+      stype = STYPE_SHARED;
+      #endif
     }
   }
   else {

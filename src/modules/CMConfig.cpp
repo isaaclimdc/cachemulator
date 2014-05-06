@@ -6,7 +6,7 @@
 
 CMConfig::CMConfig() {
   // TODO: parse a file to do all these settings
-  numProcs = 4;
+  numProcs = 20;
   numSetBits = 8;
   numLines = 2;
   numBlockBits = 8;
