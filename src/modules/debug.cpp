@@ -18,17 +18,6 @@ void dprintf(const char *format, ...) {
   va_end(arg);
 }
 
-void dassert(bool exp, const char *str) {
-#ifndef DEBUG
-  return;
-#endif
-
-  if (!exp) {
-    dprintf("ASSERTION FAILED: %s\n", str);
-  }
-  assert(exp);
-}
-
 void printBUSRequests() {
 #ifndef DEBUG
   return;

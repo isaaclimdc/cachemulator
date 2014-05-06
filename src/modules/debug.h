@@ -8,6 +8,12 @@
 
 #define DEBUG 1
 
+#define dassert(exp, str)                        \
+do {                                             \
+  if (!(exp))                                    \
+    dprintf("ASSERTION FAILED: %s\n", (str));    \
+  assert((exp));                                 \
+} while (0)
+
 void dprintf(const char *format, ...);
-void dassert(bool exp, const char *str);
 void printBUSRequests();
