@@ -5,24 +5,31 @@
 #include "CMAddr.h"
 #include "CMLine.h"
 #include "debug.h"
+#include "CMGlobals.h"
 
-CMLine::CMLine() {
+CMLine::CMLine(unsigned _setIdx) {
   dirty = false;
   age = 0;
   stype = STYPE_INVALID;
   tag = 0;
+  setIdx = _setIdx;
 }
 
 CMLine::~CMLine() {
 }
 
-bool CMLine::isHit(CMAddr *addr, long long unsigned cacheAge) {
+bool CMLine::isHitUpdateAge(CMAddr *addr, long long unsigned cacheAge) {
   if (stype != STYPE_INVALID && (addr->tag == tag)) {
+    dprintf("setting line %p to age %d\n", addr->raw, cacheAge);
     age = cacheAge;
     return true;
   } else {
     return false;
   }
+}
+
+bool CMLine::isHit(CMAddr *addr) {
+  return (stype != STYPE_INVALID) && (addr->tag == tag);
 }
 
 void CMLine::update(CMAddr *addr, bool shared) {
@@ -46,4 +53,11 @@ void CMLine::update(CMAddr *addr, bool shared) {
     stype = STYPE_MODIFIED;
     dirty = true;
   }
+}
+
+CMAddr *CMLine::getBaseAddr() {
+  long long unsigned rawAddr =
+    (tag << (CONFIG->numBlockBits + CONFIG->numSetBits)) |
+    (setIdx << CONFIG->numBlockBits);
+  return new CMAddr(rawAddr, ITYPE_READ, 0); // The pid is set later
 }

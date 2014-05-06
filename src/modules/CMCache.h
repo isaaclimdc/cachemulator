@@ -20,18 +20,19 @@ class CMAddr;
 
 class CMCache {
   private:
+    CMLine *_getLine(CMAddr *addr);
 
   public:
     CMCache();
     ~CMCache();
 
-    res_t accessCache(CMAddr *addr);
+    res_t accessCache(CMAddr *addr, CMAddr **evictingAddr);
 
     // If addr is in the cache, return the line it is in,
     // otherwise return NULL.
     CMLine *getLine(CMAddr *addr);
 
-    bool probeLine(CMAddr *addr);
+    CMAddr *probeLine(CMAddr *addr);
     void bringLineIntoCache(CMAddr *addr, bool shared);
 
     // If addr is in the cache, return the state of the line,

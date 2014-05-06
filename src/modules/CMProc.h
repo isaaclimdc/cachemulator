@@ -17,10 +17,10 @@ class CMBusShout;
 
 class CMProc {
   private:
-    void _updatePendingRequest(CMAddr *newReq,
-                               bool &makeShout,
-                               shout_t &shoutType,
-                               res_t &rytpe);
+    CMAddr *_updatePendingRequest(CMAddr *newReq,
+                                  bool &makeShout,
+                                  shout_t &shoutType,
+                                  res_t &rytpe);
 
   public:
     CMProc(size_t _pid);
@@ -31,7 +31,7 @@ class CMProc {
 
     void writeToFile(res_t rtype);
 
-    void bringShoutedLineIntoCache(bool shared);
+    void postShoutingProcess(bool shared);
 
     size_t pid;
     CMCache *cache;

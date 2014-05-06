@@ -40,22 +40,33 @@ void CMProc::tick() {
   bool makeShout = true;
   shout_t shoutType = BusRd;
   res_t rtype = RTYPE_HIT;
+  CMAddr *evictingAddr;
   if (currentJob->jobDone) {
     CMAddr *newReq = requests.front();
     newReq->print();
-    _updatePendingRequest(newReq, makeShout, shoutType, rtype);
-    // Save this shout until request granted by bus arbiter
-    // Copy newReq because pop destroys it
-    if (makeShout) {
-      BUSRequests[pid] = true;  // flag the request vector
-      CMAddr *newReqCopy = newReq->copy();
-      pendingShout->update(newReqCopy, shoutType, currentJob);
-      currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
+    evictingAddr = _updatePendingRequest(newReq, makeShout, shoutType, rtype);
+
+    if (shoutType == BusWr) {
+      // if BusWr then need to evict that line first
+        BUSRequests[pid] = true;  // flag the request vector
+        CMAddr *newReqCopy = evictingAddr->copy();
+        newReqCopy->pid = pid;
+        pendingShout->update(newReqCopy, shoutType, currentJob);
+        currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
     } else {
-      currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
+      if (makeShout) {
+        // Save this shout until request granted by bus arbiter
+        // Copy newReq because pop destroys it
+        BUSRequests[pid] = true;  // flag the request vector
+        CMAddr *newReqCopy = newReq->copy();
+        pendingShout->update(newReqCopy, shoutType, currentJob);
+        currentJob->update(JTYPE_WAIT_UNTIL, -1, NULL);
+      } else {
+        currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
+      }
+      requests.pop();
     }
 
-    requests.pop();
 
     #ifdef DEBUG
     cache->printRType(rtype);
@@ -65,7 +76,8 @@ void CMProc::tick() {
 
   else if (!pendingShout->isDone) {
     // tried to make the request to shout, but wasn't granted, so try again
-    _updatePendingRequest(pendingShout->addr, makeShout, shoutType, rtype);
+    evictingAddr = _updatePendingRequest(pendingShout->addr, makeShout,
+                                         shoutType, rtype);
     if (makeShout) {
       pendingShout->update(NULL, shoutType, NULL);
       BUSRequests[pid] = true;  // flag the request vector
@@ -79,9 +91,10 @@ void CMProc::tick() {
   }
 }
 
-void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
+CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
                                    shout_t &shoutType, res_t &rtype) {
-  rtype = cache->accessCache(newReq);
+  CMAddr *evictingAddr = NULL;
+  rtype = cache->accessCache(newReq, &evictingAddr);
   state_t stype = cache->getLineState(newReq);
 
   // create current job or busRequest based on cache access result
@@ -91,12 +104,21 @@ void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
 
   switch(stype) {
   case STYPE_INVALID:
-    if (itype == ITYPE_READ) {
-      makeShout = true;
-      shoutType = BusRd;
+    dprintf("INVALID!! STUF STUF\n");
+    if (rtype == RTYPE_EVICT && evictingAddr != NULL &&
+            cache->getLine(evictingAddr)->stype == STYPE_MODIFIED) {
+          dprintf("EVICTING STUF STUF\n");
+          // We have the line dirty!!! Need an extra bus write to flush to memory!
+          makeShout = true;
+          shoutType = BusWr;
     } else {
-      makeShout = true;
-      shoutType = BusRdX;
+      if (itype == ITYPE_READ) {
+        makeShout = true;
+        shoutType = BusRd;
+      } else {
+        makeShout = true;
+        shoutType = BusRdX;
+      }
     }
     break;
 
@@ -128,6 +150,7 @@ void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
     dassert(false, "UNIMPLEMENTED state type");
     break;
   }
+  return evictingAddr;
 }
 
 void CMProc::writeToFile(res_t rtype) {
@@ -137,8 +160,17 @@ void CMProc::writeToFile(res_t rtype) {
   file.close();
 }
 
-void CMProc::bringShoutedLineIntoCache(bool shared) {
-  cache->bringLineIntoCache(pendingShout->addr, shared);
+void CMProc::postShoutingProcess(bool shared) {
+  switch (pendingShout->shoutType) {
+  case BusWr:
+    dprintf("BUS WRING\n");
+    cache->invalidate(pendingShout->addr);
+    break;
+
+  default:
+    cache->bringLineIntoCache(pendingShout->addr, shared);
+    break;
+  }
 }
 
 void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {

@@ -17,13 +17,16 @@ class CMLine {
   private:
 
   public:
-    CMLine();
+    CMLine(unsigned _setIdx);
     ~CMLine();
 
-    bool isHit(CMAddr *addr, long long unsigned cacheAge);
+    bool isHitUpdateAge(CMAddr *addr, long long unsigned cacheAge);
+    bool isHit(CMAddr *addr);
     void update(CMAddr *addr, bool shared);
+    CMAddr *getBaseAddr();
 
     unsigned tag;
+    unsigned setIdx; // record the set number to reconstruct addr
     bool dirty;
     int age;
     state_t stype;

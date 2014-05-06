@@ -18,7 +18,7 @@ CMCache::CMCache() {
   int S = 1 << CONFIG->numSetBits;
 
   for (int Si = 0; Si < S; Si++) {
-    CMSet *set = new CMSet();
+    CMSet *set = new CMSet(Si);
     sets.push_back(set);
   }
 }
@@ -31,7 +31,7 @@ CMCache::~CMCache() {
   }
 }
 
-res_t CMCache::accessCache(CMAddr *addr) {
+res_t CMCache::accessCache(CMAddr *addr, CMAddr **evictingAddr) {
   // tick the cache system time
   cacheAge++;
   dassert(cacheAge != std::numeric_limits<long long unsigned>::max(),
@@ -39,12 +39,19 @@ res_t CMCache::accessCache(CMAddr *addr) {
 
   res_t rtype;
 
-  if (getLine(addr) != NULL) {
+  if (_getLine(addr) != NULL) {
     rtype = RTYPE_HIT;
   }
   else {
-    bool didEvict = probeLine(addr);
-    rtype = didEvict ? RTYPE_EVICT : RTYPE_MISS;
+    CMAddr *evictAddr = probeLine(addr);
+    if (evictAddr == NULL) {
+      rtype = RTYPE_MISS;
+    }
+    else {
+      dprintf("Access Cache! EVICTINNNNNG!!\n");
+      rtype = RTYPE_EVICT;
+      *evictingAddr = evictAddr;
+    }
   }
 
   return rtype;
@@ -52,12 +59,20 @@ res_t CMCache::accessCache(CMAddr *addr) {
 
 // If addr is in the cache, return the line it is in,
 // otherwise return NULL.
-CMLine *CMCache::getLine(CMAddr *addr) {
+// this private one updates the cache age!!!
+CMLine *CMCache::_getLine(CMAddr *addr) {
   CMSet *set = sets.at(addr->setIndex);
-  return set->getLine(addr, cacheAge);
+  return set->getLineUpdateAge(addr, cacheAge);
 }
 
-bool CMCache::probeLine(CMAddr *addr) {
+// If addr is in the cache, return the line it is in,
+// otherwise return NULL.
+CMLine *CMCache::getLine(CMAddr *addr) {
+  CMSet *set = sets.at(addr->setIndex);
+  return set->getLine(addr);
+}
+
+CMAddr *CMCache::probeLine(CMAddr *addr) {
   CMSet *set = sets.at(addr->setIndex);
   return set->probeLine(addr);
 }

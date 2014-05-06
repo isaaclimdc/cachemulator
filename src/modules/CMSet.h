@@ -13,13 +13,14 @@ class CMSet {
   private:
 
   public:
-    CMSet();
+    CMSet(int _setIdx);
     ~CMSet();
 
     // If addr is in the set, return the line it is in,
     // otherwise return NULL.
-    CMLine *getLine(CMAddr *addr, long long unsigned cacheAge);
-    bool probeLine(CMAddr *addr);
+    CMLine *getLineUpdateAge(CMAddr *addr, long long unsigned cacheAge);
+    CMLine *getLine(CMAddr *addr);
+    CMAddr *probeLine(CMAddr *addr);
     void bringLineIntoSet(CMAddr *addr, bool shared,
                           long long unsigned cacheAge);
 

@@ -107,7 +107,7 @@ void CMComp::tick() {
     }
 
     // the granted processor updates its access tag
-    grantedProc->bringShoutedLineIntoCache(hasShare);
+    grantedProc->postShoutingProcess(hasShare);
     grantedProc->pendingShout->isDone = true;
   }
 
