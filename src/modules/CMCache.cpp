@@ -31,7 +31,7 @@ CMCache::~CMCache() {
   }
 }
 
-res_t CMCache::accessCache(CMAddr *addr, int &data) {
+res_t CMCache::accessCache(CMAddr *addr) {
   // tick the cache system time
   cacheAge++;
   dassert(cacheAge != std::numeric_limits<long long unsigned>::max(),

@@ -25,7 +25,7 @@ class CMCache {
     CMCache();
     ~CMCache();
 
-    res_t accessCache(CMAddr *addr, int &data);
+    res_t accessCache(CMAddr *addr);
 
     // If addr is in the cache, return the line it is in,
     // otherwise return NULL.
