@@ -81,67 +81,21 @@ void parseTraceFile(std::string filePath, CMTest *test) {
   char traceLine[MAX_TRACE_LINE_LENGTH];
 
   while (fgets(traceLine, MAX_TRACE_LINE_LENGTH, traceFile) != NULL) {
-    // if (traceLine[0] == '/' && traceLine[1] == '/') {
-    //   continue;
-    // }
+    if (traceLine[0] == '/' && traceLine[1] == '/') {
+      continue;
+    }
 
+    char op;
     long long unsigned rawAddr;
     size_t tid;
-    int data = 0;
-    inst_t itype;
 
-    if (traceLine[0] == 'W') {
-      sscanf(traceLine, "W %llx %zu %d", &rawAddr, &tid, &data);
-      itype = ITYPE_WRITE;
-    }
-    else {
-      sscanf(traceLine, "R %llx %zu", &rawAddr, &tid);
-      itype = ITYPE_READ;
-    }
+    sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &tid);
 
-    CMAddr *addr = new CMAddr(rawAddr, itype, tid, data);
+    inst_t itype = op == 'R' ? ITYPE_READ : ITYPE_WRITE;
+    CMAddr *addr = new CMAddr(rawAddr, itype, tid);
 
     test->addToTest(addr);
   }
 
   fclose(traceFile);
-}
-
-bool verifyOutput(std::string filePath, std::vector<res_t> verif) {
-  std::vector<res_t> check;
-
-  if (filePath.compare("traces/easy1.trace") == 0) {
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-  }
-  else if (filePath.compare("traces/evict1.trace") == 0) {
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_EVICT);
-    check.push_back(RTYPE_EVICT);
-  }
-  else if (filePath.compare("traces/coherent1.trace") == 0) {
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_MISS);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-    check.push_back(RTYPE_HIT);
-  }
-
-  if (check.size() != verif.size()) {
-    return false;
-  }
-
-  return std::equal(verif.begin(), verif.begin()+verif.size(), check.begin());
 }

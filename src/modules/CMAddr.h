@@ -15,7 +15,7 @@ class CMAddr {
   private:
 
   public:
-    CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid, int _data);
+    CMAddr(long long unsigned raw_addr, inst_t _itype, size_t _pid);
     ~CMAddr();
 
     void printAddr();
@@ -25,7 +25,6 @@ class CMAddr {
     unsigned setIndex;
     unsigned blockOffset;
     long long unsigned raw;
-    int data;  // For debug purposes
 
     inst_t itype;
     size_t pid;
