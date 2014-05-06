@@ -11,6 +11,8 @@
 #include "CMGlobals.h"
 #include "CMMemCtrlr.h"
 #include <string>
+#include <iostream>
+#include <fstream>
 
 CMComp::CMComp(int P) {
   // Get new processors, i is their pid
@@ -62,6 +64,10 @@ void CMComp::tick() {
             "Granted access to a non-requesting proc!");
     outstandingShout->print();
 
+#ifdef DEBUG
+    writeToFile(outstandingShout);
+#endif
+
     // Other processors respond
     bool hasShare = false;
     bool hasDirty = false;
@@ -85,9 +91,11 @@ void CMComp::tick() {
     // then look at the response and react accordingly
     if (hasDirty) {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->flushAndLoadDelay);
-    } else if (outstandingShout->shoutType == BusUpg) {
+    }
+    else if (outstandingShout->shoutType == BusUpg) {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->upgDelay);
-    } else {
+    }
+    else {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->memDelay);
     }
 
@@ -97,6 +105,13 @@ void CMComp::tick() {
   }
 
   memCtrlr->tick();
+}
+
+void CMComp::writeToFile(CMBusShout *shout) {
+  std::ofstream file;
+  file.open(FILE_BUSSHOUTS, std::ios_base::app);
+  file << shout->toChar() << "\n";
+  file.close();
 }
 
 void CMComp::distrbTrace(CMTest *test) {

@@ -11,6 +11,7 @@ class CMProc;
 class CMBusCtrlr;
 class CMTest;
 class CMMemCtrlr;
+class CMBusShout;
 
 class CMComp {
   private:
@@ -22,6 +23,8 @@ class CMComp {
     void tick();
     void distrbTrace(CMTest *test);
     bool hasOutstandingJobs();
+
+    void writeToFile(CMBusShout *shout);
 
     std::vector<CMProc*> procs;
     CMBusCtrlr *busCtrlr;

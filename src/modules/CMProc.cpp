@@ -16,8 +16,6 @@
 #include "CMGlobals.h"
 #include "CMBusShout.h"
 
-#define FILE_HITSMISSES "hitsmisses.out"
-
 CMProc::CMProc(size_t _pid) {
   cache = new CMCache();
   isDone = false;
@@ -59,7 +57,10 @@ void CMProc::tick() {
           if (line->stype == STYPE_MODIFIED) {
             makeShout = false;
           }
-          else {
+          else if (line->stype == STYPE_INVALID) {
+            shoutType = BusRdX;
+          }
+          else {  // stype == STYPE_SHARED
             shoutType = BusUpg;
           }
         }
@@ -68,14 +69,12 @@ void CMProc::tick() {
       // miss and evict both need bus shouts
       case RTYPE_MISS:
       case RTYPE_EVICT: {
-
         // decide shout type based on R/W
         if (newReq->itype == ITYPE_READ) {
           shoutType = BusRd;
-        } else if (newReq->itype == ITYPE_WRITE) {
+        }
+        else {
           shoutType = BusRdX;
-        } else {
-          dassert(false, "Unsupported itype!");
         }
 
         break;
@@ -94,14 +93,17 @@ void CMProc::tick() {
 
     requests.pop();
 
+    cache->printRType(rtype);
+
 #ifdef DEBUG
     writeToFile(rtype);
-    cache->printRType(rtype);
 #endif
-  } else if (!pendingShout->isDone) {
+  }
+  else if (!pendingShout->isDone) {
     // tried to make the request to shout, but wasn't granted, so try again
     BUSRequests[pid] = true;  // flag the request vector
-  } else {
+  }
+  else {
     currentJob->tick();
   }
 }
@@ -127,17 +129,19 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
       switch (shout->shoutType) {
         case BusRd:
           // Other proc just reading. Stay in SHARED state.
-          dprintf("Proc %d responds: 0x%llx staying in SHARED state\n", pid, shout->addr->raw);
+          dprintf("Proc %d responds: 0x%llx staying in SHARED state\n",
+                  pid, shout->addr->raw);
           shared = true;
           break;
         case BusRdX:
         case BusUpg:
           // Other proc has intention to write. INVALIDATE, but don't flush.
           cache->invalidate(shout->addr);
-          dprintf("Proc %d responds: Move 0x%llx to INVALID state\n", pid, shout->addr->raw);
+          dprintf("Proc %d responds: Move 0x%llx to INVALID state\n",
+                  pid, shout->addr->raw);
           break;
         default:
-          dassert(false, "Cache shared, but not BusRd or BusRdX not implemented");
+          dassert(false, "Cache shared, but not BusRd or BusRdX");
           break;
       }
       break;
@@ -148,16 +152,18 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
         case BusRd:
           // Other proc reading. Move to SHARED state and FLUSH.
           cache->setLineState(shout->addr, STYPE_SHARED);
-          dprintf("Proc %d responds: Move 0x%llx to SHARED state and FLUSH\n", pid, shout->addr->raw);
+          dprintf("Proc %d responds: Move 0x%llx to SHARED state and FLUSH\n",
+                  pid, shout->addr->raw);
           break;
         case BusUpg:
         case BusRdX:
           // Other proc has intention to write. INVALIDATE and FLUSH.
           cache->invalidate(shout->addr);
-          dprintf("Proc %d responds: Move 0x%llx to INVALID state and FLUSH\n", pid, shout->addr->raw);
+          dprintf("Proc %d responds: Move 0x%llx to INVALID state and FLUSH\n",
+                  pid, shout->addr->raw);
           break;
         default:
-          dassert(false, "Cache shared, but not BusRd or BusRdX not implemented");
+          dassert(false, "Cache shared, but not BusRd or BusRdX");
           break;
       }
     break;

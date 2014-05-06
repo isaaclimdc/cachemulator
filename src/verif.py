@@ -1,7 +1,7 @@
 import os, sys
 import subprocess
 
-outFiles = ["hitsmisses.out"]
+outFiles = ["hitsmisses.out", "busshouts.out"]
 
 def report(test, sol):
   if test == sol:
@@ -19,6 +19,17 @@ def checkHitsMisses(parsed, traceFile):
     sol = ['M','M','M','H','H','H']
 
   report(parsed[0], sol)
+
+def checkBusShouts(parsed, traceFile):
+  sol = []
+  if traceFile == "traces/easy1.trace":
+    sol = ['R','R','R','U','R']
+  elif traceFile == "traces/evict1.trace":
+    sol = ['R','R','R','R']
+  elif traceFile == "traces/coherent1.trace":
+    sol = ['R','R','R','U','X']
+
+  report(parsed[1], sol)
 
 def parse():
   parsedFiles = []
@@ -51,6 +62,9 @@ def main():
 
   print "~ Checking Hits/Misses/Evictions"
   checkHitsMisses(parsed, traceFile)
+
+  print "~ Checking Bus Shouts"
+  checkBusShouts(parsed, traceFile)
 
   clean()
 
