@@ -70,7 +70,7 @@ void CMProc::tick() {
       pendingShout->update(NULL, shoutType, NULL);
       BUSRequests[pid] = true;  // flag the request vector
     } else {
-      dassert(false, "update shout decides no longer need to make a shout, unimplemented!");
+      dassert(false, "Unimplemented! no make shout");
     }
   }
 
@@ -79,10 +79,9 @@ void CMProc::tick() {
   }
 }
 
-void CMProc::_updatePendingRequest(CMAddr *newReq,
-    bool &makeShout, shout_t &shoutType, res_t &rtype) {
-  int data;
-  rtype = cache->accessCache(newReq, data);
+void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
+                                   shout_t &shoutType, res_t &rtype) {
+  rtype = cache->accessCache(newReq);
   state_t stype = cache->getLineState(newReq);
 
   // create current job or busRequest based on cache access result
