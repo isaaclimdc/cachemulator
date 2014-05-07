@@ -51,7 +51,6 @@ CMLine *CMSet::getLine(CMAddr *addr) {
 // Returns the old CMAddr if need to evict, else NULL
 CMAddr *CMSet::probeLine(CMAddr *addr) {
   dassert(getLine(addr) == NULL, "Line not in cache!");
-  dprintf("Probing line!!\n");
 
   std::vector<CMLine*>::iterator it;
   int oldestAge = std::numeric_limits<int>::max();
@@ -60,13 +59,11 @@ CMAddr *CMSet::probeLine(CMAddr *addr) {
     CMLine *line = *it;
     if (line->stype == STYPE_INVALID) {
       // Found a place to stick in the new line, so no evict.
-      dprintf("Found an empty line!!!\n");
       return NULL;
     }
     else if (line->age < oldestAge) {
       oldestAge = line->age;
       oldestAddr = line->getBaseAddr();
-      dprintf("OLD ADDR STUFF STUFF %p\n", oldestAddr);
     }
   }
 
@@ -93,7 +90,6 @@ void CMSet::bringLineIntoSet(CMAddr *addr, bool shared,
       return;
     }
     else if (line->age <= oldestAge) {
-      dprintf("older! age: %d, %p\n", line->age, line->getBaseAddr()->raw);
       oldestAge = line->age;
       oldest = line;
     }

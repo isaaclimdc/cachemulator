@@ -20,7 +20,6 @@ CMLine::~CMLine() {
 
 bool CMLine::isHitUpdateAge(CMAddr *addr, long long unsigned cacheAge) {
   if (stype != STYPE_INVALID && (addr->tag == tag)) {
-    dprintf("setting line %p to age %d\n", addr->raw, cacheAge);
     age = cacheAge;
     return true;
   } else {

@@ -16,6 +16,7 @@ CMConfig::CMConfig() {
   memDelay = 100;
   flushAndLoadDelay = 200;
   upgDelay = 4;
+  c2cDelay = 30;
 }
 
 CMConfig::~CMConfig() {

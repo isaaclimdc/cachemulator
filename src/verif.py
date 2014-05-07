@@ -12,26 +12,28 @@ def report(test, sol):
     print "TEST FAILED..."
 
 
-def checkHitsMisses(parsed, traceFile):
+def checkHitsMisses(parsed, traceFile, protocol):
   sol = []
-  if traceFile == "traces/easy1.trace":
-    sol = ['M','M','M','H','H','H','M','H','H','H']
-  elif traceFile == "traces/evict1.trace":
-    sol = ['M','M','H','H','E','E']
-  elif traceFile == "traces/coherent1.trace":
-    sol = ['M','M','M','H','H','H']
+  if protocol == "MSI" or protocol == "MESI":
+    if traceFile == "traces/easy1.trace":
+      sol = ['M','M','M','H','H','H','M','H','H','H']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['M','M','H','H','E','E']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['M','M','M','H','H','H']
 
   report(parsed[0], sol)
 
 
-def checkBusShouts(parsed, traceFile):
+def checkBusShouts(parsed, traceFile, protocol):
   sol = []
-  if traceFile == "traces/easy1.trace":
-    sol = ['R','R','R','U','R']
-  elif traceFile == "traces/evict1.trace":
-    sol = ['R','R','R','R']
-  elif traceFile == "traces/coherent1.trace":
-    sol = ['R','R','R','U','X']
+  if protocol == "MSI" or protocol == "MESI":
+    if traceFile == "traces/easy1.trace":
+      sol = ['R','R','R','U','R']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['R','R','R','R']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['R','R','R','U','X']
 
   report(parsed[1], sol)
 
@@ -71,10 +73,10 @@ def main():
   parsed = parse()
 
   print "~ Checking Hits/Misses/Evictions"
-  checkHitsMisses(parsed, traceFile)
+  checkHitsMisses(parsed, traceFile, protocol)
 
   print "~ Checking Bus Shouts"
-  checkBusShouts(parsed, traceFile)
+  checkBusShouts(parsed, traceFile, protocol)
 
   clean()
 

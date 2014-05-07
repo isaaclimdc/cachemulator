@@ -34,4 +34,5 @@ class CMConfig {
     int memDelay;
     int flushAndLoadDelay;
     int upgDelay;
+    int c2cDelay;
 };

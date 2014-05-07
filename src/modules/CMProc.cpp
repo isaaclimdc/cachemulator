@@ -104,10 +104,8 @@ CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
 
   switch(stype) {
   case STYPE_INVALID:
-    dprintf("INVALID!! STUF STUF\n");
     if (rtype == RTYPE_EVICT && evictingAddr != NULL &&
             cache->getLine(evictingAddr)->stype == STYPE_MODIFIED) {
-          dprintf("EVICTING STUF STUF\n");
           // We have the line dirty!!! Need an extra bus write to flush to memory!
           makeShout = true;
           shoutType = BusWr;
