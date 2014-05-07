@@ -72,7 +72,7 @@ void CMProc::tick() {
       } else {
         currentJob->update(JTYPE_DELAY, CONFIG->cacheHitDelay, NULL);
       }
-      requests.pop();
+      reqs.pop();
     }
 
     #ifdef DEBUG
@@ -123,8 +123,8 @@ inline void CMProc::refillReqsIfNeeded() {
   }
 }
 
-void CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
-                                   shout_t &shoutType, res_t &rtype) {
+CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
+                                      shout_t &shoutType, res_t &rtype) {
   CMAddr *evictingAddr = NULL;
   rtype = cache->accessCache(newReq, &evictingAddr);
   state_t stype = cache->getLineState(newReq);
