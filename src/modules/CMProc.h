@@ -27,7 +27,7 @@ class CMProc {
     ~CMProc();
 
     void tick();
-    void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty);
+    void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, bool &forward);
 
     void writeToFile(res_t rtype);
 

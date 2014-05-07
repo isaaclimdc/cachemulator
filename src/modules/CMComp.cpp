@@ -78,14 +78,17 @@ void CMComp::tick() {
     // Other processors respond
     bool hasShare = false;
     bool hasDirty = false;
+    bool hasForward = false;
     for (it = procs.begin(); it != procs.end(); ++it) {
       CMProc *proc = *it;
       if (proc->pid != shoutPid) {
         bool shared;
         bool dirty;
-        proc->respondToBusShout(outstandingShout, shared, dirty);
+        bool forward;
+        proc->respondToBusShout(outstandingShout, shared, dirty, forward);
         hasShare = shared || hasShare;
         hasDirty = dirty || hasDirty;
+        hasForward = forward || hasForward;
       }
     }
 
@@ -101,6 +104,9 @@ void CMComp::tick() {
     }
     else if (outstandingShout->shoutType == BusUpg) {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->upgDelay);
+    }
+    else if (hasForward) {
+      memCtrlr->addJob(busCtrlr->currentJob, CONFIG->c2cDelay);
     }
     else {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->memDelay);

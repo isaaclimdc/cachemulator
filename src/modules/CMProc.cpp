@@ -171,9 +171,10 @@ void CMProc::postShoutingProcess(bool shared) {
   }
 }
 
-void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
+void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, bool &forward) {
   shared = false;
   dirty = false;
+  forward = false;
 
   state_t stype = cache->getLineState(shout->addr);
   switch (stype) {
@@ -199,29 +200,33 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty) {
       }
       break;
 
-    #ifdef MESI
     case STYPE_EXCLUSIVE:
-      shared = true;
-      switch (shout->shoutType) {
-        case BusRd:
-          // Other proc just reading. Move to Shared
-          cache->setLineState(shout->addr, STYPE_SHARED);
-          dprintf("Proc %d responds: 0x%llx moving from Exclusive to SHARED state\n",
-                  pid, shout->addr->raw);
-          break;
-        case BusRdX:
-          // Other proc has intention to write. INVALIDATE, but don't flush.
-          cache->invalidate(shout->addr);
-          dprintf("Proc %d responds: Move 0x%llx from Exclusive to INVALID state\n",
-                  pid, shout->addr->raw);
-          break;
-        case BusUpg:
-        default:
-          dassert(false, "Cache Exclusive but received BusUpg");
-          break;
+      if (CONFIG->protocol == PTYPE_MESI || CONFIG->protocol == PTYPE_MESIF) {
+        shared = true;
+        forward = true;
+        switch (shout->shoutType) {
+          case BusRd:
+            // Other proc just reading. Move to Shared
+            cache->setLineState(shout->addr, STYPE_SHARED);
+            dprintf("Proc %d responds: 0x%llx moving from Exclusive to SHARED state\n",
+                    pid, shout->addr->raw);
+            break;
+          case BusRdX:
+            // Other proc has intention to write. INVALIDATE, but don't flush.
+            cache->invalidate(shout->addr);
+            dprintf("Proc %d responds: Move 0x%llx from Exclusive to INVALID state\n",
+                    pid, shout->addr->raw);
+            break;
+          case BusUpg:
+          default:
+            dassert(false, "Cache Exclusive but received BusUpg");
+            break;
+        }
+        dprintf("Processor %d forwarding line 0x%llx\n", pid, shout->addr->raw);
+      } else {
+        dassert(false, "In Exclusive state in wrong protocol");
       }
       break;
-    #endif
 
     case STYPE_MODIFIED:
       dirty = true;
