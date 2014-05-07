@@ -18,14 +18,18 @@
 ***
 ## Summary
 
-We are going to implement a coherent multi-processor cache emulator, to
-compare and contrast a snooping (MSI) cache coherence protocol with a
-directory-based one.
+Cachemulator is a coherent multi-processor cache emulator that uses a
+**snooping**-based cache coherent protocol. We have 2 goals:
+
+- Compare the performance of the MSI / MESI / MESIF protocols
+- Provide cache usage information including bus traffic, hits/misses/evictions,
+total *ticks* required, highly contended cache lines, false sharing, etc.
 
 ***
 ## Background
 
-In 15-213, we were required to write a cache simulator in *CacheLab*. This
+In the Introduction to Computer Systems class, we were required to write a
+cache simulator in *CacheLab*. This
 simulator was very basic, and did not account for multi-core parallelism.
 Cachemulator is a multi-processor version of this, with the goal of exhibiting
 **simulated** empirical evidence of the performance of various coherence
@@ -49,7 +53,8 @@ investigate with Cachemulator.
 ## The Challenge
 
 As we learned in class, there are many parts to a solution that maintains
-cache coherence, and this is true for both protocols that we intend to
+cache coherence, and this is true for the three protocols (MSI, MESI, and MESIF)
+that we intend to
 implement. One of the main challenges, is since we are aiming to simulate
 the real-life behavior of a *real* cache in a multi-processor system, we have
 to make this behavior as accurate as possible. This means everything from the

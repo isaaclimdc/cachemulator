@@ -80,7 +80,7 @@ deliverables. These goals are:
 
 - Implement the bus controller and arbitrator
 - Fully implement the **MSI** coherence protocol
-- Then implement the **directory-based** protocol
+- Fully implement **MESI** and **MESIF** protocols
 - Extend the test harness to be able to compare the two protocols
 - Allow a programmer to submit arbitrary multicore C++ code, extract its memory
   trace, and run it on the emulator.
@@ -117,11 +117,11 @@ in parallel (hehe).
 |-----------------|---------------------------------------------------|
 | Apr 14 - Apr 17 | Test harness, and correct uniprocessor cache      |
 | Apr 18 - Apr 20 | Make uniprocessor cache robust                    |
-| Apr 21 - Apr 24 | Bus controller                                    |
+| Apr 21 - Apr 24 | Bus and memory controllers                        |
 | Apr 25 - Apr 27 | Tie in bus controller to MSI protocol             |
-| Apr 28 - May 1  | Extend structure for directory-based              |
-| May 2 - May 4   | Use the system to perform analysis                |
-| May 5 - May 8   | Finalize system, stretch goals                    |
+| Apr 28 - May 1  | Implement MESI and MESIF                          |
+| May 2 - May 4   | Run emulator on memory traces from real programs  |
+| May 5 - May 8   | Use the system to perform analysis                |
 | May 9           | Parallelism competition                           |
 
 </xmp></body>
