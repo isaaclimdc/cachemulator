@@ -120,6 +120,7 @@ CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
     }
     break;
 
+  case STYPE_FORWARD:
   case STYPE_SHARED:
     if (itype == ITYPE_READ) {
       makeShout = false;
@@ -200,8 +201,9 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, boo
       }
       break;
 
+    case STYPE_FORWARD:
     case STYPE_EXCLUSIVE:
-      if (CONFIG->protocol == PTYPE_MESI || CONFIG->protocol == PTYPE_MESIF) {
+      if (CONFIG->hasExclusiveState()) {
         shared = true;
         forward = true;
         switch (shout->shoutType) {
@@ -218,11 +220,19 @@ void CMProc::respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, boo
                     pid, shout->addr->raw);
             break;
           case BusUpg:
+            if (CONFIG->hasExclusiveState()) {
+              cache->invalidate(shout->addr);
+              dprintf("Proc %d responds: Move 0x%llx from Exclusive/Forward to INVALID state\n",
+                        pid, shout->addr->raw);
+            } else {
+              dassert(false, "Cache Exclusive but received BusUpg");
+            }
+            break;
           default:
             dassert(false, "Cache Exclusive but received BusUpg");
             break;
         }
-        dprintf("Processor %d forwarding line 0x%llx\n", pid, shout->addr->raw);
+        //dprintf("Processor %d forwarding line 0x%llx\n", pid, shout->addr->raw);
       } else {
         dassert(false, "In Exclusive state in wrong protocol");
       }

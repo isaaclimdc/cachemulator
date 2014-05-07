@@ -35,17 +35,19 @@ void CMLine::update(CMAddr *addr, bool shared) {
   tag = addr->tag;
   dirty = false;
   age = 0; //TODO wrong!!!
+  state_t defaultSharedType = (CONFIG->hasForwardState()) ?
+                                STYPE_FORWARD : STYPE_SHARED;
 
   if (addr->itype == ITYPE_READ) {
     if (shared) {
-      stype = STYPE_SHARED;
+      stype = defaultSharedType;
     }
     else {
       if (CONFIG->hasExclusiveState()) {
         stype = STYPE_EXCLUSIVE;
       }
       else {
-        stype = STYPE_SHARED;
+        stype = defaultSharedType;
       }
     }
   }
