@@ -7,38 +7,54 @@ outFiles = ["hitsmisses.out", "busshouts.out"]
 tmpFilePrefix = "traceFileProc"
 
 def report(test, sol):
-  if test == sol:
-    print "TEST PASSED!"
+  if sol == []:
+    print "No reference output for this trace!"
   else:
-    print "TEST FAILED..."
+    if test == sol:
+      print "TEST PASSED!"
+    else:
+      print "TEST FAILED..."
 
 
 def checkHitsMisses(parsed, traceFile, protocol):
   sol = []
-  if protocol == "MSI" or protocol == "MESI":
-    if traceFile == "traces/easy1.trace":
-      sol = ['M','M','M','H','H','H','M','H','H','H']
-    elif traceFile == "traces/evict1.trace":
-      sol = ['M','M','H','H','E','E']
-    elif traceFile == "traces/coherent1.trace":
-      sol = ['M','M','M','H','H','H']
-    else:
-      print "No reference output for this trace!"
+
+  if traceFile == "traces/easy1.trace":
+    sol = ['M','M','M','H','H','H','M','H','H','H']
+  elif traceFile == "traces/evict1.trace":
+    sol = ['M','M','H','H','E','E']
+  elif traceFile == "traces/coherent1.trace":
+    sol = ['M','M','M','H','H','H']
 
   report(parsed[0], sol)
 
 
 def checkBusShouts(parsed, traceFile, protocol):
   sol = []
-  if protocol == "MSI" or protocol == "MESI":
+
+  if protocol == "MSI":
     if traceFile == "traces/easy1.trace":
       sol = ['R','R','R','U','R']
     elif traceFile == "traces/evict1.trace":
       sol = ['R','R','R','R']
     elif traceFile == "traces/coherent1.trace":
       sol = ['R','R','R','U','X']
-    else:
-      print "No reference output for this trace!"
+
+  elif protocol == "MESI":
+    if traceFile == "traces/easy1.trace":
+      sol = ['R','R','R','U','R']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['R','R','R','R']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['R','R','R','U']
+
+  elif protocol == "MESIF":
+    if traceFile == "traces/easy1.trace":
+      sol = ['R','R','R','U','R']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['R','R','R','R']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['R','R','R','U']
 
   report(parsed[1], sol)
 

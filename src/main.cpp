@@ -16,7 +16,6 @@
 #include "modules/CMSet.h"
 #include "modules/CMAddr.h"
 #include "modules/CMLine.h"
-#include "modules/CMTest.h"
 #include "modules/debug.h"
 #include "modules/CMGlobals.h"
 #include "modules/CMSharing.h"
@@ -25,6 +24,7 @@
 
 /* Function declarations */
 
+void reportResults(CMComp *comp);
 size_t parseTraceFile(char *filePath);
 prot_t parseProtocol(char *optarg);
 
@@ -61,28 +61,29 @@ int main(int argc, char **argv) {
   CONFIG->protocol = protocol;
   CONFIG->numProcs = numProcs;
 
-  dprintf("NUM PROCS: %d\n", CONFIG->numProcs);
-
   busShoutsFile->open(FILE_BUSSHOUTS, std::ios_base::app);
   hitsMissesFile->open(FILE_HITSMISSES, std::ios_base::app);
   CMComp *comp = new CMComp(CONFIG->numProcs);
 
   while (comp->hasOutstandingJobs()) {
-    // Tick computer
     comp->tick();
   }
 
+  reportResults(comp);
+
+  // Cleanup
   busShoutsFile->close();
   hitsMissesFile->close();
-  printf("Num ticks: %llu\n", comp->totalTicks);
-  comp->sharing->print();
 
-  // delete test;
   delete comp;
   delete CONFIG;
   delete[] BUSRequests;
 
   return 0;
+}
+
+void reportResults(CMComp *comp) {
+  printf("Num ticks: %llu\n", comp->totalTicks);
 }
 
 size_t parseTraceFile(char *filePath) {
