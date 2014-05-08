@@ -110,9 +110,9 @@ size_t parseTraceFile(char *filePath) {
     sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &pid);
 
     //'New' processor discovered, create a new file
-    size_t cTotalProcs = traceFiles.size();
-    if (pid <= cTotalProcs) {
-      for (size_t counter=cTotalProcs; counter<=pid; ++counter) {
+    size_t totalProcsNow = traceFiles.size();
+    if (pid >= totalProcsNow) {
+      for (size_t counter=totalProcsNow; counter<=pid; ++counter) {
         std::string tmpPath = MAKE_TMP_FILEPATH(counter);
         traceFiles.push_back(new std::ofstream());
         traceFiles.at(counter)->open(tmpPath.c_str(), std::ios_base::app);
