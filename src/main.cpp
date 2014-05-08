@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     comp->tick();
   }
 
-  dprintf("Num ticks: %llu\n", comp->totalTicks);
+  printf("Num ticks: %llu\n", comp->totalTicks);
   comp->sharing->print();
 
   // delete test;
@@ -89,7 +89,7 @@ size_t parseTraceFile(char *filePath) {
     exit(1);
   }
 
-  std::vector<std::string> traceFiles;
+  std::vector<std::ofstream*> traceFiles;
 
   char traceLine[MAX_TRACE_LINE_LENGTH];
 
@@ -105,25 +105,28 @@ size_t parseTraceFile(char *filePath) {
     sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &pid);
 
     //'New' processor discovered, create a new file
-    if (pid >= traceFiles.size()) {
-      std::string tmpPath = MAKE_TMP_FILEPATH(pid);
-      dprintf("TMP PATH: %s\n", tmpPath.c_str());
-      traceFiles.push_back(tmpPath);
+    size_t cTotalProcs = traceFiles.size();
+    if (pid <= cTotalProcs) {
+      for (size_t counter=cTotalProcs; counter<=pid; ++counter) {
+        std::string tmpPath = MAKE_TMP_FILEPATH(counter);
+        dprintf("TMP PATH: %s\n", tmpPath.c_str());
+        traceFiles.push_back(new std::ofstream());
+        dprintf("Opening file %s\n", tmpPath.c_str());
+        traceFiles.at(counter)->open(tmpPath.c_str(), std::ios_base::app);
+      }
     }
-
-    std::string procFilePath = traceFiles.at(pid);
-    std::ofstream procFile;
-    procFile.open(procFilePath.c_str(), std::ios_base::app);
-    procFile << traceLine;
-    procFile.close();
+    std::ofstream *procFile = traceFiles.at(pid);
+    // TODO: CLOSE THE FILES
+    // dprintf("flushing procFile %p traceLine %s\n", procFile, traceLine);
+    (*procFile) << traceLine;
   }
 
   // Close tmp files
-  // std::vector<std::ofstream>::iterator it;
-  // for (it = traceFiles.begin(); it != traceFiles.end(); ++it) {
-  //   std::ofstream file = *it;
-  //   file.close();
-  // }
+  std::vector<std::ofstream*>::iterator it;
+  for (it = traceFiles.begin(); it != traceFiles.end(); ++it) {
+    std::ofstream *file = *it;
+    file->close();
+  }
 
   // Close original trace file
   fclose(traceFile);

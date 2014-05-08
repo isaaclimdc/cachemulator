@@ -64,6 +64,7 @@ def clean():
 
 
 def main():
+  clean()
   ap = argparse.ArgumentParser()
   ap.add_argument('-t', help="Tracefile path")
   ap.add_argument('-p', help="Coherence protocol")
