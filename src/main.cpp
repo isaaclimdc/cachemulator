@@ -113,15 +113,12 @@ size_t parseTraceFile(char *filePath) {
     if (pid <= cTotalProcs) {
       for (size_t counter=cTotalProcs; counter<=pid; ++counter) {
         std::string tmpPath = MAKE_TMP_FILEPATH(counter);
-        dprintf("TMP PATH: %s\n", tmpPath.c_str());
         traceFiles.push_back(new std::ofstream());
-        dprintf("Opening file %s\n", tmpPath.c_str());
         traceFiles.at(counter)->open(tmpPath.c_str(), std::ios_base::app);
       }
     }
+
     std::ofstream *procFile = traceFiles.at(pid);
-    // TODO: CLOSE THE FILES
-    // dprintf("flushing procFile %p traceLine %s\n", procFile, traceLine);
     (*procFile) << traceLine;
   }
 
