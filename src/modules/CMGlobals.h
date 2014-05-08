@@ -12,5 +12,7 @@
 
 extern CMConfig *CONFIG;
 extern bool *BUSRequests;
+extern std::ofstream *busShoutsFile;
+extern std::ofstream *hitsMissesFile;
 
 std::string MAKE_TMP_FILEPATH(size_t pid);

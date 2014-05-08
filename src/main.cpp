@@ -63,6 +63,8 @@ int main(int argc, char **argv) {
 
   dprintf("NUM PROCS: %d\n", CONFIG->numProcs);
 
+  busShoutsFile->open(FILE_BUSSHOUTS, std::ios_base::app);
+  hitsMissesFile->open(FILE_HITSMISSES, std::ios_base::app);
   CMComp *comp = new CMComp(CONFIG->numProcs);
 
   while (comp->hasOutstandingJobs()) {
@@ -70,6 +72,8 @@ int main(int argc, char **argv) {
     comp->tick();
   }
 
+  busShoutsFile->close();
+  hitsMissesFile->close();
   printf("Num ticks: %llu\n", comp->totalTicks);
   comp->sharing->print();
 

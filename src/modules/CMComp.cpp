@@ -121,10 +121,7 @@ void CMComp::tick() {
 }
 
 void CMComp::writeToFile(CMBusShout *shout) {
-  std::ofstream file;
-  file.open(FILE_BUSSHOUTS, std::ios_base::app);
-  file << shout->toChar() << "\n";
-  file.close();
+  (*busShoutsFile) << shout->toChar() << "\n";
 }
 
 bool CMComp::hasOutstandingJobs() {

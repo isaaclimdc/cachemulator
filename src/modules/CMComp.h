@@ -32,4 +32,6 @@ class CMComp {
     CMMemCtrlr *memCtrlr;
     long long unsigned totalTicks;
     CMSharing *sharing;
+
+    std::ofstream *busShoutFile;
 };

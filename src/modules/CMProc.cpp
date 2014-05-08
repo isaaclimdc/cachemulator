@@ -185,10 +185,7 @@ CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
 }
 
 void CMProc::writeToFile(res_t rtype) {
-  std::ofstream file;
-  file.open(FILE_HITSMISSES, std::ios_base::app);
-  file << cache->rTypeToChar(rtype) << "\n";
-  file.close();
+  (*hitsMissesFile) << cache->rTypeToChar(rtype) << "\n";
 }
 
 void CMProc::postShoutingProcess(bool shared) {

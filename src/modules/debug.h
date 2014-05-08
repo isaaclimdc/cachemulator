@@ -6,7 +6,7 @@
 
 #include <assert.h>
 
-// #define DEBUG
+#define DEBUG
 
 #define dassert(exp, str)                        \
 do {                                             \
