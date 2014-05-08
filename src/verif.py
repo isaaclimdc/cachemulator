@@ -55,7 +55,8 @@ def run(traceFile, protocol):
 
 def clean():
   for outFile in outFiles:
-    subprocess.call(["rm", outFile])
+    if os.path.isfile(outFile):
+      subprocess.call(["rm", outFile])
 
   files = os.listdir(".")
   for file in files:
