@@ -21,10 +21,10 @@ PROGDIR="$1"
 ARGS="${*:2}"
 TRACEFILE="user.trace"
 
-# Make BFS code
+# Build user code
 OLDDIR=$(pwd)
 cd $PROGDIR
-make
+make clean; make
 cd $OLDDIR
 
 # Generate Pin trace
@@ -40,6 +40,7 @@ for PROTOCOL in "${PROTOCOLS[@]}"
 do
   # Run cache
   ./emulator -t $TRACEFILE -p $PROTOCOL
+  rm *.tmp *.out
 
   # Plot graphs
   cd scripts
@@ -48,7 +49,11 @@ do
   cd ..
 done
 
+# Plot stats graphs
+cd scripts
+./plotStats.py
+
 # Clean
-cleanTmpFiles
+#cleanTmpFiles
 make clean
-rm $TRACEFILE
+#rm $TRACEFILE
