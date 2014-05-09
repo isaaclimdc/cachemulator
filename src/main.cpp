@@ -16,7 +16,6 @@
 #include "modules/CMSet.h"
 #include "modules/CMAddr.h"
 #include "modules/CMLine.h"
-#include "modules/CMTest.h"
 #include "modules/debug.h"
 #include "modules/CMGlobals.h"
 #include "modules/CMSharing.h"
@@ -25,6 +24,7 @@
 
 /* Function declarations */
 
+void reportResults(CMComp *comp);
 size_t parseTraceFile(char *filePath);
 prot_t parseProtocol(char *optarg);
 
@@ -61,18 +61,18 @@ int main(int argc, char **argv) {
   CONFIG->protocol = protocol;
   CONFIG->numProcs = numProcs;
 
-  dprintf("NUM PROCS: %d\n", CONFIG->numProcs);
-
   busShoutsFile->open(FILE_BUSSHOUTS, std::ios_base::app);
   hitsMissesFile->open(FILE_HITSMISSES, std::ios_base::app);
   busTrafficFile->open(FILE_BUSTRAFFIC, std::ios_base::app);
   CMComp *comp = new CMComp(CONFIG->numProcs);
 
   while (comp->hasOutstandingJobs()) {
-    // Tick computer
     comp->tick();
   }
 
+  reportResults(comp);
+
+  // Cleanup
   busShoutsFile->close();
   hitsMissesFile->close();
   busTrafficFile->close();
@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
   comp->sharing->print();
   comp->sharing->reportContension();
 
-  // delete test;
   delete comp;
   delete CONFIG;
   delete[] BUSRequests;
@@ -89,6 +88,10 @@ int main(int argc, char **argv) {
   delete busTrafficFile;
 
   return 0;
+}
+
+void reportResults(CMComp *comp) {
+  printf("Num ticks: %llu\n", comp->totalTicks);
 }
 
 size_t parseTraceFile(char *filePath) {
@@ -115,19 +118,16 @@ size_t parseTraceFile(char *filePath) {
     sscanf(traceLine, "%c %llx %zu", &op, &rawAddr, &pid);
 
     //'New' processor discovered, create a new file
-    size_t cTotalProcs = traceFiles.size();
-    if (pid <= cTotalProcs) {
-      for (size_t counter=cTotalProcs; counter<=pid; ++counter) {
+    size_t totalProcsNow = traceFiles.size();
+    if (pid >= totalProcsNow) {
+      for (size_t counter=totalProcsNow; counter<=pid; ++counter) {
         std::string tmpPath = MAKE_TMP_FILEPATH(counter);
-        dprintf("TMP PATH: %s\n", tmpPath.c_str());
         traceFiles.push_back(new std::ofstream());
-        dprintf("Opening file %s\n", tmpPath.c_str());
         traceFiles.at(counter)->open(tmpPath.c_str(), std::ios_base::app);
       }
     }
+
     std::ofstream *procFile = traceFiles.at(pid);
-    // TODO: CLOSE THE FILES
-    // dprintf("flushing procFile %p traceLine %s\n", procFile, traceLine);
     (*procFile) << traceLine;
   }
 

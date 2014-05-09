@@ -10,7 +10,6 @@
 
 class CMProc;
 class CMBusCtrlr;
-class CMTest;
 class CMMemCtrlr;
 class CMBusShout;
 class CMSharing;

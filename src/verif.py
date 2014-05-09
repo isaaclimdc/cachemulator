@@ -7,28 +7,32 @@ outFiles = ["hitsmisses.out", "busshouts.out"]
 tmpFilePrefix = "traceFileProc"
 
 def report(test, sol):
-  if test == sol:
-    print "TEST PASSED!"
+  if sol == []:
+    print "No reference output for this trace!"
   else:
-    print "TEST FAILED..."
+    if test == sol:
+      print "TEST PASSED!"
+    else:
+      print "TEST FAILED..."
 
 
 def checkHitsMisses(parsed, traceFile, protocol):
   sol = []
-  if protocol == "MSI" or protocol == "MESI":
-    if traceFile == "traces/easy1.trace":
-      sol = ['M','M','M','H','H','H','M','H','H','H']
-    elif traceFile == "traces/evict1.trace":
-      sol = ['M','M','H','H','E','E']
-    elif traceFile == "traces/coherent1.trace":
-      sol = ['M','M','M','H','H','H']
+
+  if traceFile == "traces/easy1.trace":
+    sol = ['M','M','M','H','H','H','M','H','H','H']
+  elif traceFile == "traces/evict1.trace":
+    sol = ['M','M','H','H','E','E']
+  elif traceFile == "traces/coherent1.trace":
+    sol = ['M','M','M','H','H','H']
 
   report(parsed[0], sol)
 
 
 def checkBusShouts(parsed, traceFile, protocol):
   sol = []
-  if protocol == "MSI" or protocol == "MESI":
+
+  if protocol == "MSI":
     if traceFile == "traces/easy1.trace":
       sol = ['R','R','R','U','R']
     elif traceFile == "traces/evict1.trace":
@@ -36,16 +40,38 @@ def checkBusShouts(parsed, traceFile, protocol):
     elif traceFile == "traces/coherent1.trace":
       sol = ['R','R','R','U','X']
 
+  elif protocol == "MESI":
+    if traceFile == "traces/easy1.trace":
+      sol = ['R','R','R','U','R']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['R','R','R','R']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['R','R','R','U']
+
+  elif protocol == "MESIF":
+    if traceFile == "traces/easy1.trace":
+      sol = ['R','R','R','U','R']
+    elif traceFile == "traces/evict1.trace":
+      sol = ['R','R','R','R']
+    elif traceFile == "traces/coherent1.trace":
+      sol = ['R','R','R','U']
+
   report(parsed[1], sol)
 
 
 def parse():
   parsedFiles = []
   for outFile in outFiles:
-    with open(outFile) as f:
-      content = f.readlines()
-      bare = map (lambda r: r.strip(), content)
-      parsedFiles.append(bare)
+    if os.path.isfile(outFile):
+      with open(outFile) as f:
+        content = f.readlines()
+        bare = map (lambda r: r.strip(), content)
+        parsedFiles.append(bare)
+    else:
+      print "No output from Cachemulator found, turn on debug!"
+      clean()
+      exit(1)
+
   return parsedFiles
 
 
@@ -65,7 +91,6 @@ def clean():
 
 
 def main():
-  clean()
   ap = argparse.ArgumentParser()
   ap.add_argument('-t', help="Tracefile path")
   ap.add_argument('-p', help="Coherence protocol")
@@ -73,6 +98,9 @@ def main():
 
   traceFile = opts.t
   protocol = opts.p
+
+  clean()
+
   run(traceFile, protocol)
 
   print
