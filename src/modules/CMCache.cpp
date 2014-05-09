@@ -96,6 +96,7 @@ void CMCache::setLineState(CMAddr *addr, state_t setToState) {
 }
 
 void CMCache::invalidate(CMAddr *addr) {
+  totalInvalidations++;
   CMLine *line = getLine(addr);
   dassert(line != NULL, "Line is NULL");
   line->stype = STYPE_INVALID;

@@ -91,6 +91,22 @@ void reportResults(CMComp *comp) {
   printf("Num ticks: %llu\n", comp->totalTicks);
   comp->sharing->reportContension();
   comp->sharing->print();
+  std::ofstream finalReport;
+  finalReport.open("stats.report", std::ios_base::app);
+  finalReport << "============\n";
+  finalReport << "ticks " << comp->totalTicks << "\n";
+  finalReport << "instructions " << totalHits + totalMisses + totalEvictions << "\n";
+  finalReport << "invalidations " << totalInvalidations << "\n";
+  finalReport << "hits " << totalHits << "\n";
+  finalReport << "misses " << totalMisses << "\n";
+  finalReport << "evictions " << totalEvictions << "\n";
+  finalReport << "BusRd " << totalBusRd << "\n";
+  finalReport << "BusRdX " << totalBusRdX << "\n";
+  finalReport << "BusWr " << totalBusWr << "\n";
+  finalReport << "BusUpg " << totalBusUpg << "\n";
+  finalReport << "C2C " << totalC2C << "\n";
+  finalReport.close();
+
 }
 
 size_t parseTraceFile(char *filePath) {
@@ -109,6 +125,7 @@ size_t parseTraceFile(char *filePath) {
     if (traceLine[0] == '/' && traceLine[1] == '/') {
       continue;
     }
+    totalInstructions++;
 
     char op;
     long long unsigned rawAddr;

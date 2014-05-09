@@ -106,6 +106,7 @@ void CMComp::tick() {
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->upgDelay);
     }
     else if (hasForward) {
+      totalC2C++;
       memCtrlr->addJob(busCtrlr->currentJob, CONFIG->c2cDelay);
     }
     else {

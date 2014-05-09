@@ -32,6 +32,7 @@ class CMProc {
     void respondToBusShout(CMBusShout *shout, bool &shared, bool &dirty, bool &forward);
 
     void writeToFile(res_t rtype);
+    void recordHitMisEvicts(res_t rtype);
     void refillReqsIfNeeded();
 
     void postShoutingProcess(bool shared);
