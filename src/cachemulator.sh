@@ -4,6 +4,16 @@
 # Yuyang Guo (yuyangg) and Isaac Lim (idl)
 
 function cleanTmpFiles {
+  declare -a UGLYFILES=("*.out" "*.tmp")
+  for UGLYFILE in "${UGLYFILES[@]}"
+  do
+    if ls $UGLYFILE &> /dev/null; then
+      rm $UGLYFILE
+    fi
+  done
+}
+
+function cleanAllTmpFiles {
   declare -a UGLYFILES=("*.out" "*.report" "*.tmp")
   for UGLYFILE in "${UGLYFILES[@]}"
   do
@@ -31,7 +41,7 @@ cd $OLDDIR
 ../pin/pin -t ../pin/pinatrace.so -- $ARGS
 
 # Build cache
-cleanTmpFiles
+cleanAllTmpFiles
 make
 
 # Run cache and plot graph for each protocol
@@ -40,20 +50,21 @@ for PROTOCOL in "${PROTOCOLS[@]}"
 do
   # Run cache
   ./emulator -t $TRACEFILE -p $PROTOCOL
-  rm *.tmp *.out
 
   # Plot graphs
   cd scripts
   ./showBusTraffic.py $PROTOCOL
 
+  cleanTmpFiles
   cd ..
 done
 
 # Plot stats graphs
 cd scripts
 ./plotStats.py
+cd ..
 
 # Clean
-#cleanTmpFiles
+cleanTmpFiles
 make clean
 #rm $TRACEFILE
