@@ -13,22 +13,25 @@ function cleanTmpFiles {
   done
 }
 
-####### Note: Run this from "cachemulator/src" #######
+####### Note: Run this from "cachemulator/src"
+####### Make sure "userfuncs.in" is in this directory.
+####### ./cachemulator.sh <Makefile dir> <executable> <args ...>
+
+PROGDIR="$1"
+ARGS="${*:2}"
+TRACEFILE="user.trace"
 
 # Make BFS code
-cd programs/bfs
+OLDDIR=$(pwd)
+cd $PROGDIR
 make
-cd ../..
+cd $OLDDIR
 
 # Generate Pin trace
-cd ../pin
-./pin -t pinatrace.so -- ../src/programs/bfs/bfs ../src/programs/bfs/tiny.graph
-cp user.trace ../src/traces/bfs.trace
-cd ../src
+../pin/pin -t ../pin/pinatrace.so -- $ARGS
 
 # Build cache
 cleanTmpFiles
-make clean
 make
 
 # Run cache and plot graph for each protocol
@@ -36,7 +39,7 @@ declare -a PROTOCOLS=("MSI" "MESI" "MESIF")
 for PROTOCOL in "${PROTOCOLS[@]}"
 do
   # Run cache
-  ./cache -t traces/bfs.trace -p $PROTOCOL
+  ./emulator -t $TRACEFILE -p $PROTOCOL
 
   # Plot graphs
   cd scripts
@@ -47,3 +50,5 @@ done
 
 # Clean
 cleanTmpFiles
+make clean
+rm $TRACEFILE

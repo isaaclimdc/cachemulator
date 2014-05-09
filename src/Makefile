@@ -10,12 +10,12 @@ DEBUG = -g
 CFLAGS = -m64 -Wall -Werror -O3 -c $(DEBUG)
 LFLAGS = -m64 -Wall -Werror -O3 $(DEBUG)
 
-default: cache
+default: emulator
 
 dirs:
 	mkdir -p $(OD)/
 
-cache: dirs $(OBJS)
+emulator: dirs $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) -o $@
 
 $(OD)/main.o: main.cpp $(MD)/CMCache.h $(MD)/CMSet.h $(MD)/CMAddr.h $(MD)/CMLine.h $(MD)/CMGlobals.h $(MD)/debug.h
@@ -65,4 +65,4 @@ $(OD)/debug.o: $(MD)/debug.h $(MD)/debug.cpp
 
 clean:
 	rm -rf $(OD) *.o *.dSYM
-	rm -f cache
+	rm -f emulator
