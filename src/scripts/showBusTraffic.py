@@ -16,11 +16,12 @@ stats = {
 
 
 def main():
+  outfile = sys.argv[1]
   with open(TRAFFIC_FILE) as f:
-    counter = 100
+    counter = 500
     for char in f.read():
       if counter <= 0:
-        counter = 100
+        counter = 500
         for stat in stats:
           stats[stat].append(0)
 
@@ -82,7 +83,7 @@ def main():
 #  plt.title('Bus Traffic from BusUpg')
 #
 #  plt.show()
-  plt.savefig("trial_fig.png")
+  plt.savefig(outfile + ".png")
 
 
 
