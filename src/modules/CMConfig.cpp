@@ -8,7 +8,7 @@ CMConfig::CMConfig() {
   numProcs = 20;
   numSetBits = 8;
   numLines = 2;
-  numBlockBits = 8;
+  numBlockBits = 6;
 
   protocol = PTYPE_MSI;
 
