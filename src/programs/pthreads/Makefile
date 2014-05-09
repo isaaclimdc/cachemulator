@@ -5,8 +5,8 @@ OBJS = pthreads
 
 CC = g++
 DEBUG = -g
-CFLAGS = -m64 -O0 -Wall -Werror -c $(DEBUG)
-LFLAGS = -m64 -O0 -Wall -Werror $(DEBUG)
+CFLAGS = -m64 -O0 -c $(DEBUG)
+LFLAGS = -m64 -O0 $(DEBUG)
 
 pthreads:
 	$(CC) $(LFLAGS) -oterm -lpthread pthreads.cpp -o $@
