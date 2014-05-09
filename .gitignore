@@ -1,5 +1,4 @@
-cache
-pthreads
+emulator
 *.tmp
 *.dSYM
 *.out

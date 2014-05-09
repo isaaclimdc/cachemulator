@@ -65,4 +65,4 @@ $(OD)/debug.o: $(MD)/debug.h $(MD)/debug.cpp
 
 clean:
 	rm -rf $(OD) *.o *.dSYM
-	rm -f cache
+	rm -f emulator
