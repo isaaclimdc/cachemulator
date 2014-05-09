@@ -1,4 +1,6 @@
 cache
 *.tmp
 *.dSYM
+src/bustraffic.out
+src/contension.report
 pthreads

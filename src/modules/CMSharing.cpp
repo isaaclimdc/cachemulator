@@ -6,6 +6,7 @@
 #include "debug.h"
 #include "CMBusShout.h"
 #include "CMAddr.h"
+#include <fstream>
 
 CMSharing::CMSharing() {
 }
@@ -21,6 +22,8 @@ void CMSharing::record(CMBusShout *shout) {
   }
 
   sharingMap[lineStart]++;
+
+  addrAccessHistory[lineStart].push_back(shout->addr->copy());
 }
 
 bool CMSharing::isInMap(long long unsigned addr) {
@@ -42,4 +45,19 @@ void CMSharing::print() {
     dprintf("  0x%llx -> %llu\n", it->first, it->second);
   }
   dprintf("}\n");
+}
+
+void CMSharing::reportContension() {
+  std::ofstream contReportFile;
+  contReportFile.open("contension.report", std::ios_base::app);
+  std::map<long long unsigned, std::vector<CMAddr*> >::iterator it;
+  for (it = addrAccessHistory.begin(); it != addrAccessHistory.end(); ++it) {
+    std::vector<CMAddr*> history = (it->second);
+    std::vector<CMAddr*>::iterator it2;
+    for (it2 = history.begin(); it2 != history.end(); ++it2) {
+      CMAddr * addr = *it2;
+      addr->print();
+    }
+  }
+  contReportFile.close();
 }

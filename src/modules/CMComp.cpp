@@ -66,6 +66,7 @@ void CMComp::tick() {
     dassert(outstandingShout != NULL,
             "Granted access to a non-requesting proc!");
     outstandingShout->print();
+    busCtrlr->trackBusTraffic(outstandingShout);
 
     // Save this shout in the sharing object
     sharing->record(outstandingShout);
@@ -114,8 +115,9 @@ void CMComp::tick() {
     // the granted processor updates its access tag
     grantedProc->postShoutingProcess(hasShare);
     grantedProc->pendingShout->isDone = true;
+  } else {
+    busCtrlr->trackBusTraffic(NULL); // c for continue
   }
-
   memCtrlr->tick();
 }
 

@@ -5,8 +5,10 @@
 #pragma once
 
 #include <map>
+#include <vector>
 
 class CMBusShout;
+class CMAddr;
 
 class CMSharing {
   private:
@@ -18,7 +20,11 @@ class CMSharing {
 
     void record(CMBusShout *shout);
     void print();
+    void reportContension();
 
     std::map<long long unsigned,
              long long unsigned> sharingMap;
+
+    std::map<long long unsigned,
+             std::vector<CMAddr*> > addrAccessHistory;
 };

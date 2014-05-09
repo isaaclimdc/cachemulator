@@ -7,6 +7,7 @@
 #include <cstring>
 
 class CMJob;
+class CMBusShout;
 
 class CMBusCtrlr {
   private:
@@ -19,4 +20,6 @@ class CMBusCtrlr {
     size_t tick();
     CMJob *currentJob;
     void setJob(CMJob *respondToJob);
+    char currentShoutChar;
+    void trackBusTraffic(CMBusShout *shoutingJob);
 };
