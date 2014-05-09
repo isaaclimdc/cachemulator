@@ -76,9 +76,6 @@ int main(int argc, char **argv) {
   busShoutsFile->close();
   hitsMissesFile->close();
   busTrafficFile->close();
-  printf("Num ticks: %llu\n", comp->totalTicks);
-  comp->sharing->print();
-  comp->sharing->reportContension();
 
   delete comp;
   delete CONFIG;
@@ -92,6 +89,8 @@ int main(int argc, char **argv) {
 
 void reportResults(CMComp *comp) {
   printf("Num ticks: %llu\n", comp->totalTicks);
+  comp->sharing->reportContension();
+  comp->sharing->print();
 }
 
 size_t parseTraceFile(char *filePath) {
