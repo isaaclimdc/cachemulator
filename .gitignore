@@ -4,3 +4,4 @@ emulator
 *.out
 *.report
 *.png
+pin/
