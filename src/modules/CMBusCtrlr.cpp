@@ -63,6 +63,20 @@ void CMBusCtrlr::trackBusTraffic(CMBusShout *shoutingJob) {
   if (shoutingJob != NULL) {
     // new job type came in
     currentShoutChar = shoutingJob->toChar();
+    switch (shoutingJob->shoutType) {
+    case (BusRd):
+      totalBusRd++;
+      break;
+    case (BusRdX):
+      totalBusRdX++;
+      break;
+    case (BusWr):
+      totalBusWr++;
+      break;
+    case (BusUpg):
+      totalBusUpg++;
+      break;
+    }
   } else if (currentJob->jobDone) {
     // old job done, no new job
     currentShoutChar = 'I'; // stand for idle

@@ -79,6 +79,7 @@ void CMProc::tick() {
     cache->printRType(rtype);
     writeToFile(rtype);
     #endif
+    recordHitMisEvicts(rtype);
   }
 
   else if (!pendingShout->isDone) {
@@ -186,6 +187,21 @@ CMAddr *CMProc::_updatePendingRequest(CMAddr *newReq, bool &makeShout,
 
 void CMProc::writeToFile(res_t rtype) {
   (*hitsMissesFile) << cache->rTypeToChar(rtype) << "\n";
+}
+
+void CMProc::recordHitMisEvicts(res_t rtype) {
+  switch (rtype) {
+  case RTYPE_HIT:
+    totalHits++;
+    break;
+  case RTYPE_MISS:
+    totalMisses++;
+    break;
+  case RTYPE_EVICT:
+  default:
+    totalEvictions++;
+    break;
+  }
 }
 
 void CMProc::postShoutingProcess(bool shared) {
