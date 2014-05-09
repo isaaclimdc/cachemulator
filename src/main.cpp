@@ -55,11 +55,12 @@ int main(int argc, char **argv) {
 
   // Initialize the global singletons
   CONFIG = new CMConfig();
-  BUSRequests = new bool[CONFIG->numProcs]();
 
   size_t numProcs = parseTraceFile(filePath);
   CONFIG->protocol = protocol;
   CONFIG->numProcs = numProcs;
+
+  BUSRequests = (bool *)calloc(CONFIG->numProcs, sizeof(bool));
 
   busShoutsFile->open(FILE_BUSSHOUTS, std::ios_base::app);
   hitsMissesFile->open(FILE_HITSMISSES, std::ios_base::app);
@@ -79,10 +80,10 @@ int main(int argc, char **argv) {
 
   delete comp;
   delete CONFIG;
-  delete[] BUSRequests;
   delete busShoutsFile;
   delete hitsMissesFile;
   delete busTrafficFile;
+  free(BUSRequests);
 
   return 0;
 }

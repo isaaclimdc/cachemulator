@@ -8,6 +8,7 @@
 
 CMBusShout::CMBusShout() {
   isDone = false;
+  addr = NULL;
 }
 
 CMBusShout::~CMBusShout() {
