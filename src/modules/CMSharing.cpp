@@ -6,6 +6,7 @@
 #include "debug.h"
 #include "CMBusShout.h"
 #include "CMAddr.h"
+#include "CMGlobals.h"
 #include <fstream>
 
 CMSharing::CMSharing() {
@@ -48,16 +49,13 @@ void CMSharing::print() {
 }
 
 void CMSharing::reportContension() {
-  std::ofstream contReportFile;
-  contReportFile.open("contension.report", std::ios_base::app);
-  std::map<long long unsigned, std::vector<CMAddr*> >::iterator it;
-  for (it = addrAccessHistory.begin(); it != addrAccessHistory.end(); ++it) {
-    std::vector<CMAddr*> history = (it->second);
-    std::vector<CMAddr*>::iterator it2;
-    for (it2 = history.begin(); it2 != history.end(); ++it2) {
-      CMAddr * addr = *it2;
-      addr->print();
+
+  int totalShout = totalBusRd + totalBusRdX + totalBusWr + totalBusUpg;
+  int thresh = std::max(int(totalShout * 0.05), 5);
+  std::map<long long unsigned, long long unsigned>::iterator it;
+  for (it = sharingMap.begin(); it != sharingMap.end(); ++it) {
+    if (it->second >= (long long unsigned)thresh) {
+      totalHighContension ++;
     }
   }
-  contReportFile.close();
 }

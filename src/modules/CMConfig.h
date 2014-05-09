@@ -10,8 +10,6 @@ enum prot_t {
   PTYPE_MESIF
 };
 
-static const char* prot_t_strings[3] = { "MSI", "MESI", "MESIF" };
-
 class CMConfig {
   private:
 

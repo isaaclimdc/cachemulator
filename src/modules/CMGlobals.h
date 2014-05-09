@@ -26,6 +26,7 @@ extern int totalBusRdX;
 extern int totalBusWr;
 extern int totalBusUpg;
 extern int totalC2C;
+extern int totalHighContension;
 
 
 std::string MAKE_TMP_FILEPATH(size_t pid);

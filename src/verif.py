@@ -76,7 +76,7 @@ def parse():
 
 
 def run(traceFile, protocol):
-  subprocess.call(["./cache", "-t", traceFile, "-p", protocol])
+  subprocess.call(["./emulator", "-t", traceFile, "-p", protocol])
 
 
 def clean():

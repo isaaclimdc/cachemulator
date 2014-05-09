@@ -25,6 +25,7 @@ int totalBusRdX = 0;
 int totalBusWr = 0;
 int totalBusUpg = 0;
 int totalC2C = 0;
+int totalHighContension = 0;
 
 std::string MAKE_TMP_FILEPATH(size_t pid) {
   std::ostringstream ostr;

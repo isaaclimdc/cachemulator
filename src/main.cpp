@@ -94,8 +94,7 @@ void reportResults(CMComp *comp) {
   std::ofstream finalReport;
   finalReport.open("stats.report", std::ios_base::app);
   finalReport << "============\n";
-  finalReport << "ticks " << comp->totalTicks << "\n";
-  finalReport << "instructions " << totalHits + totalMisses + totalEvictions << "\n";
+  // finalReport << "instructions " << totalHits + totalMisses + totalEvictions << "\n";
   finalReport << "invalidations " << totalInvalidations << "\n";
   finalReport << "hits " << totalHits << "\n";
   finalReport << "misses " << totalMisses << "\n";
@@ -104,6 +103,8 @@ void reportResults(CMComp *comp) {
   finalReport << "BusRdX " << totalBusRdX << "\n";
   finalReport << "BusWr " << totalBusWr << "\n";
   finalReport << "BusUpg " << totalBusUpg << "\n";
+  finalReport << "HighlyContendedLines " << totalHighContension << "\n";
+  finalReport << "ticks " << comp->totalTicks << "\n";
   finalReport << "C2C " << totalC2C << "\n";
   finalReport.close();
 
