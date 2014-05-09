@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
 
   busShoutsFile->open(FILE_BUSSHOUTS, std::ios_base::app);
   hitsMissesFile->open(FILE_HITSMISSES, std::ios_base::app);
+  busTrafficFile->open(FILE_BUSTRAFFIC, std::ios_base::app);
   CMComp *comp = new CMComp(CONFIG->numProcs);
 
   while (comp->hasOutstandingJobs()) {
@@ -74,13 +75,18 @@ int main(int argc, char **argv) {
 
   busShoutsFile->close();
   hitsMissesFile->close();
+  busTrafficFile->close();
   printf("Num ticks: %llu\n", comp->totalTicks);
   comp->sharing->print();
+  comp->sharing->reportContension();
 
   // delete test;
   delete comp;
   delete CONFIG;
   delete[] BUSRequests;
+  delete busShoutsFile;
+  delete hitsMissesFile;
+  delete busTrafficFile;
 
   return 0;
 }

@@ -6,10 +6,13 @@
 #include "CMGlobals.h"
 #include "CMJob.h"
 #include "debug.h"
+#include "CMBusShout.h"
+#include <fstream>
 
 CMBusCtrlr::CMBusCtrlr() {
   roundRobin = 0;
   currentJob = new CMJob();
+  currentShoutChar = 'O';
 }
 
 CMBusCtrlr::~CMBusCtrlr() {
@@ -54,4 +57,16 @@ size_t CMBusCtrlr::tick() {
 
 void CMBusCtrlr::setJob(CMJob *respondToJob) {
   currentJob->update(JTYPE_WAIT_UNTIL, -1, respondToJob);
+}
+
+void CMBusCtrlr::trackBusTraffic(CMBusShout *shoutingJob) {
+  if (shoutingJob != NULL) {
+    // new job type came in
+    currentShoutChar = shoutingJob->toChar();
+  } else if (currentJob->jobDone) {
+    // old job done, no new job
+    currentShoutChar = 'I'; // stand for idle
+  }
+
+  (*busTrafficFile) << currentShoutChar;
 }

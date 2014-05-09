@@ -34,8 +34,12 @@ char CMBusShout::toChar() {
     return 'X';
   else if (shoutType == BusWr)
     return 'W';
-  else
+  else if (shoutType == BusUpg) {
     return 'U';
+  } else {
+    dassert(false, "invalid shout type!!!");
+    return 'I';
+  }
 }
 
 void CMBusShout::print() {
