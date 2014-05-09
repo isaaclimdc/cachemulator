@@ -30,7 +30,7 @@ VOID Routine(RTN rtn, VOID *v) {
   std::vector<std::string>::iterator it;
   for (it = userFuncs.begin(); it != userFuncs.end(); ++it) {
     std::string userFunc = *it;
-    if (name.compare(userFunc) != 0) continue;
+    if (name.find(userFunc) == std::string::npos) continue;
 
     RTN_Open(rtn);
 
