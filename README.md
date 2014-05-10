@@ -1,7 +1,6 @@
 # Cachemulator: A Snooping-based Coherent Parallel Cache Emulator
 **Yuyang Guo** (yuyangg) and **Isaac Lim** (idl)
 
-***
 ## What is it?
 
 Cachemulator is a coherent multi-processor cache emulator that uses a
@@ -11,7 +10,6 @@ Cachemulator is a coherent multi-processor cache emulator that uses a
 - Provide cache usage information including bus traffic, hits/misses/evictions,
 total ticks required, highly contended cache lines, false sharing, etc.
 
-***
 ## A Sneak Peak
 
 **UPDATE AS OF 5/7:**
@@ -27,8 +25,5 @@ a given memory trace, such as:
   MESI, and MESI over MSI.
 - Using `Pin` and a Pintool, we are able to generate a full memory trace of any
 given binary, with each memory access annotated with its processor ID.
-- What we are working on:
-    - Report **false sharing** and **highly-contended** cache lines.
-    - Because full memory traces of programs are extremely large, we are writing
-      a more complicated pintool to extrace the memory trace for
-      only the most important parts of the program.
+- Report **false sharing** and **highly-contended** cache lines.
+- Because full memory traces of programs are extremely large, our more complicated pintool extracts the memory trace for only the most important parts of the program.
