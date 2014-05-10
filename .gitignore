@@ -3,5 +3,4 @@ emulator
 *.dSYM
 *.out
 *.report
-*.png
 pin/
